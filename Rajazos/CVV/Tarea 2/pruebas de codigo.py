@@ -2,8 +2,8 @@
 import numpy as np
 
 
-# Funcions o componentes Globales
 
+# Funcions o componentes Globales
 # phi = np.array([[w1], [w2], [b]])
 # print(len([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
 
@@ -40,11 +40,11 @@ def sigmoid(s, tipo):
 def realizacion(phi, x, tipo, dif):
     pesos = np.array([[phi[0], phi[1]]])
     b = phi[2]
-    valoresTeorico = np.dot(np.transpose(pesos), x)
+    valoresTeorico = np.dot(x, pesos)
     valoresNumerico = float(valoresTeorico)
     operando = valoresNumerico + float(b)
     if tipo == 0:
-        evalu = operando
+        evalu = sigmoid(operando, dif)
         return evalu
     elif tipo == 1:
         evalu = sigmoid(operando, dif)
@@ -118,19 +118,68 @@ def costo(phi, tipo1, tipo2, datos):
 
 
 
-def gradienteConjugado(m, w1, w2, b):
-    M = m+1
-    l = 0.01
-    def W(M, w1, i=0):
-        w = w1
+# Funcion que calcula el gradiente conjugado de la red neuronal
+# Itera con el fin de encontrar un Phi que se parezca al de realizar una red neuronal iterada
+# recibe k, o cantidad de iteraciones
+# w1, w2, b, valores de un phi aleatorio
+# Recibe datos de la realizacion
+def gradienteConjugado(k, w1, w2, b, l, datos, i=0):
+    M = k+1
+    w01 = w1
+    w02 = w2
+    b0 = b
+    phix = np.array([[w01], [w02], [b0]])
+    while i < M:
+        if i == M:
+            break
+        else:
+            w1k = float(phix[i+0-i])-l*costo(phix, 1, 0, datos)
+            w2k = float(phix[i+1-i])-l*costo(phix, 1, 1, datos)
+            b0k = float(phix[i+2-i])-l*costo(phix, 1, 2, datos)
+            w01 = float(w1k)
+            w02 = float(w2k)
+            b0 = float(b0k)
+            phiF = np.array([[w01], [w02], [b0]])
+            phix = phiF
+            i = i+1
+        return phix
+
+
+# Desarrollo final
+#   I. Ejecutar el gradiente para obtener el (wk1, wk2, bk2)
+#   II. Llamando "phi = gradiente conjugado", ejercutamos la
+#       realizacion en (8, 7) y phi
+#   III. Lloramos porque tendre algun error que no encontrare
+#
+# Datos:
+#    1) croissant: Phi arbitrario que se usara, se definio usando Numpy
+#    2) D: vector de datos que se usaran. Fue definido como
+#                           -> lista => d
+#                           -> matricialmente => D
+#    3) X0: vector a evaluar por la realizacion. Fue escrito como:
+#                           -> lista => x0
+#                           -> vector => X0
+#    4) k: numro del "M" de iteraciones. Si bien k = {1,_,M} => |k| = M+1, este "+1" se agrego en la funcion final
+#    5) l: learning rate de la red neuronal
+croissant = np.random.uniform(size=(3, 1), low=0, high=1)
+#croissant = np.array([[1], [2], [3]])
+w1 = float(croissant[0])
+w2 = float(croissant[1])
+b = float(croissant[2])
+d = [[9.0, 7.0, 0.0], [2.0, 5.0, 1.0], [3.2, 4.94, 1.0], [9.1, 7.46, 0.0], [1.6, 4.83, 1.0], [8.4, 7.46, 0.0], [8.0, 7.28, 0.0], [3.1, 4.58, 1.0], [6.3, 9.14, 0.0], [3.4, 5.36, 1.0]]
+D = np.array(d)
+x0 = [[8, 7]]
+X0 = np.array(x0)
+k = 1000
+l = 0.01
 
 
 
+# I.
+phiconjugado = gradienteConjugado(1000, w1, w2, b, l, D)
+print(phiconjugado)
+# II.
+redrealizada = realizacion(phiconjugado, X0, 0, 0)
+print(redrealizada)
 
 
-
-
-# Derivadas Parciales
-# derivada del tipo dc/dw1
-
-#def parcialw1():
