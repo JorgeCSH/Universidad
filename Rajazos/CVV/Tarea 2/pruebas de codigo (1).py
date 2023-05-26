@@ -4,8 +4,7 @@ import numpy as np
 
 
 # Funcions o componentes Globales
-# phi = np.array([[w1], [w2], [b]])
-# print(len([[1, 2, 3], [4, 5, 6], [7, 8, 9]]))
+
 
 
 
@@ -116,11 +115,7 @@ def costo(phi, tipo1, tipo2, datos):
             costoRealizacion = np.dot(dC, dbb)
             return costoRealizacion
 
-def algoritmo(phi, l, datos):
-    nw1 = float(phi[0])-(l)*(costo(phi, 1, 0, datos))
-    nw2 = float(phi[1])-(l)*(costo(phi, 1, 1, datos))
-    nb0 = float(phi[2])-(l)*(costo(phi, 1, 2, datos))
-    return np.array([[nw1], [nw2], [nb0]])
+
 
 # Funcion que calcula el gradiente conjugado de la red neuronal
 # Itera con el fin de encontrar un Phi que se parezca al de realizar una red neuronal iterada
@@ -141,8 +136,9 @@ def gradienteConjugado(k, w1, w2, b, l, datos):
         w1 = float(nw1)
         w2 = float(nw2)
         b = float(nb0)
-
         return gradienteConjugado(k-1, w1, w2, b, l, datos)
+
+
 
 # Desarrollo final
 #   I. Ejecutar el gradiente para obtener el (wk1, wk2, bk2)
