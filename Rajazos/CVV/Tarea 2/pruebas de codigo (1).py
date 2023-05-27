@@ -123,11 +123,12 @@ def costo(phi, tipo1, tipo2, datos):
 # w1, w2, b, valores de un phi aleatorio
 # Recibe datos de la realizacion
 def gradienteConjugado(k, w1, w2, b, l, datos):
+    M = k+1
     w01 = w1
     w02 = w2
     b0 = b
     phix = np.array([[w01], [w02], [b0]])
-    if  k == 0:
+    if M == 0:
         return phix
     else:
         nw1 = float(phix[0])-(l)*(costo(phix, 1, 0, datos))
@@ -170,11 +171,11 @@ l = 0.01
 
 
 # I.
-phiconjugado = gradienteConjugado(980, w1, w2, b, l, D)
+phiconjugado = gradienteConjugado(1000, w1, w2, b, l, D)
 print(phiconjugado)
-print(np.array([[w1], [w2], [b]]))
+#print(np.array([[w1], [w2], [b]]))
 # II.
-#redrealizada = realizacion(phiconjugado, X0, 0, 0)
-#print(redrealizada)
+redrealizada = realizacion(phiconjugado, X0, 0, 0)
+print(redrealizada)
 
 
