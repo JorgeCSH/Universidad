@@ -1,84 +1,104 @@
+# Aca hago pruebas con los codigos
 import numpy as np
 
 
-def gradienteConjugado(k, w1, w2, b, l, datos, i=0):
-    M = k+1
-    w01 = w1
-    w02 = w2
-    b0 = b
-    phix = np.array([[w01], [w02], [b0]])
-    while i < M:
-        if i == M:
-            break
-        else:
-            w1k = float(phix[i+0-i])-l*costo(phix, 1, 0, datos)
-            w2k = float(phix[i+1-i])-l*costo(phix, 1, 1, datos)
-            b0k = float(phix[i+2-i])-l*costo(phix, 1, 2, datos)
-            w01 = float(w1k)
-            w02 = float(w2k)
-            b0 = float(b0k)
-            phiF = np.array([[w01], [w02], [b0]])
-            phix = phiF
-            i = i+1
+
+def sigmoid(s, tipo):
+    e = np.exp(s)
+    denominador = (1+e)
+    if tipo == 0:
+        sigmoide = (e)/(denominador)
+        return sigmoide
+    elif tipo == 1:
+        sigmoide = (e)/((denominador)**2)
+        return sigmoide
+
+
+
+def realizacion(phi, x, dif=0):
+    fx = float(phi[0])*float(x[0])+float(phi[1])*float(x[1])+float(phi[2])
+    realizar = sigmoid(fx, dif)
+    return realizar
+
+
+
+def derivadaParcial(phi,dato,tipo):
+    fx = float(phi[0])*float(dato[:2][0])+float(phi[1])*float(dato[:2][1])+float(phi[2])
+    C = sigmoid(fx,0)
+    dC = sigmoid(fx,1)
+    if tipo == 0:
+        dw1 = C*dC*dato[0]
+        ndato = dw1
+        return ndato
+    elif tipo == 1:
+        dw2 = C*dC*dato[1]
+        ndato = dw2
+        return ndato
+    elif tipo == 2:
+        db = C*dC
+        ndato = db
+        return ndato
+
+
+
+def dcosto(phi,dif,datos):
+    diferencial = []
+    for i in datos:
+        data = datos[i]
+        if dif == 0:
+            dw1 = diferencial+[derivadaParcial(phi,data,0)]
+            diferencial = dw1
+            costoRealizacion = sum(diferencial)
+            return costoRealizacion
+        elif dif == 1:
+            dw2 = diferencial+[derivadaParcial(phi,data,1)]
+            diferencial = dw2
+            costoRealizacion = sum(diferencial)
+            return costoRealizacion
+        elif dif == 2:
+            db = diferencial + [derivadaParcial(phi,data,2)]
+            diferencial = db
+            costoRealizacion = sum(diferencial)
+            return costoRealizacion
+
+
+
+def gradienteConjugado(k, l, datos):
+    w1 = np.random.uniform(-1,1)
+    w2 = np.random.uniform(-1,1)
+    b = np.random.uniform(-1,1)
+    for j in range(k):
+        w1 = w1-(l)*float((dcosto([w1,w2,b],0,datos)))
+        w2 = w2-(l)*float((dcosto([w1,w2,b],1,datos)))
+        b = b-(l)*float((dcosto([w1,w2,b],2,datos)))
+        phix = [w1,w2,b]
         return phix
 
 
 
-def gradienteConjugado(k, w1, w2, b, l, datos):
-    M = k+1
-    phix = np.array([w1, w2, b])
-    for i in range(M):
-        w1k = (phix[0,0])-l*costo(np.transpose(phix), 1, 0, datos)
-        w2k = (phix[1,0])-l*costo(np.transpose(phix), 1, 0, datos)
-        b0k = (phix[2,0])-l*costo(np.transpose(phix), 1, 0, datos)
-        phif = np.array([w1k, w2k, b0k])
-        phix = phif
-        phiF = np.transpose(phix)
-        return phiF
+D = [[9.0, 7.0, 0.0],[2.0, 5.0, 1.0],[3.2, 4.94, 1.0],[9.1, 7.46, 0.0],[1.6, 4.83, 1.0],[8.4, 7.46, 0.0],[8.0, 7.28, 0.0],[3.1, 4.58, 1.0],[6.3, 9.14, 0.0],[3.4, 5.36, 1.0]]
+x0 = [8,7]
+k = 1000
+l = 0.01
 
 
 
-
-def gradienteConjugado(k, w1, w2, b, l, datos):
-    w01 = w1
-    w02 = w2
-    b0 = b
-    phix = np.array([[w01], [w02], [b0]])
-    if  k = 0:
-        return phix
-    else:
-        nw1 = float(phix[0])-(l)*(costo(phix, 1, 0, datos))
-        nw2 = float(phix[1])-(l)*(costo(phix, 1, 0, datos))
-        nb0 = float(phix[2])-(l)*(costo(phix, 1, 0, datos))
-        w1 = nw1
-        w2 = nw2
-        b = nb0
-        return gradienteConjugado(k-1, w1, w2, b, l, datos)
-
-
-
-def algoritmo(phi, l, datos):
-    nw1 = float(phi[0])-(l)*(costo(phi, 1, 0, datos))
-    nw2 = float(phi[1])-(l)*(costo(phi, 1, 1, datos))
-    nb0 = float(phi[2])-(l)*(costo(phi, 1, 2, datos))
-    return np.array([[nw1], [nw2], [nb0]])
-
-
-def gradienteConjugado(k, w1, w2, b, l, datos):
-    w01 = float(w1)
-    w02 = float(w2)
-    b0 = float(b)
-    phix = np.array([[w01], [w02], [b0]])
-    i = 0
-    while i < k:
-        if i == k:
-            break
-        else:
-            phif = algoritmo(phix, l, datos)
-            w1 = phif[0]
-            w2 = phif[1]
-            b = phif[2]
-            philf = gradienteConjugado(k-i, w1, w2, b, l, datos)
-            phix = philf
-    return phix
-
+# Desarrollo final
+#   I. Ejecutar el gradiente para obtener el Phi = (wk1, wk2, bk2)
+#   II. Llamando "phi = gradiente conjugado", ejercutamos la
+#       realizacion en (8, 7) y phi
+#   III. Printeamos n resultados con la cantidad "n", numero natural a gusto
+#   IV. Printear punto evaluado inicialmente
+# I.
+phiconjugado = gradienteConjugado(1000, l, D)                                                  # Aplicacion del gradiente conjugado
+print("Para la 1000-esima iteracion, vector Phi deberia estar dado por:", phiconjugado)                  # Mostrar resultados
+# II.
+#redrealizada = realizacion(phiconjugado, x0, 0)                                                        # Obtencion de red neuronal
+#print("A su vez, la realizacion estaria dada por:", redrealizada)                                         # Mostrar resultados
+# III.
+#n = 50
+#for i in range(n):
+#    grad = gradienteConjugado(1000,l,D)
+    #print(grad)
+#    real = realizacion(grad, X0, 0, 0)
+#    print(real)

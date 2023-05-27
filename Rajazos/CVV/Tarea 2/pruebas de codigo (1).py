@@ -21,7 +21,7 @@ def sigmoid(s, tipo):
         sigmoide = (e)/((denominador)**2)
         return sigmoide
 
-
+print([[1,2,3],[4,5,6],[7,8,9]][2])
 
 # Entrega la red neuronal realizada.
 # phi contiene los pesos y, el vector bias
@@ -37,11 +37,14 @@ def sigmoid(s, tipo):
 #           -> Para evitar definir VARIAS VARIABLES (lo dijo xd), usar
 #              multiplicacion de matrices
 def realizacion(phi, x, tipo, dif):
-    pesos = np.array([[float(phi[0]), float(phi[1])]])
+    #print(phi[0])
+    print(x[0:0])
+    w1 = phi[0]
+    w2 = phi[1]
     b = phi[2]
-    valoresTeorico = np.dot(pesos, np.transpose(x))
-    valoresNumerico = float(valoresTeorico)
-    operando = valoresNumerico + float(b)
+    x1 = x[0]
+    x2 = x[1]
+    operando = float(w1)*float(x1)+float(w2)*float(x2)+float(b)
     if tipo == 0:
         evalu = sigmoid(operando, dif)
         return evalu
@@ -122,23 +125,16 @@ def costo(phi, tipo1, tipo2, datos):
 # recibe k, o cantidad de iteraciones
 # w1, w2, b, valores de un phi aleatorio
 # Recibe datos de la realizacion
-def gradienteConjugado(k, w1, w2, b, l, datos):
-    M = k+1
-    w01 = w1
-    w02 = w2
-    b0 = b
-    phix = np.array([[w01], [w02], [b0]])
-    if M == 0:
+def gradienteConjugado(k, l, datos):
+    w1 = np.random.uniform(-1,1)
+    w2 = np.random.uniform(-1,1)
+    b = np.random.uniform(-1,1)
+    for i in range(k):
+        w1 = w1-(l)*float((costo(np.array([[w1],[w2],[b]]), 1, 0, datos)))
+        w2 = w2-(l)*float((costo(np.array([[w1],[w2],[b]]), 1, 0, datos)))
+        b = b-(l)*float((costo(np.array([[w1],[w2],[b]]), 1, 0, datos)))
+        phix = np.array([[w1], [w2], [b]])
         return phix
-    else:
-        nw1 = float(phix[0])-(l)*(costo(phix, 1, 0, datos))
-        nw2 = float(phix[1])-(l)*(costo(phix, 1, 0, datos))
-        nb0 = float(phix[2])-(l)*(costo(phix, 1, 0, datos))
-        w1 = float(nw1)
-        w2 = float(nw2)
-        b = float(nb0)
-        return gradienteConjugado(k-1, w1, w2, b, l, datos)
-
 
 
 # Desarrollo final
@@ -157,10 +153,6 @@ def gradienteConjugado(k, w1, w2, b, l, datos):
 #                           -> vector => X0
 #    4) k: numro del "M" de iteraciones. Si bien k = {1,_,M} => |k| = M+1, este "+1" se agrego en la funcion final
 #    5) l: learning rate de la red neuronal
-croissant = np.random.uniform(size=(3, 1), low=0, high=1)
-w1 = float(croissant[0])
-w2 = float(croissant[1])
-b = float(croissant[2])
 d = [[9.0, 7.0, 0.0], [2.0, 5.0, 1.0], [3.2, 4.94, 1.0], [9.1, 7.46, 0.0], [1.6, 4.83, 1.0], [8.4, 7.46, 0.0], [8.0, 7.28, 0.0], [3.1, 4.58, 1.0], [6.3, 9.14, 0.0], [3.4, 5.36, 1.0]]
 D = np.array(d)
 x0 = [[8, 7]]
@@ -170,12 +162,26 @@ l = 0.01
 
 
 
+# Desarrollo final
+#   I. Ejecutar el gradiente para obtener el Phi = (wk1, wk2, bk2)
+#   II. Llamando "phi = gradiente conjugado", ejercutamos la
+#       realizacion en (8, 7) y phi
+#   III. Printeamos n resultados con la cantidad "n", numero natural a gusto
+#   IV. Printear punto evaluado inicialmente
 # I.
-phiconjugado = gradienteConjugado(1000, w1, w2, b, l, D)
-print(phiconjugado)
-#print(np.array([[w1], [w2], [b]]))
+phiconjugado = gradienteConjugado(1000, l, D)                                                  # Aplicacion del gradiente conjugado
+print("Para la 1000-esima iteracion, vector Phi deberia estar dado por:", phiconjugado)                  # Mostrar resultados
 # II.
-redrealizada = realizacion(phiconjugado, X0, 0, 0)
-print(redrealizada)
+redrealizada = realizacion(phiconjugado, X0, 0, 0)                                                        # Obtencion de red neuronal
+print("A su vez, la realizacion estaria dada por:", redrealizada)                                         # Mostrar resultados
+# III.
+#n = 50
+#for i in range(n):
+#    grad = gradienteConjugado(1000,l,D)
+    #print(grad)
+#    real = realizacion(grad, X0, 0, 0)
+#    print(real)
+
+
 
 
