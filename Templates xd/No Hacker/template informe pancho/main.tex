@@ -1,0 +1,125 @@
+% Template:     Informe/Reporte LaTeX
+% Documento:    Archivo principal
+% Versión:      5.5.3 (05/09/2018)
+% Codificación: UTF-8
+%
+% Autor: Pablo Pizarro R. @ppizarror
+%        Facultad de Ciencias Físicas y Matemáticas
+%        Universidad de Chile
+%        pablo.pizarro@ing.uchile.cl, ppizarror.com
+%
+% Manual template: [http://latex.ppizarror.com/Template-Informe/]
+% Licencia MIT:    [https://opensource.org/licenses/MIT/]
+
+\documentclass[letterpaper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{xcolor}
+\usepackage{listings}
+
+\definecolor{codeblue}{HTML}{1F1F2E} % Color azul marino
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{codeblue},
+    commentstyle=\color{codegray},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\color{white},
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+
+
+
+% INFORMACIÓN DEL DOCUMENTO Y DATOS PARA PORTADA
+% Para cambiar el estilo de la portada y los encabezados-pie de página entrar a la carpeta lib y el archivo config.tex (lib\config.tex) y modificar las lineas 33 y 32 (funciones \portraitstyle y \hfstyle) cambiando el número del parámetro styleX.
+% Importante al cambiar el estilo de portada VERIFICAR que esta cumpla los requisitos formales.
+\def\titulodelinforme {Tarea Numérica N°2}
+\def\temaatratar {Redes Neuronales Artificiales 2}
+
+\def\autordeldocumento {Francisco González}
+\def\nombredelcurso {Cálculo en Varias Variables}
+\def\codigodelcurso {MA2001-5}
+
+\def\nombreuniversidad {Universidad de Chile}
+\def\nombrefacultad {Facultad de Ciencias Físicas y Matemáticas}
+\def\departamentouniversidad {Departamento de Ingeniería Matemática}
+\def\imagendepartamento {departamentos/fcfm}
+\def\imagendepartamentoescala {0.2}
+\def\localizacionuniversidad {Santiago, Chile}
+
+\def\tablaintegrantes {
+\begin{tabular}{ll}
+	Autor:
+	& \begin{tabular}[t]{@{}l@{}}
+		Francisco González U. \\ 
+	\end{tabular} \\
+	Profesor:
+	& \begin{tabular}[t]{@{}l@{}}
+		Claudio Muñoz C.
+	\end{tabular} \\
+    Auxiliar de laboratorio:
+	& \begin{tabular}[t]{@{}l@{}}
+		Nicolás Valenzuela Figueroa  
+	\end{tabular} \\
+	& \\
+	\multicolumn{2}{l}{Fecha de entrega: \today} \\
+	\multicolumn{2}{l}{\localizacionuniversidad}
+\end{tabular}}{
+
+}
+
+% CONFIGURACIONES
+\input{lib/config}
+% IMPORTACIÓN DE LIBRERÍAS
+\input{lib/env/imports}
+% IMPORTACIÓN DE FUNCIONES Y ENTORNOS
+\input{lib/cmd/all}
+% IMPORTACIÓN DE ESTILOS
+\input{lib/style/all}
+% CONFIGURACIÓN INICIAL DEL DOCUMENTO
+\input{lib/cfg/init}
+
+% INICIO DE LAS PÁGINAS
+\begin{document}
+
+% PORTADA
+\input{lib/page/portrait}
+% CONFIGURACIÓN DE PÁGINA Y ENCABEZADOS
+\input{lib/cfg/page}
+% RESUMEN O ABSTRACT
+
+% TABLA DE CONTENIDOS - ÍNDICE
+\input{lib/page/index} % Índice, se puede borrar
+% CONFIGURACIONES FINALES
+\input{lib/cfg/final}
+
+% ======================= INICIO DEL DOCUMENTO =======================
+
+\input{Resumen.tex}
+
+\newpage
+\input{Introducción}
+
+\newpage
+\input{Parte 1. Descripción Teórica.tex}
+
+\newpage
+\input{Parte 2. Numérico.tex}
+
+\newpage
+\input{Conclusion.tex}
+
+\end{document}
