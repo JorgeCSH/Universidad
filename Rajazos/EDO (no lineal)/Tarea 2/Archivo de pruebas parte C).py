@@ -9,6 +9,11 @@ from scipy.integrate import solve_ivp
 ########################################################################################################################
 ################################################# Parte C) #############################################################
 ########################################################################################################################
+# Nombres
+# P: P
+# Z: Z
+# N: N
+
 # Condiciones iniciales
 P0 = 0.3
 Z0 = 0.1
@@ -162,7 +167,7 @@ if grafico5 == 'yes':
     ax.set_zlabel('N')
     plt.show()
 
-# Caso con error configuracion 1
+# Caso con error configuracion 2
 # Solucion
 YhYp2 = solve_ivp(Fderecho, t, X0, method= "RK45",  args = (ctes,), rtol = rtol2, atol = atol2)
 I2, X2 = YhYp2["t"], YhYp2["y"]
