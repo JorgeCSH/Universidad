@@ -36,13 +36,7 @@ ctesh = Rm, LAMBDA
 # Tupla ctes
 ctes = M, K, gamma, Vm, k, Rm, LAMBDA
 
-# Tiempo
-lim = 'evaluar'
-#lim = 'aplicar limite'
-if lim == 'evaluar':                        # No limite aplicado
-    t = (0, 70)
-elif lim == 'aplicar limite':               # t = 400 ===== t = infinito xD
-    t = (0, 400)
+t = (0, 70)
 
 # configuraciones
 # Conf1
@@ -91,13 +85,13 @@ grafico4 = 'no'
 
 grafico2 = 'yes'                # Grafico 2D ERROR CONFIG 1
 #grafico2 = 'no'
-grafico5 = 'yes'               # Grafico 3D ERROR CONFIG 1
-#grafico5 = 'no'
+#grafico5 = 'yes'               # Grafico 3D ERROR CONFIG 1
+grafico5 = 'no'
 
 grafico3 = 'yes'                # Grafico 2D ERROR CONFIG 2
 #grafico3 = 'no'
-grafico6 = 'yes'               # Grafico 3D ERROR CONFIG 2
-#grafico6 = 'no'
+#grafico6 = 'yes'               # Grafico 3D ERROR CONFIG 2
+grafico6 = 'no'
 
 
 
@@ -201,3 +195,9 @@ if grafico6 == 'yes':
     plt.show()
 ########################################################################################################################
 ########################################################################################################################
+
+
+########################################################################################################################
+########################################################################################################################
+
+
