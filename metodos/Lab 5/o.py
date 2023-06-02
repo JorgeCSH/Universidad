@@ -15,8 +15,8 @@ emiti2 = [0.559, 0.557, 0.553, 0.547, 0.538, 0.528, 0.515, 0.503, 0.489, 0.474, 
 #    px = pe
     #print(px)
 
-print('El periodo y su error estan dados por: '+str(2.000)+' ± '+str(0.0005)+'[ms]')
-print('La frecuenca y su error estan dados por: '+str(1/(0.002))+' ± '+str((1/(0.002))*np.sqrt((0.0625))))
+#print('El periodo y su error estan dados por: '+str(2.000)+' ± '+str(0.0005)+'[ms]')
+#print('La frecuenca y su error estan dados por: '+str(1/(0.002))+' ± '+str((1/(0.002))*np.sqrt((0.0625))))
 
 purga = -1
 if purga == 0:
@@ -49,3 +49,14 @@ if purga == 2:
     plt.ylabel("voltaje ($V$) ")
     plt.legend()
     plt.show()
+
+def tau(R,C,L,funador):
+    if funador == 0:
+        tau = R*C
+        return tau
+    elif funador == 1:
+        tau = L/R
+        return tau
+print(tau(1000, (10**(-8)), 0.223, 1))
+
+
