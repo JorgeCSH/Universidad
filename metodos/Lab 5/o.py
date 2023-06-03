@@ -1,8 +1,4 @@
-import numpy as np
 import matplotlib.pyplot as plt
-import tocomple as italiano
-
-
 
 f = [50, 250, 450, 650, 850, 1050, 1250, 1450, 1650, 1850, 2000]
 #periodos = [2.000, 1.998, 1.998, 2.000, 1.999]
