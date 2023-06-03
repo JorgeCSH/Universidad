@@ -8,7 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 ###########################################################################################################
-###########################################################################################################
 # Parte 2,1) Definir un D = {x}
 
 # Funcion N.
@@ -41,12 +40,12 @@ def xj(N, intervalo, eje):
         return lista_datos_aleatorios
 
 # Parametros usados
-n = 100
+n = 1
 conjunto = [-1, 1]
 xji = xj(n, conjunto, 1)
 ejeX = xj(n, conjunto, 0)
 Nn = N(n)
-print(max(xji), min(xji))
+#print(max(xji), min(xji))
 
 # Bosquejar
 #grafo11 = "si"
@@ -73,6 +72,29 @@ if grafo11 == "si":
         plt.show()
 
 ###########################################################################################################
+# Definir parametros extras
+
+# Funcion sigma
+# calcula la funcion sigma y su derivada para cualquier orden
+def sigma(s, orden):
+    assert not orden < 0
+    if orden == 0:
+        print('dsen = sen(s) <=> dsen = sen('+str(s)+') = '+str(np.sin(s)))
+        return np.sin(s)
+    elif orden == 1:
+        print('dsen = cos(s) <=> dsen = cos('+str(s)+') = '+str(np.cos(s)))
+        return np.cos(s)
+    elif orden == 2:
+        print('dsen = -sen(s) <=> dsen = -sen('+str(s)+') = '+str(-1*np.sin(s)))
+        return (-1) * np.sin(s)
+    elif orden == 3:
+        print('dsen = -cos(s) <=> dsen = -cos('+str(s)+') = '+str(-1*np.cos(s)))
+        return (-1) * np.cos(s)
+    else:
+        orden = orden - 4
+        return sigma(s, orden)
+
+
 ###########################################################################################################
 
 
