@@ -24,7 +24,7 @@ def N(cantidad):
 # Funcion xj.
 # Toma un natural n, un intervalo de valores y un valor eje 0 o 1 que decide si dara
 # valores aleatorios entre el inf(intervalo) y sup(intervalo) o un eje X, es decir
-# un vector de n ceros, es decir [0, 0, 0,_, 0] con n cantidad de ceros
+# un vector de n ceros, es decir [0, 0, 0, ..., 0] con n cantidad de ceros
 def xj(N, intervalo, eje):
     sup = intervalo[1]
     inf = intervalo[0]
