@@ -24,7 +24,7 @@ def N(cantidad):
 # Funcion xj.
 # Toma un natural n, un intervalo de valores y un valor eje 0 o 1 que decide si dara
 # valores aleatorios entre el inf(intervalo) y sup(intervalo) o un eje X, es decir
-# un vector de n ceros, es decir [0, 0, 0, ..., 0] con n cantidad de ceros
+# un vector de n ceros, es decir [0, 0, 0,_, 0] con n cantidad de ceros
 def xj(N, intervalo, eje):
     sup = intervalo[1]
     inf = intervalo[0]
@@ -151,6 +151,32 @@ def Gradiente_Rphi(Phi, x, nnabla):
     else:
         print('La cantidad de gradientes que se pueden aplicar son maximo dos ')
 
+
+def u(x, orden):
+    return 1
+
+
+def Costo(Phi, D, Condiciones_Borde):
+    def Coste_C1(u, D):
+        N = len(D)
+        C1=0
+        for i in range(N):
+            index1 = u(D[i], orden=2)
+            index2 = (((np.pi)**(2))/4) * u(D[i], orden=0)
+            index = ((index1 + index2) ** 2)
+            C1 += index
+            return C1/N
+    def Coste_C2(u, borde):
+        bord1, bord2, bord3 = borde
+        parametro_1 = (u(bord1, orden=0))**2
+        parametro_2 = (u(bord2, orden=0))**2
+        parametro_3 = (u(bord3, orden=0)-1)**2
+        C2 = (1/3)*(parametro_1+parametro_2+parametro_3)
+        return C2
+    Costo1 = Coste_C1(u, D)
+    Costo2 = Coste_C2(u, Condiciones_Borde)
+    Costo = (1/2)*(Costo1+Costo2)*(R_phi(Phi, x = D, orden = 0))
+    return Costo
 
 ###########################################################################################################
 
