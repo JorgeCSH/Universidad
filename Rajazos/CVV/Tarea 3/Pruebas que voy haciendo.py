@@ -187,7 +187,7 @@ def Gradiente_Rphi(Phi, x, nnabla):
 
 
 def u(x, orden):
-    return 1
+    pass
 
 
 def Costo(Phi, D, Condiciones_Borde):
