@@ -6,9 +6,43 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+###########################################################################################################
+# Parte 1, Graficar B(x)
+
+# Grilla eje OX
+IntervaloX = np.linspace(-1, 1, 420)
+
+# Funcion B
+# Es la solucion planteada de la EDP
+def B(x):
+    c = (np.pi)/2
+    B_x = np.cos(c*x)
+    return B_x
+
+# Definimos los valores para el eje OY
+IntervaloY = []
+exes1 = []
+exes2 = []
+for i in range(len(IntervaloX)):
+    IntervaloY += [B(IntervaloX[i])]
+    exes1 += [1]
+    exes2 += [-1]
+
+#grafo_Parte_1 = 'si'
+grafo_Parte_1 = 'no'
+if grafo_Parte_1 == 'si':
+    plt.figure(figsize=(7, 5))
+    plt.plot(IntervaloX, exes1, "--", color = "0.3")
+    plt.plot(IntervaloX, exes2, "--", color = "0.3")
+    plt.plot(IntervaloX, IntervaloY, label="$u(x)$", color = "C0")
+    plt.title("Grafico de u = B(x) con $x\in [-1, 1]$")
+    plt.xlabel("x")
+    plt.ylabel("u = B(x)")
+    plt.legend()
+    plt.show()
 
 ###########################################################################################################
-# Parte 2,1) Definir un D = {x}
+# Parte 2, 1) Definir un D = {x}
 
 # Funcion N.
 # Toma un numero natural "n" y devuelve una lista de de valores {1,_,j,_,n}.
@@ -153,7 +187,6 @@ def Gradiente_Rphi(Phi, x, nnabla):
 
 
 ###########################################################################################################
-
 
 
 

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 ###################################################################################################################
 # Lista de valores
 # Frecuencias usadas en Hz
-frecuencias = [31.8, 100, 250, 500, 750, 1000, 10000, 100000, 250000, 500000, 750000, 1000000, 5000000, 15000000, 25000000]
+frecuencias = [31.8, 100, 250, 500, 750, 1000, 18678.922, 100000, 250000, 500000, 750000, 1000000, 5000000, 15000000, 25000000]
 # Voltaje que media el oscilosciopio de entrada
 V_in1 = [2.07, 2.10, 2.08, 2.07, 2.07, 2.07, 2.05, 2.01, 2.07, 2.08, 2.08, 2.05, 2.05, 2.07, 1.99]
 V_in2 = [2.07, 2.09, 2.09, 2.06, 2.07, 2.07, 2.07, 2.06, 2.07, 2.08, 2.08, 2.08, 2.06, 2.07, 2.06]
@@ -58,10 +58,15 @@ saquenme_de_beauchef3 =[]
 saquenme_de_beauchef4 =[]
 saquenme_de_beauchef5 =[]
 saquenme_de_beauchef6 =[]
+saquenme_de_beauchef7 =[]
 for i in range(len(circuito1)):
     saquenme_de_beauchef1 += [[str(i+1), V_in1[i], V_out1[i], float(str(circuito1[i])[0:3])]]
     saquenme_de_beauchef2 += [[str(i+1), V_in2[i], V_out2[i], float(str(circuito2[i])[0:3])]]
     saquenme_de_beauchef3 += [[str(i+1), V_in3[i], V_out3[i], float(str(circuito3[i])[0:3])]]
+    saquenme_de_beauchef4 += [np.log10(circuito1)]
+    saquenme_de_beauchef5 += [np.log10(circuito2)]
+    saquenme_de_beauchef6 += [np.log10(circuito3)]
+    saquenme_de_beauchef7 += [np.log10(frecuencias[i])]
 
 
 ###################################################################################################################
@@ -97,22 +102,13 @@ if mostrar == 'si':
         grafico1 = input('Mostrar Grafico Roberto Carlos? (con arreglo) ')
         if grafico1 == 'si':
             plt.figure(figsize=(7,5))
-            plt.semilogx(frecuencias, circuito1, label="Ajuste Logaritmo base 10 ($Log_{10}$)", color = "green")
+            plt.plot(saquenme_de_beauchef7, circuito1, "+", color = "black")
+            plt.plot(saquenme_de_beauchef7, circuito1, label="Ajuste Logaritmo base 10 ($Log_{10}$)", color = "green")
             plt.title( "Transferencia medida en condensador \n Pasa bajo (Logaritmo)")
             plt.xlabel("Frecuencia ($Hz$) con arreglo logaritmico ")
             plt.ylabel("Transferencia (T)")
             plt.legend()
             plt.show()
-            gg = input('Mostrar Grafico Roberto Carlos? (sin arreglo) ')
-            if gg == 'si':
-                plt.figure(figsize=(7,5))
-                plt.scatter(frecuencias, circuito1, color = 'black')
-                plt.plot(frecuencias, circuito1, label="Transferencia medida ")
-                plt.title("Transferencia medida en condensador \n Pasa bajo (sin arreglo)")
-                plt.xlabel("Frecuencia ($Hz$) ")
-                plt.ylabel("Transferencia (T)")
-                plt.legend()
-                plt.show()
 
     input('"ENTER" para continuar ')
     print()
@@ -131,22 +127,30 @@ if mostrar == 'si':
         grafico2 = input('Mostrar Grafico Cristiano Ronaldo? (con arreglo) ')
         if grafico2 == 'si':
             plt.figure(figsize=(7,5))
-            plt.semilogx(frecuencias, circuito2, label="Ajuste Logaritmo base 10 ($Log_{10}$)", color = "green")
+            plt.plot(saquenme_de_beauchef7, circuito2, "+", color = "black")
+            plt.plot(saquenme_de_beauchef7, circuito2, label="Ajuste Logaritmo base 10 ($Log_{10}$)", color = "green")
             plt.title( "Transferencia medida en condensador \n Pasa bajo (Logaritmo)")
             plt.xlabel("Frecuencia ($Hz$) con arreglo logaritmico ")
             plt.ylabel("Transferencia (T)")
             plt.legend()
             plt.show()
-            gg = input('Mostrar Grafico Cristiano Ronaldo? (sin arreglo) ')
-            if gg == 'si':
-                plt.figure(figsize=(7,5))
-                plt.scatter(frecuencias, circuito2, color = 'black')
-                plt.plot(frecuencias, circuito2, label="Transferencia medida ")
-                plt.title("Transferencia medida en condensador \n Pasa bajo (sin arreglo)")
-                plt.xlabel("Frecuencia ($Hz$) ")
-                plt.ylabel("Transferencia (T)")
-                plt.legend()
-                plt.show()
+
+    input('"ENTER" para continuar ')
+    print()
+    hhf = input('Mostrar resultados ambos? ')
+    if hhf == 'si':
+            plt.figure(figsize=(7,5))
+            plt.plot(saquenme_de_beauchef7, circuito1, "+", color = "black")
+            plt.plot(saquenme_de_beauchef7, circuito1, label="Ajuste Logaritmo base 10 ($Log_{10}$)", color = "blue")
+            plt.plot(saquenme_de_beauchef7, circuito2, "+", color = "black")
+            plt.plot(saquenme_de_beauchef7, circuito2, label="Ajuste Logaritmo base 10 ($Log_{10}$)", color = "green")
+            plt.title( "Transferencia medida en condensador \n Pasa bajo (Logaritmo)")
+            plt.xlabel("Frecuencia ($Hz$) con arreglo logaritmico ")
+            plt.ylabel("Transferencia (T)")
+            plt.legend()
+            plt.show()
+
+
 
     input('"ENTER" para continuar ')
     print()
@@ -165,28 +169,15 @@ if mostrar == 'si':
         grafico2 = input('Mostrar Grafico caso pasa Bandas (Ojala de metal xd)? (con arreglo) ')
         if grafico2 == 'si':
             plt.figure(figsize=(7,5))
-            plt.loglog(frecuencias, circuito3, label="Medicion Inductancia, Arreglo aplicado", color = "green")
-            #plt.loglog(frecuencias, Ojala_de_metal, label="Medicion Resistencia, Arreglo aplicado", color = "blue")
-            #plt.loglog(frecuencias, Ojala_de_metal, label="Medicion Condensador, Arreglo aplicado", color = "red")
+            plt.plot(saquenme_de_beauchef7, saquenme_de_beauchef6, "+", color="black")
+            plt.plot(saquenme_de_beauchef7, saquenme_de_beauchef6, label="Medicion Inductancia, Arreglo aplicado", color = "green")
             plt.title( "Transferencia medida en Inductancia \n Pasa Bandas (doble Logaritmo)")
             plt.xlabel("Frecuencia ($Hz$) sin arreglo")
             plt.ylabel("Transferencia (T)")
             plt.legend()
             plt.show()
-            gg = input('Mostrar Grafico caso pasa Bandas (Ojala de metal xd)? (sin arreglo) ')
-            if gg == 'si':
-                plt.figure(figsize=(7, 5))
-                plt.scatter(frecuencias, circuito3, '*', color='purple')
-                #plt.scatter(frecuencias, Ojala_de_metal, '*', color='purple')
-                #plt.scatter(frecuencias, Ojala_de_metal, '*', color='purple')
-                plt.plot(frecuencias, circuito3, label="Medicion Inductancia", color="green")
-                #plt.plot(frecuencias, Ojala_de_metal, label="Medicion Resistencia", color="blue")
-                #plt.plot(frecuencias, Ojala_de_metal, label="Medicion Condensador", color="red")
-                plt.title("Transferencia medida en condensador \n Pasa Bandas ")
-                plt.xlabel("Frecuencia ($Hz$) sin arreglo")
-                plt.ylabel("Transferencia (T)")
-                plt.legend()
-                plt.show()
+
+
 print()
 input('Presione "ENTER" para salir')
 print()
