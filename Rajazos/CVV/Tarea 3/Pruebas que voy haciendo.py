@@ -50,8 +50,7 @@ if grafo_Parte_1 == 'si':
 def N(cantidad):
     NN = []
     for i in range(cantidad):
-        xa = NN+[i+1]
-        NN = xa
+        NN += [i+1]
     return NN
 
 
@@ -65,13 +64,12 @@ def xj(N, intervalo, eje):
     lista_datos_aleatorios = []
     if eje == 0:
         for i in range(N):
-            list_de_datos = lista_datos_aleatorios + [0]
-            lista_datos_aleatorios = list_de_datos
+            list_de_datos =  [0]
+            lista_datos_aleatorios += list_de_datos
         return lista_datos_aleatorios
     elif eje == 1:
         for i in range(N):
-            lista_de_datos = lista_datos_aleatorios + [float(np.random.uniform(inf, sup))]
-            lista_datos_aleatorios = lista_de_datos
+            lista_datos_aleatorios += [float(np.random.uniform(inf, sup))]
         return lista_datos_aleatorios
 
 
@@ -190,27 +188,58 @@ def u(x, orden):
     pass
 
 
-def Costo(Phi, D, Condiciones_Borde):
-    def Coste_C1(u, D):
+def Costo(u, Phi, D, Condiciones_Borde):
+    def Coste_C1(u, Phi, D):
         N = len(D)
         C1=0
         for i in range(N):
-            index1 = u(D[i], orden=2)
-            index2 = (((np.pi)**(2))/4) * u(D[i], orden=0)
+            index1 = u(Phi, D[i], orden=2)
+            index2 = (((np.pi)**(2))/4) * u(Phi, D[i], orden=0)
             index = ((index1 + index2) ** 2)
             C1 += index
             return C1/N
-    def Coste_C2(u, borde):
+    def Coste_C2(u, Phi, borde):
         bord1, bord2, bord3 = borde
-        parametro_1 = (u(bord1, orden=0))**2
-        parametro_2 = (u(bord2, orden=0))**2
-        parametro_3 = (u(bord3, orden=0)-1)**2
+        parametro_1 = (u(Phi, bord1, orden=0))**2
+        parametro_2 = (u(Phi, bord2, orden=0))**2
+        parametro_3 = (u(Phi, bord3, orden=0)-1)**2
         C2 = (1/3)*(parametro_1+parametro_2+parametro_3)
         return C2
-    Costo1 = Coste_C1(u, D)
-    Costo2 = Coste_C2(u, Condiciones_Borde)
-    Costo = (1/2)*(Costo1+Costo2)*(R_phi(Phi, x = D, orden = 0))
+    Costo1 = Coste_C1(u, Phi, D)
+    Costo2 = Coste_C2(u, Phi, Condiciones_Borde)
+    Costo = (1/2)*(Costo1+Costo2)
     return Costo
+
+
+fifi = 0.5, 1.1, 1.3, 0
+
+
+fx = np.linspace(-1, 1, 500)
+fy = np.linspace(-1, 1, 500)
+derp = []
+for i in range(len(fx)):
+    xq = fx[i]
+    yq = fy[i]
+    zq = (xq, yq)
+    derp += [zq]
+derk = []
+for i in range(len(fx)):
+    derk += [R_phi(fifi, derp[i], 0)]
+
+
+
+kond = -1, 1, 0
+daboy = Costo(R_phi, fifi, xji, kond)
+print(daboy)
+plt.figure(figsize=(7,5))
+ax = plt.axes(projection='3d')
+ax.plot(fx, fy, daboy)
+ax.set_title('vizualizado inicial de que chucha estoy haciencdo')
+ax.set_xlabel('OX')
+ax.set_ylabel('OY')
+ax.set_zlabel('OZ')
+plt.show()
+
 
 ###########################################################################################################
 

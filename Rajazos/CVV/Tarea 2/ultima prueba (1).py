@@ -1,5 +1,6 @@
 # Aca hago pruebas con los codigos
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 
@@ -92,13 +93,12 @@ x0 = (8, 7)
 k = 1000
 l = 0.01
 
-
-
 phiconjugado = gradienteConjugado(980, l, D)
 print("Para la 1000-esima iteracion, vector Phi deberia estar dado por:", phiconjugado)
 
 redrealizada = realizacion(phiconjugado, x0, 0)
 print("A su vez, la realizacion estaria dada por:", redrealizada)
+
 
 #n = 50
 #for i in range(n):
