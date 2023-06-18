@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 # Parte 1, Graficar B(x)
 
 # Grilla eje OX
-IntervaloX = np.linspace(-1, 1, 420)
+IntervaloX = np.linspace(-1, 1, 500)
 
 # Funcion B
 # Es la solucion planteada de la EDP
@@ -76,7 +76,6 @@ Nn = N(n)
 
 
 # Bosquejar
-
 #grafo12 = "si"
 grafo12 = "no"
 if grafo12 == "si":
@@ -133,15 +132,14 @@ def R_phi(Phi, x, orden):
             cadena = (cadena_Queda2)*(cadena_Sale2)
             return cadena
         else:
-            print('Error en variable D: ')
+            print('Error en variable')
 
 
 # Funcion Gradiente_Rphi
 # Calcula el gradiente en forma de lista para la funcion Rphi (hasta dos gradientes)
-# 1 = 1 realizado gradiente
-# 2 = 2 realizado gradientes
+# 1 = realizado gradiente orden 0
+# 2 = realizado gradiente orden 2
 def Gradiente_Rphi(Phi, x, nnabla):
-    assert not type(nnabla) == str
     w1, w2, b1, b2 = Phi
     en_Sigma = w1 * x + b1
     if nnabla == 1:
@@ -151,7 +149,6 @@ def Gradiente_Rphi(Phi, x, nnabla):
         db2 = 1
         grad1 = dw1, dw2, db1, db2
         #print('grad(Rphi) = \n', np.array([[dw1], [dw2], [db1], [db2]]))
-        #print()
         return grad1
     elif nnabla == 2:
         d2w1 = 2*w1*w2*(sigma(en_Sigma, 2) + sigma(en_Sigma, 3)*x*w2)
@@ -160,10 +157,9 @@ def Gradiente_Rphi(Phi, x, nnabla):
         d2b2 = 0
         grad2 = d2w1, d2w2, d2b1, d2b2
         #print("garad(R''phi) = \n", np.array([[d2w1], [d2w2], [d2b1], [d2b2]]))
-        #print()
         return grad2
     else:
-        print('La cantidad de gradientes que se pueden aplicar son maximo dos ')
+        print('Error en cantidad ')
 
 
 def C_phi(u, Phi, D, Condiciones_Borde):
@@ -185,11 +181,11 @@ def C_phi(u, Phi, D, Condiciones_Borde):
         C2 = (1/3)*(parametro_1+parametro_2+parametro_3)
         return C2
     Costo1 = Coste_C1(u, Phi, D)
-    print('El valor del C1 es: ',Costo1)
+    #print('El valor del C1 es: ',Costo1)
     Costo2 = Coste_C2(u, Phi, Condiciones_Borde)
-    print('El valor del C2 es: ', Costo2)
+    #print('El valor del C2 es: ', Costo2)
     Costo = (1/2)*(Costo1+Costo2)
-    print('El valor del C es: ', Costo)
+    #print('El valor del C es: ', Costo)
     return Costo
 
 
@@ -216,8 +212,6 @@ def Gradiente_Cphi(Phi, D):
         dc1db2 += (1/N) * sobrevive * purga4
         #print(i + 1)
     dc1 = dc1dw1, dc1dw2, dc1db1, dc1db2
-    print('El valor del primer componente del gradiente es :', dc1)
-    Dc1 = np.array([[dc1dw1], [dc1dw2], [dc1db1], [dc1db2]])
     dw10, dw20, db10, db20 = Gradiente_Rphi(Phi, 0, 1)
     dw11, dw21, db11, db21 = Gradiente_Rphi(Phi, 1, 1)
     dw1n, dw2n, db1n, db2n = Gradiente_Rphi(Phi, -1, 1)
@@ -229,24 +223,80 @@ def Gradiente_Cphi(Phi, D):
     dc2db1 = (2/3)*(Rn*(db1n)+R1*(db11)+(R0-1)*(db10))
     dc2db2 = (2/3)*(Rn*(db2n)+R1*(db21)+(R0-1)*(db20))
     dc2 = dc2dw1, dc2dw2, dc2db1, dc2db2
-    print('El valor del segundo componente del gradiente es :', dc2)
-    Dc2 = np.array([[dc2dw1], [dc2dw2], [dc2db1], [dc2db2]])
     dcdw1 = (1/2)*(dc1dw1 + dc2dw1)
     dcdw2 = (1/2)*(dc1dw2 + dc2dw2)
     dcdb1 = (1/2)*(dc1db1 + dc2db1)
     dcdb2 = (1/2)*(dc1db2 + dc2db2)
-    dc = dcdw1, dcdw2, dcdb1, dcdb2
-    print('El vector gradiente esta dado por: \n', (1/2)*(Dc1+Dc2))
+    dc = np.array([dcdw1, dcdw2, dcdb1, dcdb2])
     return dc
 
+def Gradiente_Conjugado(m, l, Phi0, D):
+    M = m+1
+    Phi = np.zeros((M, 4))
+    Phi[0] = Phi0
+    for i in range(M):
+        Phi[i+1] = Phi[i]-l*Gradiente_Cphi(Phi[i], D)
+        #print(Phi[i])
+        #print(i)
+    return Phi[-1]
 
-fifi = 0.5, 1.1, 1.3, 0
-fx = np.linspace(-1, 1, 1000)
-kond = -1, 1, 0
-daboy = C_phi(R_phi, fifi, xji, kond)
-ddaboy = Gradiente_Cphi(fifi, fx)
-print('El gradiente del costo estaria dado por: grad(C) = ', ddaboy)
 
+# Valores constantes o parametros constantes
+nu = 0.01
+M1 = 100
+M2 = 500
+M3 = 1000
+W = 0.5, 1.1, 1.3, 0
+Borde = -1, 1, 0
+
+# Grilla usada para graficar (y otras funciones)
+OX = np.linspace(-1, 1, 500)
+
+# Funciones evaluadas
+Funcion_de_costos = C_phi(R_phi, W, xji, Borde)
+Gradiente_de_costos = Gradiente_Cphi(W, OX)
+
+# Gradientes conjugados
+Caso_M100 = Gradiente_Conjugado(M1, nu, W, xji)
+W100 = Caso_M100[0], Caso_M100[1], Caso_M100[2], Caso_M100[3]
+
+#Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji)
+W500 = Caso_M500[0], Caso_M500[1], Caso_M500[2], Caso_M500[3]
+
+#Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji)
+W1000 = Caso_M1000[0], Caso_M1000[1], Caso_M1000[2], Caso_M1000[3]
+
+
+gradM1 = []
+gradM2 = []
+gradM3 = []
+B_x = []
+Cot_sup = []
+Cot_inf = []
+for croissant in range(len(OX)):
+    gradM1 += [R_phi(W100, OX[croissant], 0)]
+    gradM2 += [R_phi(W500, OX[croissant], 0)]
+    gradM3 += [R_phi(W1000, OX[croissant], 0)]
+    B_x += [B(OX[croissant])]
+    Cot_sup += [1]
+    Cot_inf += [-1]
+
+
+#graf = 'si'
+graf = 'no'
+if graf == 'si':
+    plt.figure(figsize=(7,5))
+    plt.plot(OX, gradM1, label = '$\mathcal{R}(\Phi)(x)_{M=100}$', color = 'purple')
+    plt.plot(OX, gradM2, label = '$\mathcal{R}(\Phi)(x)_{M=500}$', color = 'blue')
+    plt.plot(OX, gradM3, label = '$\mathcal{R}(\Phi)(x)_{M=1000}$', color = 'green')
+    plt.plot(OX, IntervaloY, label = '$B(x) = \cos(\\frac{\pi}{2} x)$', color = 'red')
+    plt.plot(OX, Cot_sup, "--", color="0.3")
+    plt.plot(OX, Cot_inf, "--", color="0.3")
+    plt.title("Realizaciones \n $\mathcal{R}(\Phi)(x)$ y $B(x) = \cos(\\frac{\pi}{2} x)$")
+    plt.xlabel("$x$")
+    plt.ylabel("$f(x)$")
+    plt.legend()
+    plt.show()
 
 
 ###########################################################################################################
