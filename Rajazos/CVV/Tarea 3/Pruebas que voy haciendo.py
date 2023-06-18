@@ -58,53 +58,35 @@ def N(cantidad):
 # Toma un natural n, un intervalo de valores y un valor eje 0 o 1 que decide si dara
 # valores aleatorios entre el inf(intervalo) y sup(intervalo) o un eje X, es decir
 # un vector de n ceros, es decir [0, 0, 0,_, 0] con n cantidad de ceros
-def xj(N, intervalo, eje):
+def xj(N, intervalo):
     sup = intervalo[1]
     inf = intervalo[0]
     lista_datos_aleatorios = []
-    if eje == 0:
-        for i in range(N):
-            list_de_datos =  [0]
-            lista_datos_aleatorios += list_de_datos
-        return lista_datos_aleatorios
-    elif eje == 1:
-        for i in range(N):
-            lista_datos_aleatorios += [float(np.random.uniform(inf, sup))]
-        return lista_datos_aleatorios
+    for i in range(N):
+        lista_datos_aleatorios += [float(np.random.uniform(inf, sup))]
+    return lista_datos_aleatorios
 
 
 # Parametros usados
 n = 100
 conjunto = [-1, 1]
-xji = xj(n, conjunto, 1)
-ejeX = xj(n, conjunto, 0)
+xji = xj(n, conjunto)
 Nn = N(n)
 #print(max(xji), min(xji))
 
 
 # Bosquejar
-#grafo11 = "si"
-grafo11 = "no"
+
 #grafo12 = "si"
 grafo12 = "no"
-if grafo11 == "si":
-    if grafo12 == "si":
-        plt.figure(figsize=(7, 5))
-        plt.plot(Nn, xji, label="Valores aleatorios")
-        plt.plot(Nn, ejeX, label="Eje 0X de referencia", color = 'black')
-        plt.title("Grafico de "+str(n)+" valores aleatorios \n entre $-1$ y $1$")
-        plt.xlabel("Cantidad de valores")
-        plt.ylabel("Valores generados")
-        plt.legend()
-        plt.show()
-    elif grafo12 == "no":
-        plt.figure(figsize=(7, 5))
-        plt.plot(Nn, xji, label="Valores aleatorios")
-        plt.title("Grafico de "+str(n)+" valores aleatorios \n entre $-1$ y $1$")
-        plt.xlabel("Cantidad de valores")
-        plt.ylabel("Valores generados")
-        plt.legend()
-        plt.show()
+if grafo12 == "si":
+    plt.figure(figsize=(7, 5))
+    plt.plot(Nn, xji, label="Valores aleatorios")
+    plt.title("Grafico de "+str(n)+" valores aleatorios \n entre $-1$ y $1$")
+    plt.xlabel("Cantidad de valores")
+    plt.ylabel("Valores generados")
+    plt.legend()
+    plt.show()
 
 ###########################################################################################################
 # Definir parametros extras
@@ -137,7 +119,7 @@ def R_phi(Phi, x, orden):
     w1, w2, b1, b2 = Phi
     en_Sigma = w1 * x + b1
     if orden == 0:
-        realizacion = w2*(en_Sigma) + b2
+        realizacion = w2*sigma(en_Sigma, 0) + b2
         return realizacion
     else:
         if orden == 1:
@@ -167,28 +149,24 @@ def Gradiente_Rphi(Phi, x, nnabla):
         dw2 = sigma(en_Sigma, 0)
         db1 = w2*sigma(en_Sigma, 1)
         db2 = 1
-        grad1 = [dw1, dw2, db1, db2]
-        #print('primer grad(Rphi) = \n', np.array([[dw1], [dw2], [db1], [db2]]))
+        grad1 = dw1, dw2, db1, db2
+        #print('grad(Rphi) = \n', np.array([[dw1], [dw2], [db1], [db2]]))
         #print()
         return grad1
     elif nnabla == 2:
-        d2w1 = w2*(sigma(en_Sigma, 1) + sigma(en_Sigma, 2)*(w1**(2)))
-        d2w2 = 0
-        d2b1 = w2*sigma(en_Sigma, 2)
+        d2w1 = 2*w1*w2*(sigma(en_Sigma, 2) + sigma(en_Sigma, 3)*x*w2)
+        d2w2 = (w2**2)*sigma(en_Sigma, 2)
+        d2b1 = w2*w1*sigma(en_Sigma, 3)
         d2b2 = 0
-        grad2 = [d2w1, d2w2, d2b1, d2b2]
-        #print('segundo garad(Rphi) = \n', np.array([[d2w1], [d2w2], [d2b1], [d2b2]]))
+        grad2 = d2w1, d2w2, d2b1, d2b2
+        #print("garad(R''phi) = \n", np.array([[d2w1], [d2w2], [d2b1], [d2b2]]))
         #print()
         return grad2
     else:
         print('La cantidad de gradientes que se pueden aplicar son maximo dos ')
 
 
-def u(x, orden):
-    pass
-
-
-def Costo(u, Phi, D, Condiciones_Borde):
+def C_phi(u, Phi, D, Condiciones_Borde):
     def Coste_C1(u, Phi, D):
         N = len(D)
         C1=0
@@ -197,7 +175,8 @@ def Costo(u, Phi, D, Condiciones_Borde):
             index2 = (((np.pi)**(2))/4) * u(Phi, D[i], orden=0)
             index = ((index1 + index2) ** 2)
             C1 += index
-            return C1/N
+            #print(i+1)
+        return C1/N
     def Coste_C2(u, Phi, borde):
         bord1, bord2, bord3 = borde
         parametro_1 = (u(Phi, bord1, orden=0))**2
@@ -206,39 +185,68 @@ def Costo(u, Phi, D, Condiciones_Borde):
         C2 = (1/3)*(parametro_1+parametro_2+parametro_3)
         return C2
     Costo1 = Coste_C1(u, Phi, D)
+    print('El valor del C1 es: ',Costo1)
     Costo2 = Coste_C2(u, Phi, Condiciones_Borde)
+    print('El valor del C2 es: ', Costo2)
     Costo = (1/2)*(Costo1+Costo2)
+    print('El valor del C es: ', Costo)
     return Costo
 
 
+def Gradiente_Cphi(Phi, D):
+    N = len(D)
+    dc1dw1 = 0
+    dc1dw2 = 0
+    dc1db1 = 0
+    dc1db2 = 0
+    pi = ((np.pi) ** 2) / 4
+    for i in range(N):
+        dw1, dw2, db1, db2 = Gradiente_Rphi(Phi, D[i], 1)
+        d2w1, d2w2, d2b1, d2b2 = Gradiente_Rphi(Phi, D[i], 2)
+        vive1 = R_phi(Phi, D[i], 2)
+        vive2 = (pi*R_phi(Phi, D[i], 0))
+        sobrevive = 2*(vive1+vive2)
+        purga1 = d2w1 + pi * dw1
+        purga2 = d2w2 + pi * dw2
+        purga3 = d2b1 + pi * db1
+        purga4 = d2b2 + pi * db2
+        dc1dw1 += (1/N) * sobrevive * purga1
+        dc1dw2 += (1/N) * sobrevive * purga2
+        dc1db1 += (1/N) * sobrevive * purga3
+        dc1db2 += (1/N) * sobrevive * purga4
+        #print(i + 1)
+    dc1 = dc1dw1, dc1dw2, dc1db1, dc1db2
+    print('El valor del primer componente del gradiente es :', dc1)
+    Dc1 = np.array([[dc1dw1], [dc1dw2], [dc1db1], [dc1db2]])
+    dw10, dw20, db10, db20 = Gradiente_Rphi(Phi, 0, 1)
+    dw11, dw21, db11, db21 = Gradiente_Rphi(Phi, 1, 1)
+    dw1n, dw2n, db1n, db2n = Gradiente_Rphi(Phi, -1, 1)
+    R0 = R_phi(Phi, 0, 0)
+    R1 = R_phi(Phi, 1, 0)
+    Rn = R_phi(Phi, -1, 0)
+    dc2dw1 = (2/3)*(Rn*(dw1n)+R1*(dw11)+(R0-1)*(dw10))
+    dc2dw2 = (2/3)*(Rn*(dw2n)+R1*(dw21)+(R0-1)*(dw20))
+    dc2db1 = (2/3)*(Rn*(db1n)+R1*(db11)+(R0-1)*(db10))
+    dc2db2 = (2/3)*(Rn*(db2n)+R1*(db21)+(R0-1)*(db20))
+    dc2 = dc2dw1, dc2dw2, dc2db1, dc2db2
+    print('El valor del segundo componente del gradiente es :', dc2)
+    Dc2 = np.array([[dc2dw1], [dc2dw2], [dc2db1], [dc2db2]])
+    dcdw1 = (1/2)*(dc1dw1 + dc2dw1)
+    dcdw2 = (1/2)*(dc1dw2 + dc2dw2)
+    dcdb1 = (1/2)*(dc1db1 + dc2db1)
+    dcdb2 = (1/2)*(dc1db2 + dc2db2)
+    dc = dcdw1, dcdw2, dcdb1, dcdb2
+    print('El vector gradiente esta dado por: \n', (1/2)*(Dc1+Dc2))
+    return dc
+
+
 fifi = 0.5, 1.1, 1.3, 0
-
-
-fx = np.linspace(-1, 1, 500)
-fy = np.linspace(-1, 1, 500)
-derp = []
-for i in range(len(fx)):
-    xq = fx[i]
-    yq = fy[i]
-    zq = (xq, yq)
-    derp += [zq]
-derk = []
-for i in range(len(fx)):
-    derk += [R_phi(fifi, derp[i], 0)]
-
-
-
+fx = np.linspace(-1, 1, 1000)
 kond = -1, 1, 0
-daboy = Costo(R_phi, fifi, xji, kond)
-print(daboy)
-plt.figure(figsize=(7,5))
-ax = plt.axes(projection='3d')
-ax.plot(fx, fy, daboy)
-ax.set_title('vizualizado inicial de que chucha estoy haciencdo')
-ax.set_xlabel('OX')
-ax.set_ylabel('OY')
-ax.set_zlabel('OZ')
-plt.show()
+daboy = C_phi(R_phi, fifi, xji, kond)
+ddaboy = Gradiente_Cphi(fifi, fx)
+print('El gradiente del costo estaria dado por: grad(C) = ', ddaboy)
+
 
 
 ###########################################################################################################
