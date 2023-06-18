@@ -230,15 +230,42 @@ def Gradiente_Cphi(Phi, D):
     dc = np.array([dcdw1, dcdw2, dcdb1, dcdb2])
     return dc
 
-def Gradiente_Conjugado(m, l, Phi0, D):
-    M = m+1
-    Phi = np.zeros((M, 4))
-    Phi[0] = Phi0
-    for i in range(M):
-        Phi[i+1] = Phi[i]-l*Gradiente_Cphi(Phi[i], D)
-        #print(Phi[i])
-        #print(i)
-    return Phi[-1]
+def Gradiente_Conjugado(m, l, Phi0, D, forma):
+    if forma == 1:
+        M = m+2
+        Phi = np.zeros((M, 4))
+        Phi[0] = Phi0
+        for i in range(M-1):
+            Phi[i+1] = Phi[i]-l*Gradiente_Cphi(Phi[i], D)
+            Phi[i] = Phi[i+1]
+            #print(Phi[i])
+            #print(i)
+        return Phi
+    elif forma == 2:
+        w1 = Phi0[0]
+        w2 = Phi0[1]
+        b1 = Phi0[2]
+        b2 = Phi0[3]
+        def gradienteNC(w1, w2, b1, b2, M, l, D, i=0):
+            Phi = w1, w2, b1, b2
+            while i < M:
+                if i == M - 1:
+                    #print(i)
+                    return Phi
+                else:
+                    w11 = w1 - (l) * float((Gradiente_Cphi(Phi, D)[0]))
+                    w22 = w2 - (l) * float((Gradiente_Cphi(Phi, D)[1]))
+                    b11 = b1 - (l) * float((Gradiente_Cphi(Phi, D)[2]))
+                    b22 = b2 - (l) * float((Gradiente_Cphi(Phi, D)[3]))
+                    w1 = w11
+                    w2 = w22
+                    b1 = b11
+                    b2 = b22
+                    # print(i)
+                    return gradienteNC(w1, w2, b1, b2, M, l, D, i=i + 1)
+        Cgradiente = gradienteNC(w1, w2, b1, b2, m+1, l, D)
+        return Cgradiente
+
 
 
 # Valores constantes o parametros constantes
@@ -257,14 +284,17 @@ Funcion_de_costos = C_phi(R_phi, W, xji, Borde)
 Gradiente_de_costos = Gradiente_Cphi(W, OX)
 
 # Gradientes conjugados
-Caso_M100 = Gradiente_Conjugado(M1, nu, W, xji)
+Caso_M100 = Gradiente_Conjugado(M1, nu, W, xji, 1)[-1, 0:4]
 W100 = Caso_M100[0], Caso_M100[1], Caso_M100[2], Caso_M100[3]
+print(W100)
 
-#Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji)
+Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji, 1)[-1, 0:4]
 W500 = Caso_M500[0], Caso_M500[1], Caso_M500[2], Caso_M500[3]
+print(W500)
 
-#Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji)
+Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji, 1)[-1, 0:4]
 W1000 = Caso_M1000[0], Caso_M1000[1], Caso_M1000[2], Caso_M1000[3]
+print(W1000)
 
 
 gradM1 = []
@@ -282,14 +312,14 @@ for croissant in range(len(OX)):
     Cot_inf += [-1]
 
 
-#graf = 'si'
-graf = 'no'
+graf = 'si'
+#graf = 'no'
 if graf == 'si':
     plt.figure(figsize=(7,5))
-    plt.plot(OX, gradM1, label = '$\mathcal{R}(\Phi)(x)_{M=100}$', color = 'purple')
-    plt.plot(OX, gradM2, label = '$\mathcal{R}(\Phi)(x)_{M=500}$', color = 'blue')
-    plt.plot(OX, gradM3, label = '$\mathcal{R}(\Phi)(x)_{M=1000}$', color = 'green')
-    plt.plot(OX, IntervaloY, label = '$B(x) = \cos(\\frac{\pi}{2} x)$', color = 'red')
+    plt.plot(OX, gradM1, label = '$\mathcal{R}(\Phi)(x)_{'+str(M1)+'}$', color = 'purple')
+    plt.plot(OX, gradM2, label = '$\mathcal{R}(\Phi)(x)_{'+str(M2)+'}$', color = 'blue')
+    plt.plot(OX, gradM3, label = '$\mathcal{R}(\Phi)(x)_{'+str(M3)+'}$', color = 'green')
+    plt.plot(OX, B_x, label = '$B(x) = \cos(\\frac{\pi}{2} x)$', color = 'red')
     plt.plot(OX, Cot_sup, "--", color="0.3")
     plt.plot(OX, Cot_inf, "--", color="0.3")
     plt.title("Realizaciones \n $\mathcal{R}(\Phi)(x)$ y $B(x) = \cos(\\frac{\pi}{2} x)$")
@@ -297,6 +327,94 @@ if graf == 'si':
     plt.ylabel("$f(x)$")
     plt.legend()
     plt.show()
+
+#suffer = 'si'
+suffer = 'no'
+if suffer == 'si':
+    # Funciones evaluadas
+    Funcion_de_costos = C_phi(R_phi, W, xji, Borde)
+    Gradiente_de_costos = Gradiente_Cphi(W, OX)
+
+    # Gradientes conjugados
+    Caso_M100 = Gradiente_Conjugado(100, nu, W, xji, 1)[-1, 0:4]
+    W100 = Caso_M100[0], Caso_M100[1], Caso_M100[2], Caso_M100[3]
+
+    Caso_M200 = Gradiente_Conjugado(200, nu, W, xji, 1)[-1, 0:4]
+    W200 = Caso_M200[0], Caso_M200[1], Caso_M200[2], Caso_M200[3]
+
+    Caso_M300 = Gradiente_Conjugado(300, nu, W, xji, 1)[-1, 0:4]
+    W300 = Caso_M300[0], Caso_M300[1], Caso_M300[2], Caso_M300[3]
+
+    Caso_M400 = Gradiente_Conjugado(400, nu, W, xji, 1)[-1, 0:4]
+    W400 = Caso_M400[0], Caso_M400[1], Caso_M400[2], Caso_M400[3]
+
+    Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji, 1)[-1, 0:4]
+    W500 = Caso_M500[0], Caso_M500[1], Caso_M500[2], Caso_M500[3]
+
+    Caso_M600 = Gradiente_Conjugado(M2, nu, W, xji, 1)[-1, 0:4]
+    W600 = Caso_M600[0], Caso_M600[1], Caso_M600[2], Caso_M600[3]
+
+    Caso_M700 = Gradiente_Conjugado(M2, nu, W, xji, 1)[-1, 0:4]
+    W700 = Caso_M700[0], Caso_M700[1], Caso_M700[2], Caso_M700[3]
+
+    Caso_M800 = Gradiente_Conjugado(M2, nu, W, xji, 1)[-1, 0:4]
+    W800 = Caso_M800[0], Caso_M800[1], Caso_M800[2], Caso_M800[3]
+
+    Caso_M900 = Gradiente_Conjugado(M2, nu, W, xji, 1)[-1, 0:4]
+    W900 = Caso_M900[0], Caso_M900[1], Caso_M900[2], Caso_M900[3]
+
+    Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji, 1)[-1, 0:4]
+    W1000 = Caso_M1000[0], Caso_M1000[1], Caso_M1000[2], Caso_M1000[3]
+
+    gradM1 = []
+    gradM2 = []
+    gradM3 = []
+    gradM4 = []
+    gradM5 = []
+    gradM6 = []
+    gradM7 = []
+    gradM8 = []
+    gradM9 = []
+    gradM10 = []
+    B_x = []
+    Cot_sup = []
+    Cot_inf = []
+    for croissant in range(len(OX)):
+        gradM1 += [R_phi(W100, OX[croissant], 0)]
+        gradM2 += [R_phi(W200, OX[croissant], 0)]
+        gradM3 += [R_phi(W300, OX[croissant], 0)]
+        gradM4 += [R_phi(W400, OX[croissant], 0)]
+        gradM5 += [R_phi(W500, OX[croissant], 0)]
+        gradM6 += [R_phi(W600, OX[croissant], 0)]
+        gradM7 += [R_phi(W700, OX[croissant], 0)]
+        gradM8 += [R_phi(W800, OX[croissant], 0)]
+        gradM9 += [R_phi(W900, OX[croissant], 0)]
+        gradM10 += [R_phi(W1000, OX[croissant], 0)]
+        B_x += [B(OX[croissant])]
+        Cot_sup += [1]
+        Cot_inf += [-1]
+
+    plt.figure(figsize=(7,5))
+    plt.plot(OX, gradM1, color='green')
+    plt.plot(OX, gradM2, color='green')
+    plt.plot(OX, gradM3, color='green')
+    plt.plot(OX, gradM4, color='green')
+    plt.plot(OX, gradM5, color='green')
+    plt.plot(OX, gradM6, color='green')
+    plt.plot(OX, gradM7, color='green')
+    plt.plot(OX, gradM8, color='green')
+    plt.plot(OX, gradM9, color='green')
+    plt.plot(OX, gradM10, color='green')
+    plt.plot(OX, B_x, label = '$B(x) = \cos(\\frac{\pi}{2} x)$', color = 'red')
+    plt.plot(OX, Cot_sup, "--", color="0.3")
+    plt.plot(OX, Cot_inf, "--", color="0.3")
+    plt.title("Realizaciones \n $\mathcal{R}(\Phi)(x)$ y $B(x) = \cos(\\frac{\pi}{2} x)$")
+    plt.xlabel("$x$")
+    plt.ylabel("$f(x)$")
+    plt.legend()
+    plt.show()
+
+
 
 
 ###########################################################################################################
