@@ -144,13 +144,13 @@ def sigma(s, orden):
 def R_phi(Phi, x, orden):
     w1, w2, b1, b2 = Phi
     if orden == 0:
-        realizacion = w2*sigma(b1+w1*x , 0) + b2
+        realizacion = w2*np.sin(b1+w1*x) + b2
         return realizacion
     elif orden == 1:
-        realizacion = w1*w2*sigma((b1+w1*x), 1)
+        realizacion = w1*w2*np.cos(b1+w1*x)
         return realizacion
     elif orden == 2:
-        realizacion= (w1**2)*w2*sigma(b1+w1*x, 2)
+        realizacion= -(w1**2)*w2*np.sin(b1+w1*x)
         return realizacion
 
 
@@ -188,7 +188,7 @@ def C_phi(Phi, D):
             R = w2 * np.sin(b1 + w1 * D[i]) + b2
             R2 = -(w1 ** 2) * w2 * np.sin(b1 + w1 * D[i])
             C1 += (R+R2)**2
-            print(i+1)
+            #print(i+1)
         return C1
     U_1 = (w2 * np.sin(-w1 + b1) + b2) ** 2
     U1 = (w2 * np.sin(w1 + b1) + b2) ** 2
@@ -201,26 +201,36 @@ def C_phi(Phi, D):
 
 # Funcion Gradiente_Cphi
 # Calcula el gradiente de la funcion de costos
-def Gradiente_Cphi(Phi, D):
+def Grad_C1(Phi, D):
+    w1, w2, b1, b2 = Phi
     N = len(D)
-    Mc1 = np.array([0, 0, 0, 0])
-    pi = ((np.pi) ** 2) / 4
+    #print(N)
+    dC1dw1 = 0
+    dC1dw2 = 0
+    dC1db1 = 0
+    dC1db2 = 0
     for i in range(N):
-        gradR = Gradiente_Rphi(Phi, D[i], 1)
-        grad2R = Gradiente_Rphi(Phi, D[i], 2)
-        purga = grad2R + pi * gradR
-        vive1 = R_phi(Phi, D[i], 2)
-        vive2 = (pi * R_phi(Phi, D[i], 0))
-        sobrevive = 2 * (vive1 + vive2)
-        Mc1n = Mc1+((1 / N) * sobrevive * purga)
-        Mc1 = Mc1n
-        #print(Mc1)
+        dC1dw1 += (1/N)*((-(w1 ** 2) * w2 * np.sin(b1 + w1 * D[i]) + (np.pi ** 2) * (b2 + w2 * np.sin(b1 + w1 * D[i])) / 4) * (-2 * (w1 ** 2) * w2 * D[i] * np.cos(b1 + w1 * D[i]) - 4 * w1 * w2 * np.sin(b1 + w1 * D[i]) + (np.pi ** 2) * w2 * D[i] * np.cos(  b1 + w1 * D[i]) / 2))
+        dC1dw2 += (1/N)*((-2 * (w1 ** 2) * np.sin(b1 + w1 * D[i]) + (np.pi ** 2) * np.sin(b1 + w1 * D[i]) / 2) * (-(w1 ** 2) * w2 * np.sin(b1 + w1 * D[i]) + (np.pi ** 2) * (b2 + w2 * np.sin(b1 + w1 * D[i])) / 4))
+        dC1db1 += (1/N)*((-(w1 ** 2) * w2 * np.sin(b1 + w1 * D[i]) + (np.pi ** 2) * (b2 + w2 * np.sin(b1 + w1 * D[i])) / 4) * (-2 * (w1 ** 2) * w2 * np.cos(b1 + w1 * D[i]) + (np.pi ** 2) * w2 * np.cos(b1 + w1 * D[i]) / 2))
+        dC1db2 += (1/N)*((np.pi ** 2) * (-(w1 ** 2) * w2 * np.sin(b1 + w1 * D[i]) +( np.pi ** 2 )* (b2 + w2 * np.sin(b1 + w1 * D[i])) / 4) / 2)
         #print(i + 1)
-    Jc = np.array([Gradiente_Rphi(W, 0, 1), Gradiente_Rphi(W, 1, 1), Gradiente_Rphi(W, -1, 1)])
-    Vc = np.array([(R_phi(Phi, 0, 0)-1), R_phi(Phi, 1, 0), R_phi(Phi, -1, 0)])
-    Mc2 = (2/3)*(np.matmul(Vc, Jc))
-    dc = (1/2)*(Mc1+Mc2)
-    return dc
+    return np.array([dC1dw1, dC1dw2, dC1db1, dC1db2])
+
+def Grad_C2(Phi):
+    w1, w2, b1, b2 = Phi
+    dC2dw1 = (1/3)*(-2 * w2 * (b2 + w2 * np.sin(b1 - w1)) * np.cos(b1 - w1) + 2 * w2 * (b2 + w2 * np.sin(b1 + w1)) * np.cos(b1 + w1))
+    dC2dw2 = (1/3)*(2 * (b2 + w2 * np.sin(b1 - w1)) * np.sin(b1 - w1) + 2 * (b2 + w2 * np.sin(b1 + w1)) * np.sin(b1 + w1) - 2 * (b2 - w2 * np.sin(b1) + 1) * np.sin(b1))
+    dC2db1 = (1/3)*(2 * w2 * (b2 + w2 * np.sin(b1 - w1)) * np.cos(b1 - w1) + 2 * w2 * (b2 + w2 * np.sin(b1 + w1)) * np.cos(b1 + w1) - 2 * w2 * (b2 - w2 * np.sin(b1) + 1) * np.cos(b1))
+    dC2db2 = (1/3)*(6 * b2 - 2 * w2 * np.sin(b1) + 2 * w2 * np.sin(b1 - w1) + 2 * w2 * np.sin(b1 + w1) + 2)
+    return np.array([[dC2dw1, dC2dw2, dC2db1, dC2db2]])
+
+def Gradiente_Cphi(Phi, D):
+    gradiente_C1 = Grad_C1(Phi, D)
+    gradiente_C2 = Grad_C2(Phi)
+    DCC = (1/2)*(gradiente_C1+gradiente_C2)
+    dC = np.transpose(DCC)
+    return DCC
 
 
 # Funcion Gradiente_Conjugado
@@ -234,7 +244,28 @@ def Gradiente_Conjugado(M, l, Phi0, D):
         Phi[i] = Phi[i + 1]
         # print(Phi[i])
         #print(i)
-    return Phi
+    Phix = float(Phi[-1, 0:4][0]), float(Phi[-1, 0:4][1]), float(Phi[-1, 0:4][2]), float(Phi[-1, 0:4][3])
+    return Phix
+
+def G1radiente_Conjugado(M, l, Phi0, D):
+    w1, w2, b1, b2 = Phi0
+    def gradienteFome(w1, w2, b1, b2, k, l, D, a=0):
+        phi = w1, w2, b1, b2
+        if k == 0:
+            print(a)
+            return w1, w2, b1, b2
+        else:
+            w11 = w1 - (l)*float((Gradiente_Cphi(phi, D)[0]))
+            w22 = w2 - (l)*float((Gradiente_Cphi(phi, D)[1]))
+            b11 = b1 - (l)*float((Gradiente_Cphi(phi, D)[2]))
+            b22 = b2 - (l)*float((Gradiente_Cphi(phi, D)[3]))
+            w1 = w11
+            w2 = w22
+            b1 = b11
+            b2 = b22
+            return gradienteFome(w1, w2, b1, b2, k - 1, l, D, a=a+1)
+    Cgradiente = gradienteFome(w1, w2, b1, b2, M, l, D)
+    return Cgradiente
 
 
 # Valores constantes o parametros constantes
@@ -243,7 +274,6 @@ M1 = 100
 M2 = 500
 M3 = 1000
 W = 0.5, 1.1, 1.3, 0
-Borde = -1, 1, 0
 
 
 # Grilla usada para graficar (y otras funciones)
@@ -262,17 +292,14 @@ if resultado == 'si':
 Gradientes = 'si'
 #Gradientes = 'no'
 if Gradientes == 'si':
-    Caso_M100 = Gradiente_Conjugado(M1, nu, W, xji)[-1, 0:4]
-    W100 = Caso_M100[0], Caso_M100[1], Caso_M100[2], Caso_M100[3]
-    print(W100)
+    Caso_M100 = Gradiente_Conjugado(M1, nu, W, xji)
+    print(Caso_M100)
 
-    Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji)[-1, 0:4]
-    W500 = Caso_M500[0], Caso_M500[1], Caso_M500[2], Caso_M500[3]
-    print(W500)
+    Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji)
+    print(Caso_M500)
 
-    Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji)[-1, 0:4]
-    W1000 = Caso_M1000[0], Caso_M1000[1], Caso_M1000[2], Caso_M1000[3]
-    print(W1000)
+    Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji)
+    print(Caso_M1000)
 
     gradM1 = []
     gradM2 = []
@@ -305,18 +332,10 @@ if graf == 'si':
     plt.legend()
     plt.show()
 
-Cgrilla = np.linspace(100, 1000, 10)
-C_1y1 = []
-for i in range(len(Cgrilla)):
-    grad = Gradiente_Conjugado(int(Cgrilla[i]), nu, W, xji)[-1, 0:4]
-    C_1y1 += [(grad[0], grad[1], grad[2], grad[3])]
 
-C_y = []
-for j in range(len(C_1y1)):
-    C_y += [C_phi(C_1y1[j], xji)]
 
-grafc = 'si'
-#grafc = 'no'
+#grafc = 'si'
+grafc = 'no'
 if grafc == 'si':
     plt.figure(figsize=(7,5))
     plt.scatter(Cgrilla, C_y, label='Costos', color='grey')

@@ -10,7 +10,7 @@ x, w1, w2, b1, b2 = sp.symbols('x w1 w2 b1 b2')
 
 R = w2 * sp.sin(w1*x + b1) + b2
 C1 = (sp.diff(sp.diff(R, x), x) + ((sp.pi**2)/4)*R)**2
-C2 = ((w2*sp.sin(-w1+b1)+b2)**2)+((w2*sp.sin(w1+b1)+b2)**2)+((1-w2*sp.sin(b1)+b2)**2)
+C2 = (((w2*sp.sin(-w1+b1)+b2)**2)+((w2*sp.sin(w1+b1)+b2)**2)+((1-w2*sp.sin(b1)+b2)**2))
 
 
 dRdx = sp.diff(R, x)
@@ -59,23 +59,5 @@ print()
 print('Gradiente de C2 = ')
 print(gradC2)
 
-def C_phi(Phi, D):
-    w1, w2, b1, b2 = Phi
-    N = len(D)
-    def Coste_C1(D):
-        C1 = 0
-        for i in range(N):
-            R = w2 * np.sin(b1 + w1 * D[i]) + b2
-            R2 = -(w1 ** 2) * w2 * np.sin(b1 + w1 * x[i])
-            C1 += (R+R2)**2
-            #print(i+1)
-        return C1
-    U_1 = (w2 * np.sin(-w1 + b1) + b2) ** 2
-    U1 = (w2 * np.sin(w1 + b1) + b2) ** 2
-    U0 = (1 - w2 * np.sin(b1) + b2) ** 2
-    Costo2 = (1/3)*(U_1+U1+U0)
-    Costo1 = (1/N)*Coste_C1(D)
-    Costo = (1/2)*(Costo1+Costo2)
-    return Costo
-N = 5
-(sp.diff(sp.diff(R, x), x) + ((sp.pi**2)/4)*R)**2
+
+
