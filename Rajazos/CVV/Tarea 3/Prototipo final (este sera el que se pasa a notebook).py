@@ -43,7 +43,7 @@ from datetime import date
 IntervaloX = np.linspace(-1, 1, 500)
 
 # Funcion B
-# Es la solucion planteada de la EDP
+# Es la solucion planteada de la EDO
 def B(x):
     c = (np.pi)/2
     B_x = np.cos(c*x)
@@ -62,13 +62,13 @@ for i in range(len(IntervaloX)):
 grafo_Parte_1 = 'no'
 if grafo_Parte_1 == 'si':
     plt.figure(figsize=(7, 5))
-    plt.plot(IntervaloX, exes1, "--", color = "0.3")
+    plt.plot(IntervaloX, IntervaloY, label="$u(x)=B(x)=\cos(\\frac{\pi}{2}x)$", color = "green")
+    plt.plot(IntervaloX, exes1, "--", label = '$|y|=1$', color = "0.3")
     plt.plot(IntervaloX, exes2, "--", color = "0.3")
-    plt.plot(IntervaloX, IntervaloY, label="$u(x)$", color = "C0")
     plt.title("Grafico de u = B(x) con $x\in [-1, 1]$")
     plt.xlabel("x")
     plt.ylabel("u = B(x)")
-    plt.legend()
+    plt.legend(loc=4)
     plt.show()
 
 ###########################################################################################################
@@ -87,8 +87,8 @@ def N(cantidad):
 
 # Funcion xj.
 # Toma un natural n y un intervalo de valores aleatorios entre el
-# inf(intervalo) y sup(intervalo) o un eje X, es decir
-# un vector de n ceros, es decir [0, 0, 0,_, 0] con n cantidad de ceros
+# inf(intervalo) y sup(intervalo) o un eje X, generando N valores
+# valore aleatorios entre el inf y el sup
 def xj(N, intervalo):
     sup = intervalo[1]
     inf = intervalo[0]
@@ -111,9 +111,10 @@ Nn = N(n)
 grafo12 = "no"
 if grafo12 == "si":
     plt.figure(figsize=(7, 5))
-    plt.plot(Nn, xji, label="Valores aleatorios")
+    plt.plot(Nn, xji, '*',color = 'black')
+    plt.plot(Nn, xji, label="Valores aleatorios", color = 'green')
     plt.title("Grafico de "+str(n)+" valores aleatorios \n entre $-1$ y $1$")
-    plt.xlabel("Cantidad de valores")
+    plt.xlabel("$N$-esimo valor")
     plt.ylabel("Valores generados")
     plt.legend()
     plt.show()
@@ -121,33 +122,34 @@ if grafo12 == "si":
 ###########################################################################################################
 # Definir parametros extras
 
-
 # Funcion sigma
 # calcula la funcion sigma y su derivada para cualquier orden
 def sigma(s, orden):
     if orden == 0:
+        #print('dsen = sen(s) <=> dsen = sen('+str(s)+') = '+str(np.sin(s)))
         return np.sin(s)
     elif orden == 1:
+        #print('dsen = cos(s) <=> dsen = cos('+str(s)+') = '+str(np.cos(s)))
         return np.cos(s)
     elif orden == 2:
+        #print('dsen = -sen(s) <=> dsen = -sen('+str(s)+') = '+str(-1*np.sin(s)))
         return -np.sin(s)
-    else:
+    elif orden == 3:
+        #print('dsen = -cos(s) <=> dsen = -cos('+str(s)+') = '+str(-1*np.cos(s)))
         return -np.cos(s)
 
-# Funcion R_phi
+
+# Funcion Rphi
 # Funcion que realiza la red neuronal y sus derivadas ssi orden \in {0, 1, 2}
 def R_phi(Phi, x, orden):
     w1, w2, b1, b2 = Phi
-    en_Sigma = w1 * x + b1
     if orden == 0:
-        realizacion = w2 * sigma(en_Sigma, 0) + b2
-        return realizacion
+        return w2*np.sin(b1+w1*x) + b2
     elif orden == 1:
-        realizacion = w1 * w2 * sigma(en_Sigma, 1)
-        return realizacion
+        return w1*w2*np.cos(b1+w1*x)
     elif orden == 2:
-        realizacion = (w1 ** 2) * w2 * sigma(en_Sigma, 2)
-        return realizacion
+        return -w2*np.sin(b1+w1*x)*w1*w1
+
 
 # Funcion Gradiente_Rphi
 # Calcula el gradiente en forma de lista para la funcion Rphi (hasta dos gradientes)
@@ -155,80 +157,130 @@ def R_phi(Phi, x, orden):
 # 2 = realizado gradiente orden 2
 def Gradiente_Rphi(Phi, x, nnabla):
     w1, w2, b1, b2 = Phi
-    en_Sigma = w1 * x + b1
     if nnabla == 1:
-        dw1 = w2 * x * sigma(en_Sigma, 1)
-        dw2 = sigma(en_Sigma, 0)
-        db1 = w2 * sigma(en_Sigma, 1)
+        dw1 = w2*x*np.cos(b1 + w1*x)
+        dw2 = np.sin(b1 + w1*x)
+        db1 = w2*np.cos(b1 + w1*x)
         db2 = 1
         grad1 = np.array([dw1, dw2, db1, db2])
         return grad1
     elif nnabla == 2:
-        d2w1 = (w1 ** 2) * w2 * x * (sigma(en_Sigma, 2) + sigma(en_Sigma, 3) * 2 * w1 * w2)
-        d2w2 = (w1 ** 2) * sigma(en_Sigma, 2)
-        d2b1 = (w1 ** 2) * w2 * sigma(en_Sigma, 3)
+        d2w1 = -2*w1*w2*(np.sin(b1 + w1*x)) - w2*x*(np.cos(b1 + w1*x))*(w1**2)
+        d2w2 = -np.sin(b1 + w1*x)*(w1**2)
+        d2b1 = -w2*np.cos(b1 + w1*x)*(w1**2)
         d2b2 = 0
         grad2 = np.array([d2w1, d2w2, d2b1, d2b2])
         return grad2
 
+
+
 # Funcion C_Phi
 # Calcula la funcion de costos de una realizacion
-def C_phi(u, Phi, D, Condiciones_Borde):
-    def Coste_C1(u, Phi, D):
+def C_phi(Phi, D):
+    N = len(D)
+    def Coste_C1(D):
         N = len(D)
+        pi2 = ((np.pi ** 2)/4)
         C1 = 0
         for i in range(N):
-            index1 = u(Phi, D[i], orden=2)
-            index2 = (((np.pi) ** (2)) / 4) * u(Phi, D[i], orden=0)
-            index = ((index1 + index2) ** 2)
-            C1 += index
-        return C1 / N
-
-    def Coste_C2(u, Phi, borde):
-        bord1, bord2, bord3 = borde
-        parametro_1 = (u(Phi, bord1, orden=0)) ** 2
-        parametro_2 = (u(Phi, bord2, orden=0)) ** 2
-        parametro_3 = (u(Phi, bord3, orden=0) - 1) ** 2
-        C2 = (1 / 3) * (parametro_1 + parametro_2 + parametro_3)
+            R2 = R_phi(Phi, D[i], 2)
+            R = R_phi(Phi, D[i], 0)
+            C1 += (R2+pi2*R)**2
+            #print(i+1)
+        return C1
+    def Coste_C2(Phi):
+        U_1 = ((R_phi(Phi, -1, 0))**2)
+        U1 = ((R_phi(Phi, 1, 0))**2)
+        U0 = ((R_phi(Phi, 0, 0)-1)**2)
+        C2 = (U_1+U1+U0)
         return C2
-
-    Costo1 = Coste_C1(u, Phi, D)
-    Costo2 = Coste_C2(u, Phi, Condiciones_Borde)
-    Costo = (1 / 2) * (Costo1 + Costo2)
+    Costo1 = (1/N)*Coste_C1(D)
+    Costo2 = (1/3)*Coste_C2(Phi)
+    Costo = (1/2)*(Costo1+Costo2)
     return Costo
+
+def Parcial(Phi, D, costo):
+    if costo == 1:
+        R2 = R_phi(Phi, D, 2)
+        R = R_phi(Phi, D, 0)
+        pi2 = ((np.pi ** 2) / 4)
+        CR = 2*(R2+pi2*R)
+        Cc2 = Gradiente_Rphi(Phi, D, 2)
+        Cc = Gradiente_Rphi(Phi, D, 1)
+        parcial = (Cc2+pi2*Cc)
+        dC1 = CR*parcial
+        grad1 = (dC1[0], dC1[1], dC1[2], dC1[3])
+        return grad1
+    elif costo == 2:
+        CU_1 = 2*(R_phi(Phi, -1, 0))
+        CU1 = 2*(R_phi(Phi, 1, 0))
+        CU0 = 2*(R_phi(Phi, 0, 0)-1)
+        dCU_1 = Gradiente_Rphi(Phi, -1, 1)
+        dCU1 = Gradiente_Rphi(Phi, 1, 1)
+        dCU0 = Gradiente_Rphi(Phi, 0, 1)
+        parcial1 = CU_1*dCU_1
+        parcial2 = CU1*dCU1
+        parcial3 = CU0*dCU0
+        dC2 = parcial1+parcial2+parcial3
+        grad2 = ((1/3)*dC2[0], (1/3)*dC2[1], (1/3)*dC2[2], (1/3)*dC2[3])
+        return grad2
+
+def derivadaParcial(Phi,D,gradn):
+    N = len(D)+1
+    if N==1:
+        return gradn
+    else:
+        datos = D[1:N]
+        return derivadaParcial(Phi, datos, gradn=gradn+ [Parcial(Phi, D[0], 1)])
 
 # Funcion Gradiente_Cphi
 # Calcula el gradiente de la funcion de costos
+def Grad_C1(Phi,D):
+    n = len(D)
+    datos = derivadaParcial(Phi,D,gradn=[])
+    dw1 = []
+    dw2 = []
+    db1 = []
+    db2 = []
+    N=len(datos)
+    i = 0
+    while i < N:
+        dw1 += [datos[i][0]]
+        dw2 += [datos[i][1]]
+        db1 += [datos[i][2]]
+        db2 += [datos[i][3]]
+        dcostox = [(1/n)*sum(dw1),(1/n)*sum(dw2),(1/n)*sum(db1),(1/n)*sum(db2)]
+        i = i+1
+    dcosto1 = np.array([dcostox])
+    return dcosto1
+
+def Grad_C2(Phi, D):
+    dcosto2 = np.array([Parcial(Phi, D, 2)])
+    return dcosto2
+
+
 def Gradiente_Cphi(Phi, D):
-    N = len(D)
-    Mc1 = np.array([0, 0, 0, 0])
-    pi = ((np.pi) ** 2) / 4
-    for i in range(N):
-        gradR = Gradiente_Rphi(Phi, D[i], 1)
-        grad2R = Gradiente_Rphi(Phi, D[i], 2)
-        purga = grad2R + pi * gradR
-        vive1 = R_phi(Phi, D[i], 2)
-        vive2 = (pi * R_phi(Phi, D[i], 0))
-        sobrevive = (vive1 + vive2)
-        Mc1n = Mc1 + (sobrevive * purga)
-        Mc1 = Mc1n
+    gradiente_C1 = Grad_C1(Phi,D)
+    gradiente_C2 = Grad_C2(Phi, D)
+    DCC = (1/2)*(gradiente_C1+gradiente_C2)
+    gradC = [DCC[0,0], DCC[0,1], DCC[0,2],DCC[0,3]]
+    return gradC
 
-    Jc = np.array([Gradiente_Rphi(Phi, 0, 1), Gradiente_Rphi(Phi, 1, 1), Gradiente_Rphi(Phi, -1, 1)])
-    Vc = np.array([(R_phi(Phi, 0, 0) - 1), R_phi(Phi, 1, 0), R_phi(Phi, -1, 0)])
-    Mc2 = 2 * 2 * (np.matmul(Vc, Jc))
-    dc = ((2 / N) * Mc1 + Mc2)
-    return dc
 
-# Funcion Gradiente_Conjugado
-# Calcula la realizacion de el gradiente conjugado para M iteraciones
-def Gradiente_Conjugado(M, l, Phi0, D):
-    M = M + 1
-    Phi = np.zeros((M + 1, 4))
-    Phi[0] = Phi0
+
+def Gradiente_Conjugado(M, l, Phi0, D, i = 0):
+    w1, w2, b1, b2 = Phi0
     for i in range(M):
-        Phi[i + 1] = Phi[i] - l * Gradiente_Cphi(Phi[i], D)
-        Phi[i] = Phi[i + 1]
-    return Phi
+        grad_w1, grad_w2, grad_b1, grad_b2 = Gradiente_Cphi((w1, w2, b1, b2), D)
+        w1 += -l*grad_w1
+        w2 += -l*grad_w2
+        b1 += -l*grad_b1
+        b2 += -l*grad_b2
+        i = i+1
+    assert M-i == 0
+    #print(i)
+    return w1, w2, b1, b2
+
 
 
 # Valores constantes o parametros constantes
@@ -237,36 +289,25 @@ M1 = 100
 M2 = 500
 M3 = 1000
 W = 0.5, 1.1, 1.3, 0
-Borde = -1, 1, 0
 
 
 # Grilla usada para graficar (y otras funciones)
 OX = np.linspace(-1, 1, 500)
 
 
-# Funciones evaluada
-#resultado = 'si'
-resultado = 'no'
-if resultado == 'si':
-    Funcion_de_costos = C_phi(R_phi, W, xji, Borde)
-    Gradiente_de_costos = Gradiente_Cphi(W, OX)
-
 
 # Gradientes conjugados (Harta matraca)
 Gradientes = 'si'
 #Gradientes = 'no'
 if Gradientes == 'si':
-    Caso_M100 = Gradiente_Conjugado(M1, nu, W, xji)[-1, 0:4]
-    W100 = Caso_M100[0], Caso_M100[1], Caso_M100[2], Caso_M100[3]
-    print(W100)
+    Caso_M100 = Gradiente_Conjugado(M1, nu, W, xji)
+    print('Para '+str(M1)+' iteraciones, la realizacion da: ' + str(Caso_M100))
 
-    Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji)[-1, 0:4]
-    W500 = Caso_M500[0], Caso_M500[1], Caso_M500[2], Caso_M500[3]
-    print(W500)
+    Caso_M500 = Gradiente_Conjugado(M2, nu, W, xji)
+    print('Para '+str(M2)+' iteraciones, la realizacion da: ' + str(Caso_M500))
 
-    Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji)[-1, 0:4]
-    W1000 = Caso_M1000[0], Caso_M1000[1], Caso_M1000[2], Caso_M1000[3]
-    print(W1000)
+    Caso_M1000 = Gradiente_Conjugado(M3, nu, W, xji)
+    print('Para '+str(M3)+' iteraciones, la realizacion da: ' + str(Caso_M1000))
 
     gradM1 = []
     gradM2 = []
@@ -282,32 +323,28 @@ if Gradientes == 'si':
         Cot_sup += [1]
         Cot_inf += [-1]
 
-# Bosquejos de las realizaciones
-graf = 'si'
-#graf = 'no'
-if graf == 'si':
-    plt.figure(figsize=(7,5))
-    plt.plot(OX, gradM1, label = '$\mathcal{R}(\Phi)(x)_{'+str(M1)+'}$', color = 'purple')
-    plt.plot(OX, gradM2, label = '$\mathcal{R}(\Phi)(x)_{'+str(M2)+'}$', color = 'blue')
-    plt.plot(OX, gradM3, label = '$\mathcal{R}(\Phi)(x)_{'+str(M3)+'}$', color = 'green')
-    plt.plot(OX, B_x, label = '$B(x) = \cos(\\frac{\pi}{2} x)$', color = 'red')
-    plt.plot(OX, Cot_sup, "--", color="0.3")
-    plt.plot(OX, Cot_inf, "--", color="0.3")
-    plt.title("Realizaciones \n $\mathcal{R}(\Phi)(x)$ y $B(x) = \cos(\\frac{\pi}{2} x)$")
-    plt.xlabel("$x$")
-    plt.ylabel("$f(x)$")
-    plt.legend()
-    plt.show()
+    # Bosquejos de las realizaciones
+    graf = 'si'
+    #graf = 'no'
+    if graf == 'si':
+        plt.figure(figsize=(7,5))
+        plt.plot(OX, gradM1, label = '$\mathcal{R}(\Phi)(x)_{'+str(M1)+'}$', color = 'purple')
+        plt.plot(OX, gradM2, label = '$\mathcal{R}(\Phi)(x)_{'+str(M2)+'}$', color = 'blue')
+        plt.plot(OX, gradM3, label = '$\mathcal{R}(\Phi)(x)_{'+str(M3)+'}$', color = 'green')
+        plt.plot(OX, B_x, label = '$B(x) = \cos(\\frac{\pi}{2} x)$', color = 'red')
+        plt.plot(OX, Cot_sup, "--", color="0.3")
+        plt.plot(OX, Cot_inf, "--", color="0.3")
+        plt.title("Realizaciones \n $\mathcal{R}(\Phi)(x)$ y $B(x) = \cos(\\frac{\pi}{2} x)$")
+        plt.xlabel("$x$")
+        plt.ylabel("$f(x)$")
+        plt.legend()
+        plt.show()
 
 Cgrilla = np.linspace(100, 1000, 10)
-C_1y1 = []
-for i in range(len(Cgrilla)):
-    grad = Gradiente_Conjugado(int(Cgrilla[i]), nu, W, xji)[-1, 0:4]
-    C_1y1 += [(grad[0], grad[1], grad[2], grad[3])]
-
 C_y = []
-for j in range(len(C_1y1)):
-    C_y += [C_phi(R_phi, C_1y1[j], xji, Borde)]
+for k in range(len(Cgrilla)):
+    C_y += [C_phi(Gradiente_Conjugado(int(Cgrilla[k]),nu, W, xji),xji)]
+
 
 grafc = 'si'
 #grafc = 'no'
@@ -326,8 +363,8 @@ if grafc == 'si':
 ###########################################################################################################
 # Creditos  ###############################################################################################
 ###########################################################################################################
-#ssss = 'si'
-ssss = 'no'
+ssss = 'si'
+#ssss = 'no'
 if ssss == 'si':
     fecha_actual = date.today()
     fecha_forma_normal = fecha_actual.strftime("%d/%m/%Y")
