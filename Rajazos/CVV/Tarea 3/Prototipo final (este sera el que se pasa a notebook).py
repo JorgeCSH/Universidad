@@ -84,7 +84,6 @@ def N(cantidad):
         NN += [i+1]
     return NN
 
-
 # Funcion xj.
 # Toma un natural n y un intervalo de valores aleatorios entre el
 # inf(intervalo) y sup(intervalo) o un eje X, generando N valores
@@ -97,14 +96,12 @@ def xj(N, intervalo):
         lista_datos_aleatorios += [float(np.random.uniform(inf, sup))]
     return lista_datos_aleatorios
 
-
 # Parametros usados
 n = 100
 conjunto = [-1, 1]
 xji = xj(n, conjunto)
 Nn = N(n)
 #print(max(xji), min(xji))
-
 
 # Bosquejar
 #grafo12 = "si"
@@ -138,7 +135,6 @@ def sigma(s, orden):
         #print('dsen = -cos(s) <=> dsen = -cos('+str(s)+') = '+str(-1*np.cos(s)))
         return -np.cos(s)
 
-
 # Funcion Rphi
 # Funcion que realiza la red neuronal y sus derivadas ssi orden \in {0, 1, 2}
 def R_phi(Phi, x, orden):
@@ -149,7 +145,6 @@ def R_phi(Phi, x, orden):
         return w1*w2*np.cos(b1+w1*x)
     elif orden == 2:
         return -w2*np.sin(b1+w1*x)*w1*w1
-
 
 # Funcion Gradiente_Rphi
 # Calcula el gradiente en forma de lista para la funcion Rphi (hasta dos gradientes)
@@ -171,8 +166,6 @@ def Gradiente_Rphi(Phi, x, nnabla):
         d2b2 = 0
         grad2 = np.array([d2w1, d2w2, d2b1, d2b2])
         return grad2
-
-
 
 # Funcion C_Phi
 # Calcula la funcion de costos de una realizacion
@@ -258,7 +251,6 @@ def Grad_C2(Phi, D):
     dcosto2 = np.array([Parcial(Phi, D, 2)])
     return dcosto2
 
-
 def Gradiente_Cphi(Phi, D):
     gradiente_C1 = Grad_C1(Phi,D)
     gradiente_C2 = Grad_C2(Phi, D)
@@ -293,7 +285,6 @@ W = 0.5, 1.1, 1.3, 0
 
 # Grilla usada para graficar (y otras funciones)
 OX = np.linspace(-1, 1, 500)
-
 
 
 # Gradientes conjugados (Harta matraca)
@@ -340,6 +331,7 @@ if Gradientes == 'si':
         plt.legend()
         plt.show()
 
+
 Cgrilla = np.linspace(100, 1000, 10)
 C_y = []
 for k in range(len(Cgrilla)):
@@ -357,7 +349,6 @@ if grafc == 'si':
     plt.ylabel("$C(W^{M})$")
     plt.legend()
     plt.show()
-
 
 
 ###########################################################################################################
