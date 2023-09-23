@@ -40,7 +40,7 @@ def q(mat_rango, mat_val, rango, val):
 # Obtiene los valores pero acumulando
 def acumulador(lista):
     listaaaa = []
-    for i in range(len(lista)+1):
+    for i in range(len(lista)):
         listaaaa += [sum(lista[0:(i)])]
     return listaaaa
 
