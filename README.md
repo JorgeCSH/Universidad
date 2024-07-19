@@ -1,19 +1,13 @@
-># Tareas Universidad o Similar
->
-> ## Informacion
-> Este documento tiene el proposito de servir como lugar de almacenamiento de las tareas o actividades evaluadas que requieran programacion en relacion a los estudios.
-> La idea es tener un acceso a estos documentos para diferentes formatos (desde documentos de python o lenguajes en si....ojala en algun momento java o c++ xd) y no solo 
-> a jupyter notebooks (nada personal, me gusta tener variedad) en google colab.
-> Estos se encuentran separado por items (ejemplo, ramos o cursos xd) con el fin de mantener el orden de estos.
-> 
-> ## Documentos
-> ### Universidad
-> #### CVV
-> ##### Tareas
->|       $\rightarrow$ Tarea 1 \
->|       $\rightarrow$ Tarea 2 \
->|       $\rightarrow$ Tarea 3 
-> #### EDO
-> ##### Tareas
->|       $\rightarrow$ Tarea Numerica    
+# Tareas Universidad o Similar
+## Sobre el repositorio
+La principal idea es contener todo lo relacionado a la U, desde codigos, tareas, apuntes, etc. Basicamente, es un repositorio universidad.
+
+## Contenidos
+* Archivos por ramo: directorio que contiene todo lo que vaya haciendo por cada ramo que vaya cursando, esta dividido en Archivos por ramo -> departamentos -> ramo.
+* Templates: en caso de ser recurrente algun formato, aca estan los templates. Entre los templates destaca LaTeX, para templates en latex y notebooks, para los jupyter notebooks.
+* Utilidades: contiene archivos para facilidades a la hora de laburar
+* Extras: codigos que estaban antes o cree apresurado y por ahora no tienen ninguna razon de existir.
+
+## Palabras finales
+Para mi mismo, arreglar las faltas de ortografica que estan en todo este readme (xd)
 
