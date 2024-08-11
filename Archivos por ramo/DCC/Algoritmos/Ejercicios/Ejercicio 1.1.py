@@ -4,7 +4,7 @@
 # Importamos librerias
 import numpy as np
 
-#
+
 # Version sin pruebas
 def minmax(a):
     maximo=a[0]                 # Se define el maximo como el primer valor de la lista
