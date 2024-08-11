@@ -1,9 +1,10 @@
-# Ejercicio 1.1
+# Ejercicio 1.1 #######################################################################################################
+#######################################################################################################################
 
 # Importamos librerias
 import numpy as np
 
-
+#
 # Version sin pruebas
 def minmax(a):
     maximo=a[0]                 # Se define el maximo como el primer valor de la lista
@@ -32,13 +33,12 @@ print()
 print(minmax(lista_definida))
 # Lista indefinida
 print(minmax(lista_indefinida))
-
-
 '''
 Notas de autor: funcion basada en la dada en el ejemplo del apunte de algoritmos y estructuras de datos del capitulo
 de ejercicios: "01_Ejercicios.ipynb"
 '''
-
+#######################################################################################################################
+#######################################################################################################################
 
 
 """
