@@ -7,12 +7,12 @@ import numpy as np
 
 # Version sin pruebas
 def minmax(a):
-    maximo=a[0]                 # Se define el maximo como el primer valor de la lista
-    for i in range(1,len(a)):   #--|
-        if a[i]>maximo:         #  |--> Se itera comparando el valor maximo, en caso de haber algun valor mayor, el a[i]
-            maximo=a[i]         #--|    se reemplaza por ese.
-    a.remove(maximo)            # Se remueve el maximo de la lista
-    minimo = a[0]               # Se define el maximo como el primer valor de la lista sin el maximo
+    maximo=a[0]                  # Se define el maximo como el primer valor de la lista
+    for i in range(1,len(a)):    #--|
+        if a[i]>maximo:          #  |--> Se itera comparando el valor maximo, en caso de haber algun valor mayor, el a[i]
+            maximo=a[i]          #--|    se reemplaza por ese.
+    a.remove(maximo)             # Se remueve el maximo de la lista
+    minimo = a[0]                # Se define el maximo como el primer valor de la lista sin el maximo
     for j in range(1,len(a)):    #--|
         if a[j]<minimo:          #  |--> Se itera comparando el valor minimo, en caso de haber algun valor menor, el
             minimo=a[j]          #--|    a[j] se reemplaza por ese.
