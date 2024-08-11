@@ -1,11 +1,11 @@
 # Ejercicio 1.1 #######################################################################################################
 #######################################################################################################################
-
+"""
+# Primera parte #######################################################################################################
 # Importamos librerias
 import numpy as np
 
-
-# Version sin pruebas
+# Funcion minmax
 def minmax(a):
     maximo=a[0]                  # Se define el maximo como el primer valor de la lista
     for i in range(1,len(a)):    #--|
@@ -37,9 +37,47 @@ print(minmax(lista_indefinida))
 Notas de autor: funcion basada en la dada en el ejemplo del apunte de algoritmos y estructuras de datos del capitulo
 de ejercicios: "01_Ejercicios.ipynb"
 '''
+"""
+# Segunda parte #######################################################################################################
+# Importamos librerias
+import numpy as np
+
+lista_par = [np.random.randint(1,100) for i in range(8)]
+lista_impar = [np.random.randint(1,100) for j in range(9)]
+print(lista_par)
+
+def minmax(a):
+    if len(a)%2 == 1:
+        largo = len(a)-1
+        valor_final_impar = a[largo]
+        a.pop(largo)
+        pass
+
+print(lista_impar)
+aaa = len(lista_impar)-1
+print(aaa)
+print(lista_impar[aaa])
+lista_impar.pop(aaa)
+print(lista_impar)
+
+
+#minmax(lista_par)
+
+
+
+
+
+
+
+
+
+
+
+
 #######################################################################################################################
 #######################################################################################################################
 
+# Extra ##############################################################################################################
 
 """
 Funcion para encontrar el valor minimo y maximo de una lista
