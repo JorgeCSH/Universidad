@@ -104,6 +104,7 @@ def tanda_de_penales(equipo1, equipo2, tiros_iniciales=5):
             break
         tiro = tiro+1
     if ganador == 0:
+        print()
         print("Resultado despues de los 5 tiros: ")
         print(f"{equipo1}: {contador_equipo1}")
         print(f"{equipo2}: {contador_equipo2}")
