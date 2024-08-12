@@ -29,15 +29,15 @@ verifica_particion(particionHoare([73,21,34,98,56,37,77,65,82,15,36],100))
 # Contrario a la version de Hoare, el indice j
 def particionLomuto(a, p):
     # retorna el punto de corte, el número de elementos <p y la lista particionada
-    n = len(a)                                           # Jorge: largo de la lista, sera recorrido en su totalidad por "j"
-    (i, j) = (0,0)                                       # Jorge: tupla de indices, en este caso las dos aumentan, por ende se parte en cero (inicio)
+    n = len(a)                                                                          # Jorge: largo de la lista, sera recorrido en su totalidad por "j"
+    (i, j) = (0,0)                                                                      # Jorge: tupla de indices, en este caso las dos aumentan, por ende se parte en cero (inicio)
     # escribir acá el algoritmo de partición de Lomuto
-    while j<n:                                           # Jorge: tenemos que el "j" siempre incrementa, por eso usamos un while
-        if a[j]<p:                                       # Jorge: siguiendo la indicacion, en caso de que sea menor, intercambiamos y aumentamos el indice "i"
-            (a[i], a[j]) = (a[j], a[i])                  # Jorge: intercambio
-            i+=1                                         # Jorge: se cumple la condicion => aumenta "i"
-        j+=1                                             # Jorge: aumenta "j" durante toda la ejecucion
-    return (p, i, a)                                     # Jorge: tupla de resultado, p = corte, i= indice de corte, a = lista original
+    while j<n:                                                                          # Jorge: tenemos que el "j" siempre incrementa, por eso usamos un while
+        if a[j]<p:                                                                      # Jorge: siguiendo la indicacion, en caso de que sea menor, intercambiamos y aumentamos el indice "i"
+            (a[i], a[j]) = (a[j], a[i])                                                 # Jorge: intercambio
+            i+=1                                                                        # Jorge: se cumple la condicion => aumenta "i"
+        j+=1                                                                            # Jorge: aumenta "j" durante toda la ejecucion
+    return (p, i, a)                                                                    # Jorge: tupla de resultado, p = corte, i= indice de corte, a = lista original
 
 verifica_particion(particionLomuto([73,21,34,98,56,37,77,65,82,15,36],50))
 verifica_particion(particionLomuto([73,21,34,98,56,37,77,65,82,15,36],0))
