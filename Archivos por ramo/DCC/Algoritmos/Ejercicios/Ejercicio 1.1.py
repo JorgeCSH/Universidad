@@ -44,24 +44,25 @@ import numpy as np
 
 lista_par = [np.random.randint(1,100) for i in range(8)]
 lista_impar = [np.random.randint(1,100) for j in range(9)]
-print(lista_par)
-
+#print(lista_par)
+#print(range(len(lista_impar)//2))
 def minmax(a):
-    if len(a)%2 == 1:
-        largo = len(a)-1
-        valor_final_impar = a[largo]
-        a.pop(largo)
-        pass
+    pseudo_largo = len(a)//2
+    aux = len(a)%2
+    pares = []
+    impares = []
+    for i in range(pseudo_largo):
+        pares +=[a[2*i]]
+        impares += [a[2*i +1]]
+    pares += impares+a[aux*len(a):aux*len(a)-1]
+    print(a)
+    print(pares)
+    print(impares)
 
-print(lista_impar)
-aaa = len(lista_impar)-1
-print(aaa)
-print(lista_impar[aaa])
-lista_impar.pop(aaa)
-print(lista_impar)
 
 
-#minmax(lista_par)
+
+minmax(lista_impar)
 
 
 
