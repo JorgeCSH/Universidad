@@ -1,4 +1,4 @@
-""""
+"""
 Corresponde al desarrollo fuera del notebook de la tarea 1, esto para ir probando codigos
 y no tener que estar copiando y pegando en el notebook.
 """
@@ -82,7 +82,6 @@ def tanda_de_penales(equipo1, equipo2, tiros_iniciales=5):
             print(f"{equipo1}: {contador_equipo1}")
             print(f"{equipo2}: {contador_equipo2}")
             print(f"El ganador es: {equipo2}")
-            ganador += 1
             ganador += 1
             break
         tiro_equipo2 = input(f"¿Ingrese resultado de el tiro {tiro+1} del jugador del equipo {equipo2}?: ")
