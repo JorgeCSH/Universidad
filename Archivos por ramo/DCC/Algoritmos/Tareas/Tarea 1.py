@@ -86,6 +86,19 @@ def tanda_de_penales(equipo1, equipo2, tiros_iniciales=5):
         tiro_equipo2 = input(f"¿Ingrese resultado de el tiro {tiro+1} del jugador del equipo {equipo2}?: ")
         if tiro_equipo2 == "gol":
             contador_equipo2 += 1
+        if tiro == 4:
+            if contador_equipo1 > contador_equipo2:
+                print("Resultado despues de los 5 tiros: ")
+                print(f"{equipo1}: {contador_equipo1}")
+                print(f"{equipo2}: {contador_equipo2}")
+                print(f"El ganador es: {equipo1}")
+                ganador += 1
+            elif contador_equipo2 > contador_equipo1:
+                print("Resultado despues de los 5 tiros: ")
+                print(f"{equipo1}: {contador_equipo1}")
+                print(f"{equipo2}: {contador_equipo2}")
+                print(f"El ganador es: {equipo2}")
+                ganador += 1
         if contador_equipo2 >= contador_equipo1+tiros_restantes:
             print("El ganador se decide antes de completar los 5 tiros debido a una ventaja insuperable. ")
             print("Resultado final: ")
