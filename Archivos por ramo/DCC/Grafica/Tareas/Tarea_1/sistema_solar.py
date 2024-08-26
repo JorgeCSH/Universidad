@@ -87,7 +87,6 @@ void main()
     position_nepturno, color_neptuno = crear_planeta(-0.9+0.017, 0, 0, 0, 1, .017)
 
 
-
     sol = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     mercurio = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     venus = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
@@ -100,25 +99,19 @@ void main()
     neptuno = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
 
+
     sol.position[:] = position_sol
     sol.color[:] = color_sol
-    mercurio.position[:] = position_mercurio
+
+
     mercurio.color[:] = color_mercurio
-    venus.position[:] = position_venus
     venus.color[:] = color_venus
-    tierra.position[:] = position_tierra
     tierra.color[:] = color_tierra
-    marte.position[:] = position_marte
     marte.color[:] = color_marte
-    jupiter.position[:] = position_jupiter
     jupiter.color[:] = color_jupiter
-    saturno.position[:] = position_saturno
     saturno.color[:] = color_saturno
-    anillos.position[:] = position_anillos
     anillos.color[:] = color_anillos
-    urano.position[:] = position_unranus
     urano.color[:] = color_unranus
-    neptuno.position[:] = position_nepturno
     neptuno.color[:] = color_neptuno
 
 
@@ -141,8 +134,17 @@ void main()
 
     @window.event
     def update(dt):
-        pass
+        mercurio.position[:] = position_mercurio
+        venus.position[:] = position_venus
+        tierra.position[:] = position_tierra
+        marte.position[:] = position_marte
+        jupiter.position[:] = position_jupiter
+        saturno.position[:] = position_saturno
+        anillos.position[:] = position_anillos
+        neptuno.position[:] = position_nepturno
+        urano.position[:] = position_unranus
 
+    update(dt = 0)
     pyglet.app.run()
 
     
