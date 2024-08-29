@@ -75,17 +75,25 @@ void main()
     pipeline = pyglet.graphics.shader.ShaderProgram(vert_program, frag_program)
 
 
-    position_sol, color_sol = crear_planeta(0, 0, 1, 1, 0, .15)
-    position_mercurio, color_mercurio = crear_planeta(-.2+0.007, 0, 66/255, 43/255, 1/255, .007)
-    position_venus, color_venus = crear_planeta(-.25+0.015, 0, 215/255, 141/255, 1/255, .015)
-    position_tierra, color_tierra = crear_planeta(-.3+.02, 0, 0, 1, 0, .016)
-    position_marte, color_marte = crear_planeta(-.35+0.01, 0, 1, 0, 0, .01)
-    position_jupiter, color_jupiter = crear_planeta(-0.5+0.05, 0, 210/255, 169/255, 109/255, .05)
-    position_saturno, color_saturno = crear_planeta(-0.7+0.027, 0, 150/255, 100/255, 70/255, .027)
-    position_anillos, color_anillos = crear_planeta(-0.7+0.027, 0, 96/255, 96/255, 96/255, .048)
-    position_unranus, color_unranus = crear_planeta(-0.82+0.018, 0, 123/255, 163/255, 254/255, .02)
-    position_nepturno, color_neptuno = crear_planeta(-0.9+0.017, 0, 0, 0, 1, .017)
 
+    position_yang, color_yang = crear_planeta(0, 0, 1, 1, 1, 0.32)
+    position_yin, color_yin = crear_planeta(0, 0, 0, 0, 0, 0.319)
+
+    position_sol, color_sol = crear_planeta(0, 0, 1, 1, 0, 0.15)
+    position_mercurio, color_mercurio = crear_planeta(-.2-0.007, 0, 66/255, 43/255, 1/255, 0.007)
+    position_venus, color_venus = crear_planeta(-0.25-0.015, 0, 215/255, 141/255, 1/255, 0.015)
+    position_tierra, color_tierra = crear_planeta(-0.3-0.02, 0, 0, 1, 0, 0.016)
+    position_marte, color_marte = crear_planeta(-0.35-0.01, 0, 1, 0, 0, 0.01)
+    position_jupiter, color_jupiter = crear_planeta(-0.5-0.05, 0, 255/255, 147/255, 0/255, 0.05)
+    position_saturno, color_saturno = crear_planeta(-0.7-0.027, 0, 233/255, 108/255, 0/255, 0.025)
+    position_anillos, color_anillos = crear_planeta(-0.7-0.027, 0, 96/255, 96/255, 96/255, 0.048)
+    position_unranus, color_unranus = crear_planeta(-0.82-0.018, 0, 123/255, 163/255, 254/255, 0.02)
+    position_nepturno, color_neptuno = crear_planeta(-0.9-0.017, 0, 0, 0, 1, 0.017)
+
+
+
+    yang = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    yin = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
     sol = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     mercurio = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
@@ -99,6 +107,10 @@ void main()
     neptuno = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
 
+    yang.position[:] = position_yang
+    yang.color[:] = color_yang
+    yin.position[:] = position_yin
+    yin.color[:] = color_yin
 
     sol.position[:] = position_sol
     sol.color[:] = color_sol
@@ -119,6 +131,8 @@ void main()
     def on_draw():
         glClearColor(0.1, 0.1, 0.1, 0.0)
         with pipeline:
+            yang.draw(GL_TRIANGLES)
+            yin.draw(GL_TRIANGLES)
             sol.draw(GL_TRIANGLES)
             mercurio.draw(GL_TRIANGLES)
             venus.draw(GL_TRIANGLES)
@@ -134,6 +148,7 @@ void main()
 
     @window.event
     def update(dt):
+        global time
         mercurio.position[:] = position_mercurio
         venus.position[:] = position_venus
         tierra.position[:] = position_tierra
@@ -143,8 +158,9 @@ void main()
         anillos.position[:] = position_anillos
         neptuno.position[:] = position_nepturno
         urano.position[:] = position_unranus
+        #time = time**dt
 
-    update(dt = 0)
+    update(dt = 1/60)
     pyglet.app.run()
 
     
