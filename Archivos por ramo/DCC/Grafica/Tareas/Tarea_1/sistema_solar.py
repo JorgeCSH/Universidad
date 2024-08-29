@@ -75,20 +75,35 @@ void main()
     pipeline = pyglet.graphics.shader.ShaderProgram(vert_program, frag_program)
 
 
-    rr = np.array([0.007, 0.015, 0.016, 0.01, 0.05, 0.025, 0.048, 0.02, 0.017])
-    pos = np.array([0.2, 0.25, 0.3, 0.35, 0.5, 0.7, 0.7, 0.82, 0.9])
+
+    # Definimos mediante arreglos los parametros que controlaran a todos los planetas
+    # Radio de los planetas
+    rr = 1.3*np.array([0.009, 0.015, 0.016, 0.01, 0.05, 0.025, 0.048, 0.02, 0.017])
+    # Distancia centro sol - centro planeta
+    pos = np.array([0.2, 0.25, 0.31, 0.38, 0.5, 0.7, 0.7, 0.82, 0.9])
+    # rel = relativo, corresponde a la suma entre el radio del planeta y la distancia al sol
     rel = pos + rr + np.array([0, 0, 0, 0, 0, 0, float(rr[5])-float(rr[6]), 0, 0])
-    ang = np.array([2, 177, 23, 2865, 3, 26, 26, 97, 28])
+    # ang corresponde al angulo del planeta con respecto a su orbita (asumiendo circunferencia perfecta)
+    ang = np.array([2, 177, 23, 345, 3, 26, 26, 97, 28])
+    #ang = 0*an
+    #cos_arr y sen_arr corresponden al coseno y seno relativo con respecto al angulo de rotacion "ang"
     cos_arr = np.array([np.cos(float(ang[0])), np.cos(float(ang[1])), np.cos(float(ang[2])), np.cos(float(ang[3])), np.cos(float(ang[4])), np.cos(float(ang[5])), np.cos(float(ang[6])), np.cos(float(ang[7])), np.cos(float(ang[8]))])
     sin_arr = np.array([np.sin(float(ang[0])), np.sin(float(ang[1])), np.sin(float(ang[2])), np.sin(float(ang[3])), np.sin(float(ang[4])), np.sin(float(ang[5])), np.sin(float(ang[6])), np.sin(float(ang[7])), np.sin(float(ang[8]))])
+    #relc y rels corresponden a la proyeccion en coseno (relc) y seno (rels) del relativo con respecto a los angulos
     relc = rel*cos_arr
     rels = rel*sin_arr
+    # Arreglos para las lunas de marte, contienen el radio de las lunas y la proyeccion del radio del planeta mas una constante
+    pho = np.array([0.003, (float(rr[3])+0.005)*np.cos(10), (float(rr[3])+0.005)*np.sin(10)])
+    dei = np.array([0.002, (float(rr[3])+0.01)*np.cos(70), (float(rr[3])+0.01)*np.sin(70)])
 
 
+    # Usamos la funcion crear_planeta para crear los planetas (o cualquier otro astro) del sistema solar
+    # Corresponde a la trayectoria
     position_yang, color_yang = crear_planeta(0, 0, 1, 1, 1, 0.32)
     position_yin, color_yin = crear_planeta(0, 0, 0, 0, 0, 0.319)
+    # Corresponde al sol
     position_sol, color_sol = crear_planeta(0, 0, 1, 1, 0, 0.15)
-
+    # Corresponde a los planetas/anillos
     position_mercurio, color_mercurio = crear_planeta(float(relc[0]), float(rels[0]), 66/255, 43/255, 1/255, float(rr[0]))
     position_venus, color_venus = crear_planeta(float(relc[1]), float(rels[1]), 215/255, 141/255, 1/255, float(rr[1]))
     position_tierra, color_tierra = crear_planeta(float(relc[2]), float(rels[2]), 0, 1, 0, float(rr[2]))
@@ -98,6 +113,9 @@ void main()
     position_anillos, color_anillos = crear_planeta(float(relc[6]), float(rels[6]), 96/255, 96/255, 96/255, float(rr[6]))
     position_unranus, color_unranus = crear_planeta(float(relc[7]), float(rels[7]), 123/255, 163/255, 254/255, float(rr[7]))
     position_nepturno, color_neptuno = crear_planeta(float(relc[8]), float(rels[8]), 0, 0, 1, float(rr[8]))
+    # Corresponde a las lunas de marte
+    position_phobos, color_phobos = crear_planeta(float(relc[3])+float(pho[1]), float(rels[3])+float(pho[2]), 175/255, 145/255, 144/255, float(pho[0]))
+    position_deimos, color_deimos = crear_planeta(float(relc[3])+float(dei[1]), float(rels[3])+float(dei[2]), 206/255, 173/255, 141/255, float(dei[0]))
 
 
 
@@ -115,6 +133,9 @@ void main()
     urano = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     neptuno = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
+    phobos = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    deimos = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+
 
     yang.position[:] = position_yang
     yang.color[:] = color_yang
@@ -122,7 +143,6 @@ void main()
     yin.color[:] = color_yin
     sol.position[:] = position_sol
     sol.color[:] = color_sol
-
 
     mercurio.color[:] = color_mercurio
     venus.color[:] = color_venus
@@ -133,6 +153,9 @@ void main()
     anillos.color[:] = color_anillos
     urano.color[:] = color_unranus
     neptuno.color[:] = color_neptuno
+
+    phobos.color[:] = color_phobos
+    deimos.color[:] = color_deimos
 
 
     @window.event
@@ -147,6 +170,8 @@ void main()
             venus.draw(GL_TRIANGLES)
             tierra.draw(GL_TRIANGLES)
             marte.draw(GL_TRIANGLES)
+            phobos.draw(GL_TRIANGLES)
+            deimos.draw(GL_TRIANGLES)
             jupiter.draw(GL_TRIANGLES)
 
             anillos.draw(GL_TRIANGLES)
@@ -164,6 +189,8 @@ void main()
         venus.position[:] = position_venus
         tierra.position[:] = position_tierra
         marte.position[:] = position_marte
+        phobos.position[:] = position_phobos
+        deimos.position[:] = position_deimos
         jupiter.position[:] = position_jupiter
         saturno.position[:] = position_saturno
         anillos.position[:] = position_anillos
