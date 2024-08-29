@@ -75,27 +75,36 @@ void main()
     pipeline = pyglet.graphics.shader.ShaderProgram(vert_program, frag_program)
 
 
+    rr = np.array([0.007, 0.015, 0.016, 0.01, 0.05, 0.025, 0.048, 0.02, 0.017])
+    pos = np.array([0.2, 0.25, 0.3, 0.35, 0.5, 0.7, 0.7, 0.82, 0.9])
+    rel = pos + rr + np.array([0, 0, 0, 0, 0, 0, float(rr[5])-float(rr[6]), 0, 0])
+    ang = np.array([2, 177, 23, 2865, 3, 26, 26, 97, 28])
+    cos_arr = np.array([np.cos(float(ang[0])), np.cos(float(ang[1])), np.cos(float(ang[2])), np.cos(float(ang[3])), np.cos(float(ang[4])), np.cos(float(ang[5])), np.cos(float(ang[6])), np.cos(float(ang[7])), np.cos(float(ang[8]))])
+    sin_arr = np.array([np.sin(float(ang[0])), np.sin(float(ang[1])), np.sin(float(ang[2])), np.sin(float(ang[3])), np.sin(float(ang[4])), np.sin(float(ang[5])), np.sin(float(ang[6])), np.sin(float(ang[7])), np.sin(float(ang[8]))])
+    relc = rel*cos_arr
+    rels = rel*sin_arr
+
 
     position_yang, color_yang = crear_planeta(0, 0, 1, 1, 1, 0.32)
     position_yin, color_yin = crear_planeta(0, 0, 0, 0, 0, 0.319)
-
     position_sol, color_sol = crear_planeta(0, 0, 1, 1, 0, 0.15)
-    position_mercurio, color_mercurio = crear_planeta(-.2-0.007, 0, 66/255, 43/255, 1/255, 0.007)
-    position_venus, color_venus = crear_planeta(-0.25-0.015, 0, 215/255, 141/255, 1/255, 0.015)
-    position_tierra, color_tierra = crear_planeta(-0.3-0.02, 0, 0, 1, 0, 0.016)
-    position_marte, color_marte = crear_planeta(-0.35-0.01, 0, 1, 0, 0, 0.01)
-    position_jupiter, color_jupiter = crear_planeta(-0.5-0.05, 0, 255/255, 147/255, 0/255, 0.05)
-    position_saturno, color_saturno = crear_planeta(-0.7-0.027, 0, 233/255, 108/255, 0/255, 0.025)
-    position_anillos, color_anillos = crear_planeta(-0.7-0.027, 0, 96/255, 96/255, 96/255, 0.048)
-    position_unranus, color_unranus = crear_planeta(-0.82-0.018, 0, 123/255, 163/255, 254/255, 0.02)
-    position_nepturno, color_neptuno = crear_planeta(-0.9-0.017, 0, 0, 0, 1, 0.017)
+
+    position_mercurio, color_mercurio = crear_planeta(float(relc[0]), float(rels[0]), 66/255, 43/255, 1/255, float(rr[0]))
+    position_venus, color_venus = crear_planeta(float(relc[1]), float(rels[1]), 215/255, 141/255, 1/255, float(rr[1]))
+    position_tierra, color_tierra = crear_planeta(float(relc[2]), float(rels[2]), 0, 1, 0, float(rr[2]))
+    position_marte, color_marte = crear_planeta(float(relc[3]), float(rels[3]), 1, 0, 0, float(rr[3]))
+    position_jupiter, color_jupiter = crear_planeta(float(relc[4]), float(rels[4]), 255/255, 147/255, 0/255, float(rr[4]))
+    position_saturno, color_saturno = crear_planeta(float(relc[5]), float(rels[5]), 233/255, 108/255, 0/255, float(rr[5]))
+    position_anillos, color_anillos = crear_planeta(float(relc[6]), float(rels[6]), 96/255, 96/255, 96/255, float(rr[6]))
+    position_unranus, color_unranus = crear_planeta(float(relc[7]), float(rels[7]), 123/255, 163/255, 254/255, float(rr[7]))
+    position_nepturno, color_neptuno = crear_planeta(float(relc[8]), float(rels[8]), 0, 0, 1, float(rr[8]))
 
 
 
     yang = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     yin = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
-
     sol = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+
     mercurio = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     venus = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     tierra = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
@@ -111,7 +120,6 @@ void main()
     yang.color[:] = color_yang
     yin.position[:] = position_yin
     yin.color[:] = color_yin
-
     sol.position[:] = position_sol
     sol.color[:] = color_sol
 
@@ -134,13 +142,16 @@ void main()
             yang.draw(GL_TRIANGLES)
             yin.draw(GL_TRIANGLES)
             sol.draw(GL_TRIANGLES)
+
             mercurio.draw(GL_TRIANGLES)
             venus.draw(GL_TRIANGLES)
             tierra.draw(GL_TRIANGLES)
             marte.draw(GL_TRIANGLES)
             jupiter.draw(GL_TRIANGLES)
+
             anillos.draw(GL_TRIANGLES)
             saturno.draw(GL_TRIANGLES)
+
             urano.draw(GL_TRIANGLES)
             neptuno.draw(GL_TRIANGLES)
 
