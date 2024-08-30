@@ -1,4 +1,4 @@
-"""
+'''
 Informacion del trabajo:
 Autor: Jorge Cummins
 RUT: 21353175-1
@@ -11,7 +11,7 @@ fue editado. Los cuadros separados por # corresponden a titulos y secciones adem
 probablemente tenga una cantidad notoria de comentarios que de llegar a ser molestos puedo reducirlos para la siguiente
 entrega (en introduccion a la programacion solia enviar un .txt por separado para evitar justamente que sea engorroso.
 Cualquier comentario es totalmente bienvenido.
-"""
+'''
 
 # Seccion 1: configuracion ############################################################################################
 #######################################################################################################################
@@ -101,6 +101,7 @@ def trayectoria(x, y, r, g, b, radius):
 
 # Seccion 3: implementacion ###########################################################################################
 #######################################################################################################################
+# Creamos los shaders, esta parte no fue modificada hasta la parte donde se compilan los shaders.
 if __name__ == "__main__":
     
     vertex_source = """
@@ -128,7 +129,7 @@ void main()
     outColor = vec4(fragColor, 1.0f);
 }
     """
-    # Previo a crear el sistema solar, configuramos
+    # Previo a crear el sistema solar, configuramos.
     # Compilamos los shaders
     vert_program = pyglet.graphics.shader.Shader(vertex_source, "vertex")
     frag_program = pyglet.graphics.shader.Shader(fragment_source, "fragment")
@@ -137,28 +138,38 @@ void main()
     pipeline = pyglet.graphics.shader.ShaderProgram(vert_program, frag_program)
 
 
-    # Definimos mediante arreglos los parametros que controlara el sistema solar. La gracia de todos los arreglos
-    # es poder modificar un parametro dentro de el en un apartado separado de los planetas. Esto tambien se
-    # se realizo para aprovechar de agregar "interacciones" entre los astros, como ejemplo, que al mover los datos
-    # del arreglo del sol mueva junto a el los demas planetas.
-    # Datos del sol
+    '''
+    Esta parte es media confusa, por ende explicare un poco mas detallado.
+    Para dibujar el sistema solar, en vez de añadir un dato para cada planeta/astro/trayectoria, se opto por dejar 
+    la funcion y su llamado a parte y los valores (menos los colores) en arreglos. La idea era poder modificar las 
+    caracteristicas de un planete alterando solo el valor del arreglo, esto permitio añadir interacciones para el 
+    desarrollo que eran mas comodas de realizar. Un ejemplo de esto fue que al mover el sol se mueven todo los demas
+    componentes del sistema y sin editar nada, puesto a que en los arreglos esta todo previamente editado.
+    
+    En caso de ser incomodo o directamente que no sea de agrado, no tengo problema en no realizar esto para la proxima 
+    tarea.
+    '''
+    # Arreglo del sol (data_sol): posee la coordenada x, coordenada y, radio respectivamente.
     data_sol = np.array([0, 0, 0.15])
-    # Radio de los planetas
+    # Radio de los planetas (rr): posee los radios de los planetas oordenados de mercurio a neptuno respectivamente.
     rr = 1.3*np.array([0.009, 0.015, 0.016, 0.01, 0.05, 0.025, 0.048, 0.02, 0.017])
-    # Distancia centro sol a centro planeta
+    # Distancia entre el sol y el planeta (pos): posee la distancia entre el sol y los planetas ordenados de mercurio a
+    # neptuno.
     pos = np.array([0.2, 0.25, 0.31, 0.38, 0.5, 0.7, 0.7, 0.82, 0.9])
-    # rel = relativo, corresponde a la suma entre el radio del planeta y la distancia al sol
+    # Posicion relativa (rel): posicion relativa de los planetas y su radio con respecto al sol.
     rel = pos + rr + np.array([0, 0, 0, 0, 0, 0, float(rr[5])-float(rr[6]), 0, 0])
-    # ang corresponde al angulo del planeta con respecto a su orbita (asumiendo circunferencia perfecta)
+    # Angulo (ang): posee el angulo entre la orbita (trayectoria) de los planetas con respecto al sol.
     ang = np.array([2, 177, 23, 345, 3, 26, 26, 97, 28])
-    #cos_arr y sen_arr corresponden al coseno y seno relativo con respecto al angulo de rotacion "ang"
+    # Arreglos trigonometricos (cos_arr, sin_arr): poseen los valores de coseno y seno de los angulos para cada planeta.
     cos_arr = np.array([np.cos(float(ang[0])), np.cos(float(ang[1])), np.cos(float(ang[2])), np.cos(float(ang[3])), np.cos(float(ang[4])), np.cos(float(ang[5])), np.cos(float(ang[6])), np.cos(float(ang[7])), np.cos(float(ang[8]))])
     sin_arr = np.array([np.sin(float(ang[0])), np.sin(float(ang[1])), np.sin(float(ang[2])), np.sin(float(ang[3])), np.sin(float(ang[4])), np.sin(float(ang[5])), np.sin(float(ang[6])), np.sin(float(ang[7])), np.sin(float(ang[8]))])
-    #relc y rels corresponden a la proyeccion en coseno (relc) y seno (rels) del relativo con respecto a los angulos
-    relc = rel*cos_arr + float(data_sol[0])*np.ones(9)
-    rels = rel*sin_arr + float(data_sol[1])*np.ones(9)
+    # proyecciones (relc, rels): poseen las proyecciones de las posiciones relativas de los planetas con respecto al
+    # sol, se le suma ademas la posicion x e y del sol.
+    relc = rel*cos_arr + float(data_sol[0])*np.ones(9)      # Proyeccion eje x
+    rels = rel*sin_arr + float(data_sol[1])*np.ones(9)      # Proyeccion eje y
 
-    # Arreglos para las lunas de marte, contienen el radio de las lunas y la proyeccion del radio del planeta mas una constante
+    # **EXTRAS** Arreglos para las lunas de marte
+    # arreglo de phobos: posee el radio, la proyeccion x y la proyeccion y de phobos CON RESPECTO A MARTE.
     pho = np.array([0.003, (float(rr[3])+0.005)*np.cos(10), (float(rr[3])+0.005)*np.sin(10)])
     dei = np.array([0.002, (float(rr[3])+0.01)*np.cos(70), (float(rr[3])+0.01)*np.sin(70)])
 
