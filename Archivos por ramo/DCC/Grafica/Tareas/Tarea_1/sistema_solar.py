@@ -1,14 +1,36 @@
+"""
+Informacion del trabajo:
+Autor: Jorge Cummins
+RUT: 21353175-1
+Curso: CC3501-1
+Profesor: Ivan Sipiran
+
+
+Con respecto a la tarea: esta fue realizada en el mismo codigo originalmente otorgado por el cuerpo docente, el cual
+fue editado. Los cuadros separados por # corresponden a titulos y secciones ademas de comentarios. El codigo
+probablemente tenga una cantidad notoria de comentarios que de llegar a ser molestos puedo reducirlos para la siguiente
+entrega (en introduccion a la programacion solia enviar un .txt por separado para evitar justamente que sea engorroso.
+Cualquier comentario es totalmente bienvenido.
+"""
+
+# Seccion 1: configuracion ############################################################################################
+#######################################################################################################################
+# Importamos las librerias que seran utilizadas (son las mismas que venian en el codigo original)
 import pyglet
 import numpy as np
 from pyglet.gl import *
 
 
+# Definimos los parametros de la ventana
 WIDTH = 1000
 HEIGHT = 1000
 DEFINITION = 36
 window = pyglet.window.Window(WIDTH, HEIGHT, "Tarea 1 - Sistema Solar")
 
 
+
+# Seccion 2: funciones ################################################################################################
+#######################################################################################################################
 def crear_planeta(x, y, r, g, b, radius):
     N = DEFINITION
     # Discretizamos un circulo en DEFINITION pasos
