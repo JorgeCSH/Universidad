@@ -126,10 +126,8 @@ void main()
     # Corresponde al sol
     position_sol, color_sol = crear_planeta(0, 0, 1, 1, 0, 0.15)
 
-
     # Usamos la funcion trayectoria para crear las trayectorias de los planetas (solo la tierra segun solicitado)
     position_trayectoria_tierra, color_trayectoria_tierra = trayectoria(0, 0, 1, 1, 1, float(rel[2]))
-
 
     # Usamos la funcion crear_planeta para crear los planetas
     # Mercurio
@@ -175,6 +173,7 @@ void main()
 
     sol.position[:] = position_sol
     sol.color[:] = color_sol
+
     trayectoria_tierra.position[:] = position_trayectoria_tierra
     trayectoria_tierra.color[:] = color_trayectoria_tierra
 
@@ -196,9 +195,9 @@ void main()
     def on_draw():
         glClearColor(0.1, 0.1, 0.1, 0.0)
         with pipeline:
+            sol.draw(GL_TRIANGLES)
 
             trayectoria_tierra.draw(GL_LINE_LOOP)
-            sol.draw(GL_TRIANGLES)
 
             mercurio.draw(GL_TRIANGLES)
             venus.draw(GL_TRIANGLES)
@@ -207,31 +206,31 @@ void main()
             phobos.draw(GL_TRIANGLES)
             deimos.draw(GL_TRIANGLES)
             jupiter.draw(GL_TRIANGLES)
-
             anillos.draw(GL_TRIANGLES)
             saturno.draw(GL_TRIANGLES)
-
             urano.draw(GL_TRIANGLES)
             neptuno.draw(GL_TRIANGLES)
 
+            phobos.draw(GL_TRIANGLES)
+            deimos.draw(GL_TRIANGLES)
 
 
     @window.event
     def update(dt):
-        global time
         trayectoria_tierra.position[:] = position_trayectoria_tierra
+
         mercurio.position[:] = position_mercurio
         venus.position[:] = position_venus
         tierra.position[:] = position_tierra
         marte.position[:] = position_marte
-        phobos.position[:] = position_phobos
-        deimos.position[:] = position_deimos
         jupiter.position[:] = position_jupiter
         saturno.position[:] = position_saturno
         anillos.position[:] = position_anillos
         neptuno.position[:] = position_nepturno
         urano.position[:] = position_unranus
-        #time = time**dt
+
+        phobos.position[:] = position_phobos
+        deimos.position[:] = position_deimos
 
     update(dt = 1/60)
     pyglet.app.run()
