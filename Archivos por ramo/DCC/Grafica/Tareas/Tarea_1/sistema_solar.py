@@ -4,7 +4,7 @@ Autor: Jorge Cummins
 RUT: 21353175-1
 Curso: CC3501-1
 Profesor: Ivan Sipiran
-
+Fecha: 28 de agosto de 2024
 
 Con respecto a la tarea: esta fue realizada en el mismo codigo originalmente otorgado por el cuerpo docente, el cual
 fue editado. Los cuadros separados por # corresponden a titulos y secciones ademas de comentarios. El codigo
@@ -31,6 +31,10 @@ window = pyglet.window.Window(WIDTH, HEIGHT, "Tarea 1 - Sistema Solar")
 
 # Seccion 2: funciones ################################################################################################
 #######################################################################################################################
+"""
+Funcion crear_planeta
+Funcion entregada por el cuerpo docente, especificamente esta no fue modificada
+"""
 def crear_planeta(x, y, r, g, b, radius):
     N = DEFINITION
     # Discretizamos un circulo en DEFINITION pasos
@@ -63,13 +67,18 @@ def crear_planeta(x, y, r, g, b, radius):
     return positions, colors
 
 
-# Funcion que crea la trayectoria de un astro
-# x, y: coordenadas del centro del astro
-# r, g, b: componentes de color del astro
-# radius: radio de la trayectoria
-# return: posiciones y colores de la trayectoria
-# Discretizamos un circulo en DEFINITION pasos
-# No dibuja los radios de los circulos, solo el borde exterior de la trayectoria final
+"""
+# Funcion trayectoria
+# Esta funcion corresponde a una modificacion de la funcion "crear_planeta" entregada por el cuerpo docente.
+La funcion en cuestion realia la misma "funcion" que la funcion "crear_planeta", pero a la hora de devolver el arreglo
+de coordenadas de triangulos, devuelve un arreglo donde la coordenada x del centro se iguala con los del x0, de esta
+forma se busca no dibujar el rastro que serian equivalentes a los "radios" del circulo y solamente la 
+base/borde externo.
+
+La funcion recibe las coordenadas x, y del centro de la circunferencia (se aproxima la trayectoria de un planeta a una 
+circunferencia), los valores rgb de los colores y el radio de la circunferencia, retornando una tupla con un arreglo de
+coordenadas y un arreglo de colores.
+"""
 def trayectoria(x, y, r, g, b, radius):
     N = DEFINITION
     positions = np.zeros(9*N, dtype=np.float32)
@@ -81,15 +90,17 @@ def trayectoria(x, y, r, g, b, radius):
         x1 = x + np.cos((i+1)*dtheta)*radius
         y1 = y + np.sin((i+1)*dtheta)*radius
         j = i*9
-        positions[j:j+3] = [x0, y0, 0.0]
-        colors[j:j+3] = [r, g, b]
-        positions[j+3:j+6] = positions[j:j+3]
-        colors[j+3:j+6] = colors[j:j+3]
-        positions[j+6:j+9] = [x1, y1, 0.0]
-        colors[j+6:j+9] = [r, g, b]
+        positions[j:j+3] = [x0, y0, 0.0]                # Posicion donde estarian las coordenadas del centro se igualan a x0
+        colors[j:j+3] = [r, g, b]                       # Se iguala el color tambien
+        positions[j+3:j+6] = positions[j:j+3]           # Como se igualaron los valores, se toma el mismo arreglo para el punto x0
+        colors[j+3:j+6] = colors[j:j+3]                 # Como se igualaron los valores, se toma el mismo arreglo para los colores
+        positions[j+6:j+9] = [x1, y1, 0.0]              # Punto extra, se mantiene igual a x1 y permite realizar la trayectoria x0-x1
+        colors[j+6:j+9] = [r, g, b]                     # Colores del punto x1
     return positions, colors
 
 
+# Seccion 3: implementacion ###########################################################################################
+#######################################################################################################################
 if __name__ == "__main__":
     
     vertex_source = """
