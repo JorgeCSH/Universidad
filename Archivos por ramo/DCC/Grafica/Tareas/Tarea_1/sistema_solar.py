@@ -9,7 +9,7 @@ Fecha: 28 de agosto de 2024
 Con respecto a la tarea: esta fue realizada en el mismo codigo originalmente otorgado por el cuerpo docente, el cual
 fue editado. Los cuadros separados por # corresponden a titulos y secciones ademas de comentarios. El codigo
 probablemente tenga una cantidad notoria de comentarios que de llegar a ser molestos puedo reducirlos para la siguiente
-entrega (en introduccion a la programacion solia enviar un .txt por separado para evitar justamente que sea engorroso.
+entrega (en introduccion a la programacion solia enviar un .txt por separado para evitar justamente que sea engorroso).
 Cualquier comentario es totalmente bienvenido.
 '''
 
