@@ -95,13 +95,19 @@ void main()
     outColor = vec4(fragColor, 1.0f);
 }
     """
-
+    # Previo a crear el sistema solar, configuramos
+    # Compilamos los shaders
     vert_program = pyglet.graphics.shader.Shader(vertex_source, "vertex")
     frag_program = pyglet.graphics.shader.Shader(fragment_source, "fragment")
+
+    # Crear pipeline de rendering
     pipeline = pyglet.graphics.shader.ShaderProgram(vert_program, frag_program)
 
 
-    # Definimos mediante arreglos los parametros que controlaran a todos los planetas
+    # Definimos mediante arreglos los parametros que controlara el sistema solar. La gracia de todos los arreglos
+    # es poder modificar un parametro dentro de el en un apartado separado de los planetas. Esto tambien se
+    # se realizo para aprovechar de agregar "interacciones" entre los astros, como ejemplo, que al mover los datos
+    # del arreglo del sol mueva junto a el los demas planetas.
     # Datos del sol
     data_sol = np.array([0, 0, 0.15])
     # Radio de los planetas
@@ -151,7 +157,9 @@ void main()
     position_nepturno, color_neptuno = crear_planeta(float(relc[8]), float(rels[8]), 0, 0, 1, float(rr[8]))
 
     # Corresponde a las lunas de marte
+    # Phobos
     position_phobos, color_phobos = crear_planeta(float(relc[3])+float(pho[1]), float(rels[3])+float(pho[2]), 175/255, 145/255, 144/255, float(pho[0]))
+    # Deimos
     position_deimos, color_deimos = crear_planeta(float(relc[3])+float(dei[1]), float(rels[3])+float(dei[2]), 206/255, 173/255, 141/255, float(dei[0]))
 
 
@@ -234,7 +242,7 @@ void main()
         phobos.position[:] = position_phobos
         deimos.position[:] = position_deimos
 
-    update(dt = 1/60)
+    update(1/60)    # Medio redundante, pero me desesperaba dejar la funcion update() vacia.
     pyglet.app.run()
 
     
