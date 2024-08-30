@@ -139,7 +139,7 @@ void main()
 
 
     '''
-    Esta parte es media confusa, por ende explicare un poco mas detallado.
+    Esta parte es media confusa, por ende explicare un poco mas detallado antes de entrar a los comentarios aparte.
     Para dibujar el sistema solar, en vez de añadir un dato para cada planeta/astro/trayectoria, se opto por dejar 
     la funcion y su llamado a parte y los valores (menos los colores) en arreglos. La idea era poder modificar las 
     caracteristicas de un planete alterando solo el valor del arreglo, esto permitio añadir interacciones para el 
@@ -174,11 +174,13 @@ void main()
     dei = np.array([0.002, (float(rr[3])+0.01)*np.cos(70), (float(rr[3])+0.01)*np.sin(70)])
 
 
-    # Usamos la funcion crear_planeta para crear los planetas (o cualquier otro astro) del sistema solar
-    # Corresponde al sol
+    # En esta parte usamos los valores de los arreglos para crear los planetas y las trayectorias.
+    # Creamos el sol usando la funcion crear_planeta
     position_sol, color_sol = crear_planeta(float(data_sol[0]), float(data_sol[1]), 1, 1, 0, float(data_sol[2]))
 
-    # Usamos la funcion trayectoria para crear las trayectorias de los planetas (solo la tierra segun solicitado)
+    # Usamos la funcion trayectoria para crear las trayectorias de los planetas (solo la tierra segun solicitado),
+    # por ende recibe los valores x e y del arreglo del sol, los valores rgb para el blanco y el radio del centro
+    # hasta el centro de la tierra.
     position_trayectoria_tierra, color_trayectoria_tierra = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[2]))
 
     # Usamos la funcion crear_planeta para crear los planetas
