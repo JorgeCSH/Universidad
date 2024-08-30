@@ -102,6 +102,8 @@ void main()
 
 
     # Definimos mediante arreglos los parametros que controlaran a todos los planetas
+    # Datos del sol
+    data_sol = np.array([0, 0, 0.15])
     # Radio de los planetas
     rr = 1.3*np.array([0.009, 0.015, 0.016, 0.01, 0.05, 0.025, 0.048, 0.02, 0.017])
     # Distancia centro sol a centro planeta
@@ -114,8 +116,8 @@ void main()
     cos_arr = np.array([np.cos(float(ang[0])), np.cos(float(ang[1])), np.cos(float(ang[2])), np.cos(float(ang[3])), np.cos(float(ang[4])), np.cos(float(ang[5])), np.cos(float(ang[6])), np.cos(float(ang[7])), np.cos(float(ang[8]))])
     sin_arr = np.array([np.sin(float(ang[0])), np.sin(float(ang[1])), np.sin(float(ang[2])), np.sin(float(ang[3])), np.sin(float(ang[4])), np.sin(float(ang[5])), np.sin(float(ang[6])), np.sin(float(ang[7])), np.sin(float(ang[8]))])
     #relc y rels corresponden a la proyeccion en coseno (relc) y seno (rels) del relativo con respecto a los angulos
-    relc = rel*cos_arr
-    rels = rel*sin_arr
+    relc = rel*cos_arr + float(data_sol[0])*np.ones(9)
+    rels = rel*sin_arr + float(data_sol[1])*np.ones(9)
 
     # Arreglos para las lunas de marte, contienen el radio de las lunas y la proyeccion del radio del planeta mas una constante
     pho = np.array([0.003, (float(rr[3])+0.005)*np.cos(10), (float(rr[3])+0.005)*np.sin(10)])
@@ -124,10 +126,10 @@ void main()
 
     # Usamos la funcion crear_planeta para crear los planetas (o cualquier otro astro) del sistema solar
     # Corresponde al sol
-    position_sol, color_sol = crear_planeta(0, 0, 1, 1, 0, 0.15)
+    position_sol, color_sol = crear_planeta(float(data_sol[0]), float(data_sol[1]), 1, 1, 0, float(data_sol[2]))
 
     # Usamos la funcion trayectoria para crear las trayectorias de los planetas (solo la tierra segun solicitado)
-    position_trayectoria_tierra, color_trayectoria_tierra = trayectoria(0, 0, 1, 1, 1, float(rel[2]))
+    position_trayectoria_tierra, color_trayectoria_tierra = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[2]))
 
     # Usamos la funcion crear_planeta para crear los planetas
     # Mercurio

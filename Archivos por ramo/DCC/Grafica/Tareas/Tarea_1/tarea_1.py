@@ -32,3 +32,5 @@ def trayectoria(x, y, r, g, b, radius):
         colors[j+6:j+9] = [r, g, b]
 
     return positions, colors
+
+print(np.ones(4))
