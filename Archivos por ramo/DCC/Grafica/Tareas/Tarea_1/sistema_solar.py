@@ -10,6 +10,50 @@ DEFINITION = 36
 window = pyglet.window.Window(WIDTH, HEIGHT, "Tarea 1 - Sistema Solar")
 
 
+# Funcion que crea la trayectoria de un astro
+# x, y: coordenadas del centro del astro
+# r, g, b: componentes de color del astro
+# radius: radio de la trayectoria
+# return: posiciones y colores de la trayectoria
+# Discretizamos un circulo en DEFINITION pasos
+# No dibuja los radios de los circulos, solo el borde exterior de la trayectoria final
+def trayectoria(x, y, r, g, b, radius):
+
+    N = DEFINITION
+    # Discretizamos un circulo en DEFINITION pasos
+    # Cada punto tiene 3 coordenadas y 3 componentes de color
+    # Cada triangulo tiene 3 puntos
+    # Con N triangulos tenemos 3N puntos
+    # El arreglo de posiciones tiene 3 * 3N coordenadas
+    # El arreglo de color tiene 3 * 3N componentes
+    positions = np.zeros(9*N, dtype=np.float32)
+    colors = np.zeros(9*N, dtype=np.float32)
+    dtheta = 2*np.pi / N
+
+    for i in range(N):
+        x0 = x + np.cos(i*dtheta)*radius
+        y0 = y + np.sin(i*dtheta)*radius
+        x1 = x + np.cos((i+1)*dtheta)*radius
+        y1 = y + np.sin((i+1)*dtheta)*radius
+
+        # centro
+        j = i*9
+        positions[j:j+3] = [x0, y0, 0.0]
+        colors[j:j+3] = [r, g, b]
+        # p0
+        positions[j+3:j+6] = [x0, y0, 0.0]
+        colors[j+3:j+6] = [r, g, b]
+        # p1
+        positions[j+6:j+9] = [x1, y1, 0.0]
+        colors[j+6:j+9] = [r, g, b]
+
+    return positions, colors
+
+
+
+
+
+
 def crear_planeta(x, y, r, g, b, radius):
     N = DEFINITION
     # Discretizamos un circulo en DEFINITION pasos
@@ -79,7 +123,7 @@ void main()
     # Definimos mediante arreglos los parametros que controlaran a todos los planetas
     # Radio de los planetas
     rr = 1.3*np.array([0.009, 0.015, 0.016, 0.01, 0.05, 0.025, 0.048, 0.02, 0.017])
-    # Distancia centro sol - centro planeta
+    # Distancia centro sol a centro planeta
     pos = np.array([0.2, 0.25, 0.31, 0.38, 0.5, 0.7, 0.7, 0.82, 0.9])
     # rel = relativo, corresponde a la suma entre el radio del planeta y la distancia al sol
     rel = pos + rr + np.array([0, 0, 0, 0, 0, 0, float(rr[5])-float(rr[6]), 0, 0])
@@ -99,10 +143,14 @@ void main()
 
     # Usamos la funcion crear_planeta para crear los planetas (o cualquier otro astro) del sistema solar
     # Corresponde a la trayectoria
-    position_yang, color_yang = crear_planeta(0, 0, 1, 1, 1, 0.32)
-    position_yin, color_yin = crear_planeta(0, 0, 0, 0, 0, 0.319)
+    #position_yang, color_yang = crear_planeta(0, 0, 1, 1, 1, 0.32)
+    #position_yin, color_yin = crear_planeta(0, 0, 0, 0, 0, 0.319)
     # Corresponde al sol
     position_sol, color_sol = crear_planeta(0, 0, 1, 1, 0, 0.15)
+
+    position_trayectoria, color_trayectoria = trayectoria(0, 0, 1, 1, 1, float(rel[2]))
+
+
     # Corresponde a los planetas/anillos
     position_mercurio, color_mercurio = crear_planeta(float(relc[0]), float(rels[0]), 66/255, 43/255, 1/255, float(rr[0]))
     position_venus, color_venus = crear_planeta(float(relc[1]), float(rels[1]), 215/255, 141/255, 1/255, float(rr[1]))
@@ -119,9 +167,10 @@ void main()
 
 
 
-    yang = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
-    yin = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    #yang = pipeline.vertex_list(3*DEFINITION, GL_LIN)
+    #yin = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     sol = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    trayectoria = pipeline.vertex_list(3*DEFINITION, GL_LINE_LOOP)
 
     mercurio = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     venus = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
@@ -137,12 +186,14 @@ void main()
     deimos = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
 
-    yang.position[:] = position_yang
-    yang.color[:] = color_yang
-    yin.position[:] = position_yin
-    yin.color[:] = color_yin
+    #yang.position[:] = position_yang
+    #yang.color[:] = color_yang
+    #yin.position[:] = position_yin
+    #yin.color[:] = color_yin
     sol.position[:] = position_sol
     sol.color[:] = color_sol
+    trayectoria.position[:] = position_trayectoria
+    trayectoria.color[:] = color_trayectoria
 
     mercurio.color[:] = color_mercurio
     venus.color[:] = color_venus
@@ -162,8 +213,9 @@ void main()
     def on_draw():
         glClearColor(0.1, 0.1, 0.1, 0.0)
         with pipeline:
-            yang.draw(GL_TRIANGLES)
-            yin.draw(GL_TRIANGLES)
+            #yang.draw(GL_POINT)
+            #yin.draw(GL_TRIANGLES)
+            trayectoria.draw(GL_LINE_LOOP)
             sol.draw(GL_TRIANGLES)
 
             mercurio.draw(GL_TRIANGLES)
@@ -185,6 +237,7 @@ void main()
     @window.event
     def update(dt):
         global time
+        trayectoria.position[:] = position_trayectoria
         mercurio.position[:] = position_mercurio
         venus.position[:] = position_venus
         tierra.position[:] = position_tierra
