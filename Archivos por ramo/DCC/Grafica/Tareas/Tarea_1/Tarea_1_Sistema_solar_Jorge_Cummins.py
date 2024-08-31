@@ -134,8 +134,6 @@ void main()
     # Compilamos los shaders
     vert_program = pyglet.graphics.shader.Shader(vertex_source, "vertex")
     frag_program = pyglet.graphics.shader.Shader(fragment_source, "fragment")
-
-    # Crear pipeline de rendering
     pipeline = pyglet.graphics.shader.ShaderProgram(vert_program, frag_program)
 
 
