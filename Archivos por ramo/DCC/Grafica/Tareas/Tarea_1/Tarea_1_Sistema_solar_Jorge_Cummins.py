@@ -352,4 +352,12 @@ void main()
 
     pyglet.app.run()
 
-    
+# Seccion 4: final ####################################################################################################
+'''
+Para finalizar, agrego el como ejecute la tarea durante su desarrollo:
+-> Windows 10: editado en pycharm y ejecutado tanto en la terminal activando el environment "conda activate python-cg".
+-> Windows 10: editado en pycharm y ejecutando el codigo con la opcion default de pycharm.
+-> Linux (debian12): editado en neovim (nvim) y ejecutado desde la terminal con el environment "source ~/python-cg/bin/activate".
+
+Cualquier comentario se agradeceria para poder mejorar futuros desarrollos.
+'''
