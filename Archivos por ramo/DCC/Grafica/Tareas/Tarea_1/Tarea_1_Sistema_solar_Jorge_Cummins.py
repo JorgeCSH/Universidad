@@ -25,6 +25,7 @@ from pyglet.gl import *
 WIDTH = 1000
 HEIGHT = 1000
 DEFINITION = 36
+
 window = pyglet.window.Window(WIDTH, HEIGHT, "Tarea 1 - Sistema Solar")
 
 
