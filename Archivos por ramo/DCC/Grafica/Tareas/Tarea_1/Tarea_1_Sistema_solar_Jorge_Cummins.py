@@ -1,15 +1,15 @@
 '''
-Informacion del trabajo:
+Información del trabajo:
 Autor: Jorge Cummins
 RUT: 21353175-1
 Curso: CC3501-1
 Profesor: Ivan Sipiran
 Fecha: 28 de agosto de 2024
 
-Con respecto a la tarea: esta fue realizada en el mismo codigo originalmente otorgado por el cuerpo docente, el cual
-fue editado. Los cuadros separados por # corresponden a titulos y secciones ademas de comentarios. El codigo
-probablemente tenga una cantidad notoria de comentarios que de llegar a ser molestos puedo reducirlos para la siguiente
-entrega (en introduccion a la programacion solia enviar un .txt por separado para evitar justamente que sea engorroso).
+Con respecto a la tarea: esta fue realizada en el mismo código originalmente otorgado por el cuerpo docente, el cual
+fue editado. Los cuadros separados por # corresponden a títulos y secciones, además de comentarios. El código
+probablemente, tenga una cantidad notoria de comentarios que de llegar a ser molestos puedo reducirlos para la siguiente
+entrega (en introducción a la programación solía enviar un .txt por separado para evitar justamente que sea engorroso).
 Cualquier comentario es totalmente bienvenido.
 '''
 
@@ -32,10 +32,10 @@ window = pyglet.window.Window(WIDTH, HEIGHT, "Tarea 1 - Sistema Solar")
 
 # Seccion 2: funciones ################################################################################################
 #######################################################################################################################
-"""
-Funcion crear_planeta
-Funcion entregada por el cuerpo docente, especificamente esta no fue modificada
-"""
+'''
+Función crear_planeta
+Función entregada por el cuerpo docente, específicamente esta no fue modificada.
+'''
 def crear_planeta(x, y, r, g, b, radius):
     N = DEFINITION
     # Discretizamos un circulo en DEFINITION pasos
@@ -69,14 +69,14 @@ def crear_planeta(x, y, r, g, b, radius):
 
 
 """
-# Funcion trayectoria
-# Esta funcion corresponde a una modificacion de la funcion "crear_planeta" entregada por el cuerpo docente.
-La funcion en cuestion realia la misma "funcion" que la funcion "crear_planeta", pero a la hora de devolver el arreglo
-de coordenadas de triangulos, devuelve un arreglo donde la coordenada x del centro se iguala con los del x0, de esta
-forma se busca no dibujar el rastro que serian equivalentes a los "radios" del circulo y solamente la 
+Función trayectoria
+Esta función corresponde a una modificación de la función "crear_planeta" entregada por el cuerpo docente.
+La función en cuestión realiza la misma "función" que la función "crear_planeta", pero a la hora de devolver el arreglo
+de coordenadas de triángulos, devuelve un arreglo donde la coordenada x del centro se iguala con los del x0, de esta
+forma se busca no dibujar el rastro que serían equivalentes a los "radios" del círculo y solamente la 
 base/borde externo.
 
-La funcion recibe las coordenadas x, y del centro de la circunferencia (se aproxima la trayectoria de un planeta a una 
+La función recibe las coordenadas x, y del centro de la circunferencia (se aproxima la trayectoria de un planeta a una 
 circunferencia), los valores rgb de los colores y el radio de la circunferencia, retornando una tupla con un arreglo de
 coordenadas y un arreglo de colores.
 """
@@ -138,20 +138,20 @@ void main()
 
 
     '''
-    Esta parte es media confusa, por ende explicare un poco mas detallado antes de entrar a los comentarios aparte.
-    Para dibujar el sistema solar, en vez de añadir un dato para cada planeta/astro/trayectoria, se opto por dejar 
-    la funcion y su llamado a parte y los valores (menos los colores) en arreglos. La idea era poder modificar las 
-    caracteristicas de un planete alterando solo el valor del arreglo, esto permitio añadir interacciones para el 
-    desarrollo que eran mas comodas de realizar. Un ejemplo de esto fue que al mover el sol se mueven todo los demas
+    Esta parte es media confusa, por ende explicaré un poco más detallado antes de entrar a los comentarios aparte.
+    Para dibujar el sistema solar, en vez de añadir un dato para cada planeta/astro/trayectoria, se optó por dejar 
+    la función y su llamado a parte y los valores (menos los colores) en arreglos. La idea era poder modificar las 
+    caracteristicas de un planeta alterando solo el valor del arreglo, esto permitió añadir interacciones para el 
+    desarrollo que eran más cómodas de realizar. Un ejemplo de esto fue que al mover el sol se mueven todos los demás
     componentes del sistema y sin editar nada, puesto a que en los arreglos esta todo previamente editado.
     
-    En caso de ser incomodo o directamente que no sea de agrado, no tengo problema en no realizar esto para la proxima 
+    En caso de ser incómodo o directamente que no sea de agrado, no tengo problema en no realizar esto para la próxima 
     tarea.
     
-    Ahora, para evitar incluir esta informacion en cada oportunidad, en el codigo los anillos de saturno se dibujan
-    superponiendo dos circulos, uno mas grande que simula los anillos y otro mas pequeño que simula a saturno. Los datos
-    de estos circulos se encuentran seguidos en el arreglo rel, donde rel[5] corresponde al planeta saturno y rel[6] a
-    los anillos. Al dibujarlos se ubican en una misma posicion dibujando los anillos antes que el planeta.
+    Ahora, para evitar incluir esta información en cada oportunidad, en el código los anillos de saturno se dibujan
+    superponiendo dos círculos, uno más grande que simula los anillos y otro más pequeño que simula a saturno. Los datos
+    de estos círculos se encuentran seguidos en el arreglo rel, donde rel[5] corresponde al planeta saturno y rel[6] a
+    los anillos. Al dibujarlos se ubican en una misma posición dibujando los anillos antes que el planeta.
     '''
     # Arreglo del sol (data_sol): posee la coordenada x, coordenada y, radio respectivamente.
     data_sol = np.array([0, 0, 0.15])
@@ -174,16 +174,16 @@ void main()
 
     # *EXTRAS* Arreglos para las lunas de marte
     # Arreglo de phobos: posee el radio, la proyeccion x y la proyeccion y de phobos CON RESPECTO A MARTE (se mueven junto a el).
-    pho = np.array([0.003, (float(rr[3])+0.005)*np.cos(10), (float(rr[3])+0.005)*np.sin(10)])
+    pho = np.array([0.003, (float(rr[3])+0.007)*np.cos(10), (float(rr[3])+0.007)*np.sin(10)])
     # Arreglo de deimos: posee el radio, la proyeccion x y la proyeccion y de deimos, tambien RESPECTO A MARTE.
     dei = np.array([0.002, (float(rr[3])+0.01)*np.cos(70), (float(rr[3])+0.01)*np.sin(70)])
 
 
     '''
-    En esta parte llamamos a la funcion crear_planeta y trayectoria para crear la imagen. usamos los valores de los 
-    arreglos llamandolos generalmente con la forma float(arreglo[i]) para cada valor. La unica excepcion es saturno,
-    el cual se dibuja con dos circulos superpuestos para simular los anillos, donde se realiza un planeta mas grande
-    para los anillos con el mismo centro de otro mas pequeño que simula a saturno.
+    En esta parte llamamos a la función crear_planeta y trayectoria para crear la imagen. Usamos los valores de los 
+    arreglos, llamándolos generalmente con la forma float(arreglo[i]) para cada valor. La única excepción es saturno,
+    el cual se dibuja con dos círculos superpuestos para simular los anillos, donde se realiza un planeta más grande
+    para los anillos con el mismo centro de otro más pequeño que simula a saturno.
     '''
     # Creamos el sol usando la funcion crear_planeta
     position_sol, color_sol = crear_planeta(float(data_sol[0]), float(data_sol[1]), 1, 1, 0, float(data_sol[2]))
@@ -307,7 +307,7 @@ void main()
 
 
     '''
-    En esta parte, agregamos los datos de la posicion de los elementos que seran dibujados en la ventana.
+    En esta parte, agregamos los datos de la posición de los elementos que serán dibujados en la ventana.
     '''
     @window.event
     def on_draw():
@@ -344,7 +344,7 @@ void main()
             # Deimos.
             deimos.draw(GL_TRIANGLES)
 
-    # Esta funcion (update()) originalment iba a tener los planetas.position, sin embargo, pese a que el resultado
+    # Esta funcion (update()) originalment iba a tener los planetas.position, sin embargo y pese a que el resultado
     # hubiera sido el mismo, se decidio dejar vacia para seguir el mismo formato que el ejemplo del codigo original.
     @window.event
     def update(dt):
@@ -354,10 +354,10 @@ void main()
 
 # Seccion 4: final ####################################################################################################
 '''
-Para finalizar, agrego el como ejecute la tarea durante su desarrollo:
+Para finalizar, agrego el cómo ejecute la tarea durante su desarrollo:
 -> Windows 10: editado en pycharm y ejecutado tanto en la terminal activando el environment "conda activate python-cg".
 -> Windows 10: editado en pycharm y ejecutando el codigo con la opcion default de pycharm.
 -> Linux (debian12): editado en neovim (nvim) y ejecutado desde la terminal con el environment "source ~/python-cg/bin/activate".
 
-Cualquier comentario se agradeceria para poder mejorar futuros desarrollos.
+Cualquier comentario se agradecerían para poder mejorar futuros desarrollos.
 '''
