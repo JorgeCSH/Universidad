@@ -32,7 +32,6 @@ DEFINITION = 36
 window = pyglet.window.Window(WIDTH, HEIGHT, "Tarea 1 - Sistema Solar")
 
 
-
 # Seccion 2: funciones ################################################################################################
 #######################################################################################################################
 '''
@@ -242,7 +241,7 @@ void main()
     # Creamos el sol.
     sol = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
-    # Creamos la trayectoria de los planetas cambiando GL_TRIANGLES por GL_LINE_LOOP, primitiva que permite dibujar
+    # Creamos la trayectoria de los planetas cambiando GL_TRIANGLES por GL_LINE_LOOP, primitiva asociada a dibujar
     # las lineas entre puntos sin rellenar el interior.
     # Mercurio.
     trayectoria_mercurio = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
