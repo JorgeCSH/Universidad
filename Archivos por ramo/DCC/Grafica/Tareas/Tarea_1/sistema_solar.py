@@ -148,6 +148,11 @@ void main()
     
     En caso de ser incomodo o directamente que no sea de agrado, no tengo problema en no realizar esto para la proxima 
     tarea.
+    
+    Ahora, para evitar incluir esta informacion en cada oportunidad, en el codigo los anillos de saturno se dibujan
+    superponiendo dos circulos, uno mas grande que simula los anillos y otro mas pequeño que simula a saturno. Los datos
+    de estos circulos se encuentran seguidos en el arreglo rel, donde rel[5] corresponde al planeta saturno y rel[6] a
+    los anillos. Al dibujarlos se ubican en una misma posicion dibujando los anillos antes que el planeta.
     '''
     # Arreglo del sol (data_sol): posee la coordenada x, coordenada y, radio respectivamente.
     data_sol = np.array([0, 0, 0.15])
@@ -169,8 +174,9 @@ void main()
     rels = rel*sin_arr + float(data_sol[1])*np.ones(9)      # Proyeccion eje y
 
     # *EXTRAS* Arreglos para las lunas de marte
-    # arreglo de phobos: posee el radio, la proyeccion x y la proyeccion y de phobos CON RESPECTO A MARTE.
+    # Arreglo de phobos: posee el radio, la proyeccion x y la proyeccion y de phobos CON RESPECTO A MARTE (se mueven junto a el).
     pho = np.array([0.003, (float(rr[3])+0.005)*np.cos(10), (float(rr[3])+0.005)*np.sin(10)])
+    # Arreglo de deimos: posee el radio, la proyeccion x y la proyeccion y de deimos, tambien RESPECTO A MARTE.
     dei = np.array([0.002, (float(rr[3])+0.01)*np.cos(70), (float(rr[3])+0.01)*np.sin(70)])
 
 
