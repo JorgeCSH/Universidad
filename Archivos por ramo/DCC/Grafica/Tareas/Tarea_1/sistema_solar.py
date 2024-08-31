@@ -203,7 +203,7 @@ void main()
     position_saturno, color_saturno = crear_planeta(float(relc[5]), float(rels[5]), 233/255, 108/255, 0/255, float(rr[5]))
     position_anillos, color_anillos = crear_planeta(float(relc[6]), float(rels[6]), 96/255, 96/255, 96/255, float(rr[6]))
     # Urano.
-    position_unranus, color_unranus = crear_planeta(float(relc[7]), float(rels[7]), 123/255, 163/255, 254/255, float(rr[7]))
+    position_unranus, position_unrano = crear_planeta(float(relc[7]), float(rels[7]), 123/255, 163/255, 254/255, float(rr[7]))
     # Neptuno.
     position_nepturno, color_neptuno = crear_planeta(float(relc[8]), float(rels[8]), 0, 0, 1, float(rr[8]))
 
@@ -254,42 +254,50 @@ void main()
     En esta parte, copiamos los datos de la posicion y colores que seran dibujados en la ventana.
     '''
     # Datos sol.
-    # Posicion sol.
+    # Posicion.
     sol.position[:] = position_sol
-    # Color sol.
+    # Color.
     sol.color[:] = color_sol
 
     # Datos trayectoria tierra.
-    # Posicion trayectoria tierra.
     trayectoria_tierra.position[:] = position_trayectoria_tierra
-    # Color trayectoria tierra.
     trayectoria_tierra.color[:] = color_trayectoria_tierra
 
-    # Colores de los planetas.
+    # Datos planetas.
     # Mercurio.
+    mercurio.position[:] = position_mercurio
     mercurio.color[:] = color_mercurio
     # Venus.
+    venus.position[:] = position_venus
     venus.color[:] = color_venus
     # Tierra.
+    tierra.position[:] = position_tierra
     tierra.color[:] = color_tierra
     # Marte.
+    marte.position[:] = position_marte
     marte.color[:] = color_marte
     # Jupiter.
+    jupiter.position[:] = position_jupiter
     jupiter.color[:] = color_jupiter
     # Saturno.
+    saturno.position[:] = position_saturno
+    anillos.position[:] = position_anillos
     saturno.color[:] = color_saturno
     anillos.color[:] = color_anillos
     # Urano.
-    urano.color[:] = color_unranus
+    urano.position[:] = position_unrano
+    urano.color[:] = position_unrano
     # Neptuno.
+    neptuno.position[:] = position_nepturno
     neptuno.color[:] = color_neptuno
 
     # *EXTRA* Colores de las lunas de marte.
     # Phobos.
+    phobos.position[:] = position_phobos
     phobos.color[:] = color_phobos
     # Deimos.
     deimos.color[:] = color_deimos
-
+    deimos.position[:] = position_deimos
 
     '''
     En esta parte, agregamos los datos de la posicion de los elementos que seran dibujados en la ventana.
@@ -297,7 +305,6 @@ void main()
     @window.event
     def on_draw():
         glClearColor(0.1, 0.1, 0.1, 0.0)
-        window.clear()
         with pipeline:
             # Dibujamos el sol.
             sol.draw(GL_TRIANGLES)
@@ -333,23 +340,8 @@ void main()
 
     @window.event
     def update(dt):
+        pass
 
-        trayectoria_tierra.position[:] = position_trayectoria_tierra
-
-        mercurio.position[:] = position_mercurio
-        venus.position[:] = position_venus
-        tierra.position[:] = position_tierra
-        marte.position[:] = position_marte
-        jupiter.position[:] = position_jupiter
-        saturno.position[:] = position_saturno
-        anillos.position[:] = position_anillos
-        neptuno.position[:] = position_nepturno
-        urano.position[:] = position_unranus
-
-        phobos.position[:] = position_phobos
-        deimos.position[:] = position_deimos
-
-    update(1/60)    # Medio redundante, pero me desesperaba dejar la funcion update() vacia.
     pyglet.app.run()
 
     
