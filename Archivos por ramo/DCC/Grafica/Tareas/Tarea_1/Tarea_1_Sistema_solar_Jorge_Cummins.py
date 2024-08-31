@@ -166,7 +166,7 @@ void main()
     # Posicion relativa (rel): posicion relativa de los planetas y su radio con respecto al sol.
     rel = pos + rr + np.array([0, 0, 0, 0, 0, 0, float(rr[5])-float(rr[6]), 0, 0])
     # Angulo (ang): posee el angulo entre la orbita (trayectoria) de los planetas con respecto al sol.
-    ang = np.array([2, 177, 23, 345, 3, 26, 26, 97, 28])
+    ang = np.array([1.2*np.pi, 0.12, 0.9*np.pi, 0.6*np.pi, -0.12, 0.7*np.pi, 0.7*np.pi, 1.13*np.pi, np.pi])
     # Arreglos trigonometricos (cos_arr, sin_arr): poseen los valores de coseno y seno de los angulos para cada planeta.
     cos_arr = np.array([np.cos(float(ang[0])), np.cos(float(ang[1])), np.cos(float(ang[2])), np.cos(float(ang[3])), np.cos(float(ang[4])), np.cos(float(ang[5])), np.cos(float(ang[6])), np.cos(float(ang[7])), np.cos(float(ang[8]))])
     sin_arr = np.array([np.sin(float(ang[0])), np.sin(float(ang[1])), np.sin(float(ang[2])), np.sin(float(ang[3])), np.sin(float(ang[4])), np.sin(float(ang[5])), np.sin(float(ang[6])), np.sin(float(ang[7])), np.sin(float(ang[8]))])
