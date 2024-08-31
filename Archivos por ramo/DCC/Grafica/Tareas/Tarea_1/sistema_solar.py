@@ -168,13 +168,18 @@ void main()
     relc = rel*cos_arr + float(data_sol[0])*np.ones(9)      # Proyeccion eje x
     rels = rel*sin_arr + float(data_sol[1])*np.ones(9)      # Proyeccion eje y
 
-    # **EXTRAS** Arreglos para las lunas de marte
+    # *EXTRAS* Arreglos para las lunas de marte
     # arreglo de phobos: posee el radio, la proyeccion x y la proyeccion y de phobos CON RESPECTO A MARTE.
     pho = np.array([0.003, (float(rr[3])+0.005)*np.cos(10), (float(rr[3])+0.005)*np.sin(10)])
     dei = np.array([0.002, (float(rr[3])+0.01)*np.cos(70), (float(rr[3])+0.01)*np.sin(70)])
 
 
-    # En esta parte usamos los valores de los arreglos para crear los planetas y las trayectorias.
+    '''
+    En esta parte llamamos a la funcion crear_planeta y trayectoria para crear la imagen. usamos los valores de los 
+    arreglos llamandolos generalmente con la forma float(arreglo[i]) para cada valor. La unica excepcion es saturno,
+    el cual se dibuja con dos circulos superpuestos para simular los anillos, donde se realiza un planeta mas grande
+    para los anillos con el mismo centro de otro mas pequeño que simula a saturno.
+    '''
     # Creamos el sol usando la funcion crear_planeta
     position_sol, color_sol = crear_planeta(float(data_sol[0]), float(data_sol[1]), 1, 1, 0, float(data_sol[2]))
 
@@ -183,91 +188,145 @@ void main()
     # hasta el centro de la tierra.
     position_trayectoria_tierra, color_trayectoria_tierra = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[2]))
 
-    # Usamos la funcion crear_planeta para crear los planetas
-    # Mercurio
+    # Usamos la funcion crear_planeta para crear el resto de los planetas.
+    # Mercurio.
     position_mercurio, color_mercurio = crear_planeta(float(relc[0]), float(rels[0]), 66/255, 43/255, 1/255, float(rr[0]))
-    # Venus
+    # Venus.
     position_venus, color_venus = crear_planeta(float(relc[1]), float(rels[1]), 215/255, 141/255, 1/255, float(rr[1]))
-    # Tierra
+    # Tierra.
     position_tierra, color_tierra = crear_planeta(float(relc[2]), float(rels[2]), 0, 1, 0, float(rr[2]))
-    # Marte
+    # Marte.
     position_marte, color_marte = crear_planeta(float(relc[3]), float(rels[3]), 1, 0, 0, float(rr[3]))
-    # Jupiter
+    # Jupiter.
     position_jupiter, color_jupiter = crear_planeta(float(relc[4]), float(rels[4]), 255/255, 147/255, 0/255, float(rr[4]))
-    # Saturno, los anillos se hacen superponiendo dos circulos de radio distinto
+    # Saturno, los anillos se hacen superponiendo dos circulos de radio distinto.
     position_saturno, color_saturno = crear_planeta(float(relc[5]), float(rels[5]), 233/255, 108/255, 0/255, float(rr[5]))
     position_anillos, color_anillos = crear_planeta(float(relc[6]), float(rels[6]), 96/255, 96/255, 96/255, float(rr[6]))
-    # Urano
+    # Urano.
     position_unranus, color_unranus = crear_planeta(float(relc[7]), float(rels[7]), 123/255, 163/255, 254/255, float(rr[7]))
-    # Neptuno
+    # Neptuno.
     position_nepturno, color_neptuno = crear_planeta(float(relc[8]), float(rels[8]), 0, 0, 1, float(rr[8]))
 
-    # Corresponde a las lunas de marte
-    # Phobos
+    # *EXTRA* Creamos las lunas de marte.
+    # Phobos.
     position_phobos, color_phobos = crear_planeta(float(relc[3])+float(pho[1]), float(rels[3])+float(pho[2]), 175/255, 145/255, 144/255, float(pho[0]))
-    # Deimos
+    # Deimos.
     position_deimos, color_deimos = crear_planeta(float(relc[3])+float(dei[1]), float(rels[3])+float(dei[2]), 206/255, 173/255, 141/255, float(dei[0]))
 
 
+    '''
+    En esta parte cargamos los datos de los planetas para poder ser dibujados en la ventana.
+    '''
+    # Creamos en la GPU (segun la terminologia usada en clase auxiliar).
+    # Creamos el sol.
     sol = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
+    # Creamos la trayectoria de la tierra.
     trayectoria_tierra = pipeline.vertex_list(3*DEFINITION, GL_LINE_LOOP)
 
+    # Creamos los planetas.
+    # Mercurio.
     mercurio = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Venus.
     venus = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Tierra.
     tierra = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Marte.
     marte = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Jupiter.
     jupiter = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Saturno.
     saturno = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
     anillos = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Urano.
     urano = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Neptuno.
     neptuno = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
+    # *EXTRA* Creamos las lunas de marte.
+    # Phobos.
     phobos = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
+    # Deimos.
     deimos = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
 
+    '''
+    En esta parte, copiamos los datos de la posicion y colores que seran dibujados en la ventana.
+    '''
+    # Datos sol.
+    # Posicion sol.
     sol.position[:] = position_sol
+    # Color sol.
     sol.color[:] = color_sol
 
+    # Datos trayectoria tierra.
+    # Posicion trayectoria tierra.
     trayectoria_tierra.position[:] = position_trayectoria_tierra
+    # Color trayectoria tierra.
     trayectoria_tierra.color[:] = color_trayectoria_tierra
 
+    # Colores de los planetas.
+    # Mercurio.
     mercurio.color[:] = color_mercurio
+    # Venus.
     venus.color[:] = color_venus
+    # Tierra.
     tierra.color[:] = color_tierra
+    # Marte.
     marte.color[:] = color_marte
+    # Jupiter.
     jupiter.color[:] = color_jupiter
+    # Saturno.
     saturno.color[:] = color_saturno
     anillos.color[:] = color_anillos
+    # Urano.
     urano.color[:] = color_unranus
+    # Neptuno.
     neptuno.color[:] = color_neptuno
 
+    # *EXTRA* Colores de las lunas de marte.
+    # Phobos.
     phobos.color[:] = color_phobos
+    # Deimos.
     deimos.color[:] = color_deimos
 
 
+    '''
+    En esta parte, agregamos los datos de la posicion de los elementos que seran dibujados en la ventana.
+    '''
     @window.event
     def on_draw():
         glClearColor(0.1, 0.1, 0.1, 0.0)
         with pipeline:
+            # Dibujamos el sol.
             sol.draw(GL_TRIANGLES)
 
+            # Dibujamos la trayectoria de la tierra.
             trayectoria_tierra.draw(GL_LINE_LOOP)
 
+            # Dibujamos los planetas.
+            # Mercurio.
             mercurio.draw(GL_TRIANGLES)
+            # Venus.
             venus.draw(GL_TRIANGLES)
+            # Tierra.
             tierra.draw(GL_TRIANGLES)
+            # Marte.
             marte.draw(GL_TRIANGLES)
-            phobos.draw(GL_TRIANGLES)
-            deimos.draw(GL_TRIANGLES)
+            # Jupiter.
             jupiter.draw(GL_TRIANGLES)
+            # Saturno.
             anillos.draw(GL_TRIANGLES)
             saturno.draw(GL_TRIANGLES)
+            # Urano.
             urano.draw(GL_TRIANGLES)
+            # Neptuno.
             neptuno.draw(GL_TRIANGLES)
 
+            # *EXTRA* Dibujamos las lunas de marte.
+            # Phobos.
             phobos.draw(GL_TRIANGLES)
+            # Deimos.
             deimos.draw(GL_TRIANGLES)
 
 
