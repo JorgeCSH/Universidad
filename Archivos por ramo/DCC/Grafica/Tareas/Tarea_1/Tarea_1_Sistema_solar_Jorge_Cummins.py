@@ -11,6 +11,9 @@ fue editado. Los cuadros separados por # corresponden a títulos y secciones, ad
 probablemente, tenga una cantidad notoria de comentarios que de llegar a ser molestos puedo reducirlos para la siguiente
 entrega (en introducción a la programación solía enviar un .txt por separado para evitar justamente que sea engorroso).
 Cualquier comentario es totalmente bienvenido.
+
+Otra cosa que me gustaria agregar es solicitar si hay algun problema con que para los cuadros de comentario mezcle los
+"""""" y # o no, para evitar complicaciones futuras.
 '''
 
 # Seccion 1: configuracion ############################################################################################
