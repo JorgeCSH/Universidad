@@ -203,7 +203,7 @@ void main()
     position_saturno, color_saturno = crear_planeta(float(relc[5]), float(rels[5]), 233/255, 108/255, 0/255, float(rr[5]))
     position_anillos, color_anillos = crear_planeta(float(relc[6]), float(rels[6]), 96/255, 96/255, 96/255, float(rr[6]))
     # Urano.
-    position_unranus, position_unrano = crear_planeta(float(relc[7]), float(rels[7]), 123/255, 163/255, 254/255, float(rr[7]))
+    position_urano, color_urano = crear_planeta(float(relc[7]), float(rels[7]), 123/255, 163/255, 254/255, float(rr[7]))
     # Neptuno.
     position_nepturno, color_neptuno = crear_planeta(float(relc[8]), float(rels[8]), 0, 0, 1, float(rr[8]))
 
@@ -285,8 +285,8 @@ void main()
     saturno.color[:] = color_saturno
     anillos.color[:] = color_anillos
     # Urano.
-    urano.position[:] = position_unrano
-    urano.color[:] = position_unrano
+    urano.position[:] = position_urano
+    urano.color[:] = color_urano
     # Neptuno.
     neptuno.position[:] = position_nepturno
     neptuno.color[:] = color_neptuno
@@ -296,8 +296,10 @@ void main()
     phobos.position[:] = position_phobos
     phobos.color[:] = color_phobos
     # Deimos.
-    deimos.color[:] = color_deimos
     deimos.position[:] = position_deimos
+    deimos.color[:] = color_deimos
+
+
 
     '''
     En esta parte, agregamos los datos de la posicion de los elementos que seran dibujados en la ventana.
@@ -337,7 +339,8 @@ void main()
             # Deimos.
             deimos.draw(GL_TRIANGLES)
 
-
+    # Esta funcion (update()) originalment iba a tener los planetas.position, sin embargo, pese a que el resultado
+    # hubiera sido el mismo, se decidio dejar vacia para seguir el mismo formato que el ejemplo del codigo original.
     @window.event
     def update(dt):
         pass
