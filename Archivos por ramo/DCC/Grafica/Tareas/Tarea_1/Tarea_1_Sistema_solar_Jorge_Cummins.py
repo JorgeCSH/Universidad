@@ -191,10 +191,23 @@ void main()
     # Creamos el sol usando la funcion crear_planeta
     position_sol, color_sol = crear_planeta(float(data_sol[0]), float(data_sol[1]), 1, 1, 0, float(data_sol[2]))
 
-    # Usamos la funcion trayectoria para crear las trayectorias de los planetas (solo la tierra segun solicitado),
-    # por ende recibe los valores x e y del arreglo del sol, los valores rgb para el blanco y el radio del centro
-    # hasta el centro de la tierra.
-    position_trayectoria_tierra, color_trayectoria_tierra = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[2]))
+    # Usamos la funcion trayectoria para crear las trayectorias de los planetas.
+    # Mercurio.
+    position_trayectoria_mercurio, color_trayectoria_mercurio = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[0]))
+    # Venus.
+    position_trayectoria_venus, color_trayectoria_venus = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[1]))
+    # Tierra.
+    position_trayectoria_tierra, color_trayectoria_tierra = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1,float(rel[2]))
+    # Marte.
+    position_trayectoria_marte, color_trayectoria_marte = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[3]))
+    # Jupiter.
+    position_trayectoria_jupiter, color_trayectoria_jupiter = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[4]))
+    # Saturno.
+    position_trayectoria_saturno, color_trayectoria_saturno = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[5]))
+    # Urano.
+    position_trayectoria_urano, color_trayectoria_urano = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[7]))
+    # Neptuno.
+    position_trayectoria_neptuno, color_trayectoria_neptuno = trayectoria(float(data_sol[0]), float(data_sol[1]), 1, 1, 1, float(rel[8]))
 
     # Usamos la funcion crear_planeta para crear el resto de los planetas.
     # Mercurio.
@@ -229,8 +242,24 @@ void main()
     # Creamos el sol.
     sol = pipeline.vertex_list(3*DEFINITION, GL_TRIANGLES)
 
-    # Creamos la trayectoria de la tierra.
-    trayectoria_tierra = pipeline.vertex_list(3*DEFINITION, GL_LINE_LOOP)
+    # Creamos la trayectoria de los planetas cambiando GL_TRIANGLES por GL_LINE_LOOP, primitiva que permite dibujar
+    # las lineas entre puntos sin rellenar el interior.
+    # Mercurio.
+    trayectoria_mercurio = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
+    # Venus.
+    trayectoria_venus = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
+    # Tierra.
+    trayectoria_tierra = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
+    # Marte.
+    trayectoria_marte = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
+    # Jupiter.
+    trayectoria_jupiter = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
+    # Saturno.
+    trayectoria_saturno = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
+    # Urano.
+    trayectoria_urano = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
+    # Neptuno.
+    trayectoria_neptuno = pipeline.vertex_list(3 * DEFINITION, GL_LINE_LOOP)
 
     # Creamos los planetas.
     # Mercurio.
@@ -267,9 +296,31 @@ void main()
     # Color.
     sol.color[:] = color_sol
 
-    # Datos trayectoria tierra.
+    # Datos trayectorias.
+    # Mercurio.
+    trayectoria_mercurio.position[:] = position_trayectoria_mercurio
+    trayectoria_mercurio.color[:] = color_trayectoria_mercurio
+    # Venus.
+    trayectoria_venus.position[:] = position_trayectoria_venus
+    trayectoria_venus.color[:] = color_trayectoria_venus
+    # Tierra.
     trayectoria_tierra.position[:] = position_trayectoria_tierra
     trayectoria_tierra.color[:] = color_trayectoria_tierra
+    # Marte.
+    trayectoria_marte.position[:] = position_trayectoria_marte
+    trayectoria_marte.color[:] = color_trayectoria_marte
+    # Jupiter.
+    trayectoria_jupiter.position[:] = position_trayectoria_jupiter
+    trayectoria_jupiter.color[:] = color_trayectoria_jupiter
+    # Saturno.
+    trayectoria_saturno.position[:] = position_trayectoria_saturno
+    trayectoria_saturno.color[:] = color_trayectoria_saturno
+    # Urano.
+    trayectoria_urano.position[:] = position_trayectoria_urano
+    trayectoria_urano.color[:] = color_trayectoria_urano
+    # Neptuno.
+    trayectoria_neptuno.position[:] = position_trayectoria_neptuno
+    trayectoria_neptuno.color[:] = color_trayectoria_neptuno
 
     # Datos planetas.
     # Mercurio.
@@ -308,7 +359,6 @@ void main()
     deimos.color[:] = color_deimos
 
 
-
     '''
     En esta parte, agregamos los datos de la posición de los elementos que serán dibujados en la ventana.
     '''
@@ -319,8 +369,23 @@ void main()
             # Dibujamos el sol.
             sol.draw(GL_TRIANGLES)
 
-            # Dibujamos la trayectoria de la tierra.
+            # Dibujamos las trayectorias.
+            # Mercurio.
+            trayectoria_mercurio.draw(GL_LINE_LOOP)
+            # Venus.
+            trayectoria_venus.draw(GL_LINE_LOOP)
+            # Tierra.
             trayectoria_tierra.draw(GL_LINE_LOOP)
+            # Marte.
+            trayectoria_marte.draw(GL_LINE_LOOP)
+            # Jupiter.
+            trayectoria_jupiter.draw(GL_LINE_LOOP)
+            # Saturno.
+            trayectoria_saturno.draw(GL_LINE_LOOP)
+            # Urano.
+            trayectoria_urano.draw(GL_LINE_LOOP)
+            # Neptuno.
+            trayectoria_neptuno.draw(GL_LINE_LOOP)
 
             # Dibujamos los planetas.
             # Mercurio.
