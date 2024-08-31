@@ -297,6 +297,7 @@ void main()
     @window.event
     def on_draw():
         glClearColor(0.1, 0.1, 0.1, 0.0)
+        window.clear()
         with pipeline:
             # Dibujamos el sol.
             sol.draw(GL_TRIANGLES)
@@ -332,6 +333,7 @@ void main()
 
     @window.event
     def update(dt):
+
         trayectoria_tierra.position[:] = position_trayectoria_tierra
 
         mercurio.position[:] = position_mercurio
