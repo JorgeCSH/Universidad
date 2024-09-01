@@ -43,11 +43,11 @@ Nota de autor: en el x1 se cambió el 1 para evitar monotonía (y dejar una refe
 x1 = np.array([42])                         # Arreglo de 1 elemento, debe retornar una permutacion
 x2 = np.array([1, 2, 3])                    # Arreglo de 3 elementos, debe retornar 6 permutaciones
 x3 = np.array([1, 2, 3, 4, 5])              # Arreglo de 5 elementos, debe retornar 120 permutaciones
+
 #print(x1)                                   # -|    |Imprime las listas usadas. Aca no tiene mucha utilidad, sin embargo
 #print(x2)                                   #  |--> |es util si usamos valores aleatorios y ver como, como por ejemplo:
 #print(x3)                                   # -|    |x3 = np.random.randint(1, 10, 5)
-#permutaciones(x1, 0, len(x1))       # -|
-#permutaciones(x2, 0, len(x2))       #  |---> Llamamos a la función con los arreglos de ejemplo
-permutaciones(x3, 0, len(x3))       # -|
-
+#permutaciones(x1, 0, len(x1))               # -|
+#permutaciones(x2, 0, len(x2))            #  |---> Llamamos a la función con los arreglos de ejemplo
+permutaciones(x3, 3, len(x3))               # -|
 #######################################################################################################################
