@@ -25,6 +25,13 @@ def d_insertar(a,k,d):
 
     # escriba aquí el código modificado de la función insertar
     # para que haga una d-inserción en lugar de una inserción
+    
+    b=a[k] # b almacena transitoriamente al elemento a[k]
+    j=k # señala la posición del lugar "vacío"
+    while j>0 and b<a[j-1]:
+        a[j]=a[j-1]
+        j-=1
+    a[j]=b
 
 
 # Parte 2: Programar shellsort
