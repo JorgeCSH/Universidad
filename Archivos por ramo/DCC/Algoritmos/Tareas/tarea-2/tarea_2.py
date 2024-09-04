@@ -18,28 +18,28 @@ def d_ordena_insercion(a,d):
         d_insertar(a,k,d)
 
 def d_insertar(a,k,d):
-    """
-    Inserta a[k] entre los elementos anteriores a distancia d
-    preservando el orden ascendente (versión 2)
-    """
+    x=a[k]
+    i=k-d
+    while i>=0 and a[i]>x:
+        a[i+d]=a[i]
+        i=i-d
+    a[i+d]=x
 
-    # escriba aquí el código modificado de la función insertar
-    # para que haga una d-inserción en lugar de una inserción
-    
-    b=a[k] # b almacena transitoriamente al elemento a[k]
-    j=k # señala la posición del lugar "vacío"
-    while j>0 and b<a[j-1]:
-        a[j]=a[j-1]
-        j-=1
-    a[j]=b
 
 
 # Parte 2: Programar shellsort
 def Shellsort(a):
     """Ordena a usando Shell Sort, con la secuencia de valores …,65,33,17,9,5,3,1"""
-
     # Escriba aquí el código para invocar d_ordena_insercion reiteradamente
     # con la secuencia de valores indicada
+    n = 6
+    secuencia_sin_uno = []
+    for i in range(n, 0, -1):
+        secuencia_sin_uno += [2 ** i + 1]
+    secuencia = secuencia_sin_uno + [1]
+    for d in secuencia:
+        d_ordena_insercion(a,d)
+    return a
 
 
 
@@ -48,16 +48,21 @@ def Shellsort(a):
 
 
 
-'''
+
 # Aca probamos
 def verifica_d_ordenado(a,d):
     for i in range(0,len(a)-d):
         assert a[i]<=a[i+d]
     print("Arreglo "+str(d)+"-ordenado OK.")
 
+'''
 A = np.array([46,35,95,21,82,70,72,56,64,50])
-ordena_insercion(A)
+d_ordena_insercion(A,3)
 print(A)
-verifica_d_ordenado(A,1)
+verifica_d_ordenado(A,3)
 '''
 
+A = np.array([46,35,95,21,82,70,72,56,64,50])
+Shellsort(A)
+print(A)
+verifica_d_ordenado(A,1)
