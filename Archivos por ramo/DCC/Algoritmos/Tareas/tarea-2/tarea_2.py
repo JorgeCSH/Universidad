@@ -17,13 +17,14 @@ def d_ordena_insercion(a,d):
     for k in range(0,n):
         d_insertar(a,k,d)
 
+
 def d_insertar(a,k,d):
-    x=a[k]
-    i=k-d
-    while i>=0 and a[i]>x:
-        a[i+d]=a[i]
-        i=i-d
-    a[i+d]=x
+    b=a[k]
+    j=k-d
+    while j>=0 and a[j]>b:
+        a[j+d]=a[j]
+        j-=d
+    a[j+d]=b
 
 
 
@@ -66,3 +67,12 @@ A = np.array([46,35,95,21,82,70,72,56,64,50])
 Shellsort(A)
 print(A)
 verifica_d_ordenado(A,1)
+'''
+En la siguiente celda agregue una prueba similar de ordenación de un arreglo de tamaño $1000$ generado al azar (sin imprimirlo):
+
+'''
+A = np.random.randint(0,1000,1000)
+Shellsort(A)
+verifica_d_ordenado(A,1)
+
+
