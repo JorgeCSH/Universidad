@@ -1,7 +1,7 @@
 # Chileno chistoso
 import numpy as np
 
-
+'''
 def Baeza_Yates(n):
     h_0 = n
     H = [h_0]
@@ -13,6 +13,18 @@ def Baeza_Yates(n):
 
 
 print(Baeza_Yates(400))
+'''
+
+def secuencia(i):
+    if i/2 - i//2 == 0:
+        #print(i/2, i//2)
+        valor = 9*((2**i)-(2**(i/2)))+1
+        return valor
+    elif i/2 - i//2 == 0.5: 
+        #print(i/2, i//2)
+        valor = 8*(2**i)-6*(2**((i+1)/2))+1
+        return valor
+
 
 '''
 Tarea 2
@@ -47,10 +59,13 @@ def Shellsort(a):
     """Ordena a usando Shell Sort, con la secuencia de valores …,65,33,17,9,5,3,1"""
     # Escriba aquí el código para invocar d_ordena_insercion reiteradamente
     # con la secuencia de valores indicada
-    n = 400
+    n = 6
+    '''
     secuencia=Baeza_Yates(n)
     for d in secuencia:
         d_ordena_insercion(a,d)
+    '''
+
     return a
 
 
