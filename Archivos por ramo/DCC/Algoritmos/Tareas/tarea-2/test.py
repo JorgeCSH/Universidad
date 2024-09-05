@@ -12,7 +12,7 @@ def Baeza_Yates(n):
     return H
 
 
-#print(Baeza_Yates(40))
+print(Baeza_Yates(400))
 
 '''
 Tarea 2
@@ -47,7 +47,7 @@ def Shellsort(a):
     """Ordena a usando Shell Sort, con la secuencia de valores …,65,33,17,9,5,3,1"""
     # Escriba aquí el código para invocar d_ordena_insercion reiteradamente
     # con la secuencia de valores indicada
-    n = 6
+    n = 400
     secuencia=Baeza_Yates(n)
     for d in secuencia:
         d_ordena_insercion(a,d)
