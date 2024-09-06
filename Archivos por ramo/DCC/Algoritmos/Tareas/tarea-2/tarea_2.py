@@ -54,6 +54,7 @@ def Sedgewick(i):
         return int(valor)
 
 
+
 def Shellsort2(a):
     n = len(a)
     secuencia = []
