@@ -33,11 +33,15 @@ def Shellsort(a):
     """Ordena a usando Shell Sort, con la secuencia de valores …,65,33,17,9,5,3,1"""
     # Escriba aquí el código para invocar d_ordena_insercion reiteradamente
     # con la secuencia de valores indicada
-    n = 6
-    secuencia_sin_uno = []
-    for i in range(n, 0, -1):
-        secuencia_sin_uno += [2 ** i + 1]
-    secuencia = secuencia_sin_uno + [1]
+    n = len(a)
+    secuencia_invertida = []
+    di = 1
+    i = 1
+    while di < n:
+        secuencia_invertida += [di]
+        di = int(2 ** i + 1)
+        i += 1
+    secuencia = secuencia_invertida[::-1]
     for d in secuencia:
         d_ordena_insercion(a,d)
     return a
