@@ -42,8 +42,12 @@ window.push_handlers(keys)
 window.set_exclusive_mouse(True)
 
 
-# Seccion 3: definimos las clases #####################################################################################
+# Seccion 3: definimos las clases y funciones que se usaran ###########################################################
 #######################################################################################################################
+def real_rgb(r, g, b):
+    return [r / 255, g / 255, b / 255]
+
+
 class Ship:
     pass
 
@@ -118,14 +122,18 @@ def models_from_file(path, pipeline):
 if __name__ == "__main__":
     vsource = """
 #version 330
+// No se si sera legal agregar comentarios en C pero igual lo agrego
+// Vectores con datos de entrada
 in vec3 position;
 in vec3 color;
 
+// Uniform, llega la info 
 uniform mat4 transform;
 uniform mat4 model;
 uniform mat4 projection = mat4(1.0);
 uniform mat4 view = mat4(1.0);
 
+// Valores de salida, paran al fragment shader
 out vec3 fragColor;
 
 void main() {
@@ -136,10 +144,13 @@ void main() {
 
     fsource = """
 #version 330
+// Vectores con datos de entrada
 in vec3 fragColor;
 
+// Uniform, llega la info
 uniform vec3 color;
 
+// Valores de salida
 out vec4 outColor;
 
 void main() {
@@ -149,19 +160,20 @@ void main() {
 
     pipeline = ShaderProgram(Shader(vsource, "vertex"), Shader(fsource, "fragment"))
     sol = models_from_file("sun.obj", pipeline)[0]
-    sol.color = [255/255, 255/255, 66/255]
-    sol.position = [-1, -1, -1]
+    sol.color = real_rgb(255, 255, 0)
+    sol.scale = [5] * 3
+    sol.position = [0, 0, 0]
     sol.rotation[1] = np.pi / 4
 
-    planet = models_from_file("planet.obj", pipeline)[0]
-    planet.color = [.3, .3, .3]
-    planet.scale = [.3] * 3
-    planet.position = [1, 0, 1]
-    planet.rotation[1] = -np.pi / 2
+    Magrathea  = models_from_file("planet.obj", pipeline)[0]
+    Magrathea .color = real_rgb(57, 49, 46)
+    Magrathea .scale = [.5] * 3
+    Magrathea .position = [7, 0, 7]
+    Magrathea .rotation[1] = -np.pi / 2
 
-    scene = [sol, planet]
+    scene = [sol, Magrathea ]
 
-    cam = Camara(0, 0, 0, 5)
+    cam = Camara(8, 2, 8, 5)
 
 
     @window.event
