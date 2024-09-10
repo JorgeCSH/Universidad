@@ -1,3 +1,4 @@
+'''
 import numpy as np
 
 n = 7
@@ -13,7 +14,7 @@ while i_max > 0:
 print(secuencia)
 for d_i in secuencia:
     print(d_i)
-
+'''
 
 
 
