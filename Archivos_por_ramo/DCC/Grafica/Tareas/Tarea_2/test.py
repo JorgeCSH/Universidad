@@ -8,7 +8,6 @@
     Fecha Limite de Entrega: 13 de Septiembre de 2024
 -----------------------------------------------------------------------------------------------------------------------
     Palabras Previas:
-
     Este archivo (hasta el momento en que se envia) contiene los codigos utilizados para la implementacion de la tarea
     2 de la asignatura de Modelación y Computación Gráfica para Ingenieros. Esta fue dividida en diferentes secciones
     para intentar mejorar su comprension. Ademas, se intento incluir la mayor cantidad de comentarios posibles para
