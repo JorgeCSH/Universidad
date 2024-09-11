@@ -75,7 +75,20 @@ def real_rgb(r, g, b):
 
 # Clase para la nave.
 class Ship:
-    pass
+    def __init__(self, size, vertices, indices, pipeline) -> None:
+        self.color = np.zeros(3, dtype=np.float32)
+        self.position = np.zeros(3, dtype=np.float32)
+        self.scale = np.ones(3, dtype=np.float32)
+        self.rotation = np.zeros(3, dtype=np.float32)
+        self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
+        self._buffer.position = vertices
+
+    def model(self):
+        translation = Mat4.from_translation(Vec3(*self.position))
+        rotation = Mat4.from_rotation(self.rotation[0], Vec3(1, 0, 0)).rotate(self.rotation[1], Vec3(0, 1, 0)).rotate(
+            self.rotation[2], Vec3(0, 0, 1))
+        scale = Mat4.from_scale(Vec3(*self.scale))
+        return translation @ rotation @ scale
 
 
 # Clase para la camara.
@@ -273,7 +286,7 @@ void main() {
         provitional_ship.position = [11*np.cos(-0.05*dtheta)+1*np.cos(0.3*dtheta), -np.pi/7, 11*np.sin(-0.05*dtheta)+1*np.sin(0.3*dtheta)]
         provitional_ship.rotation = [0, -(3/4)*dtheta, 0]
 
-        window.time += dt
+        window.time *= dt
         cam.update(dt)
 
 
