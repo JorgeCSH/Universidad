@@ -29,11 +29,11 @@ class Controller(Window):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.time = 0.0
-        self.fov = 120
+        self.fov = 90
         super().set_exclusive_mouse(True)
 
-WIDTH = 1000
-HEIGHT = 1000
+WIDTH = 1366
+HEIGHT = 768
 window = Controller(WIDTH, HEIGHT, "Tarea 2")
 
 #Para los contorles
@@ -154,25 +154,30 @@ void main() {
     pipeline = ShaderProgram(Shader(vsource, "vertex"), Shader(fsource, "fragment"))
 
     # Objetos que se usaran
-    sol = models_from_file("sun.obj", pipeline)[0]
+    sol = models_from_file("objects/sun.obj", pipeline)[0]
     sol.color = real_rgb(255, 255, 0)
+    sol.scale = [1.5]*3
     sol.position = [0, 0, 0]
 
-    planet_1 = models_from_file("planet.obj", pipeline)[0]
+    planet_1 = models_from_file("objects/planet.obj", pipeline)[0]
     planet_1.color = real_rgb(173, 121, 36)
     planet_1.scale = [.3] * 3
     planet_1.position = [4, 0, 4]
 
-    planet_2 = models_from_file("planet.obj", pipeline)[0]
-    planet_2.color = real_rgb(97, 87, 92)
+    planet_2 = models_from_file("objects/planet.obj", pipeline)[0]
+    planet_2.color = real_rgb(192, 140, 98)
     planet_2.scale = [.5] * 3
     planet_2.position = [8, 0, 8]
 
+    planet_3 = models_from_file("objects/New rojoooect.obj", pipeline)[0]
+    planet_3.color = real_rgb(80, 80, 80)
+    planet_3.scale = [1] * 3
+    planet_3.position = [12, 0, 12]
 
-    planet_3 = models_from_file("planet.obj", pipeline)[0]
-    planet_3.color = real_rgb(192, 140, 98)
-    planet_3.scale = [.9] * 3
-    planet_3.position = [-12, 0, -12]
+    provitional_ship = models_from_file("objects/ImageToStl.com_untitled8.obj", pipeline)[0]
+    provitional_ship.color = real_rgb(192, 140, 98)
+    provitional_ship.scale = [.9] * 3
+    provitional_ship.position = [12, 0, 12]
 
     scene = [sol, planet_1, planet_2, planet_3]
 
@@ -199,11 +204,11 @@ void main() {
         planet_1.rotation = [0, 0.5*window.time, 0]
 
 
-        planet_2.position = [8*np.cos(0.1*window.time), np.pi/4*np.cos(0.1*window.time), 4*np.sin(0.1*window.time)]
+        planet_2.position = [8*np.cos(0.1*window.time), 0, 4*np.sin(0.1*window.time)]
         planet_2.rotation = [0, 0.6*window.time, 0]
 
 
-        planet_3.position = [-12*np.cos(-0.05*window.time), -np.pi/7, -12*np.sin(-0.05*window.time)]
+        planet_3.position = [12*np.cos(-0.05*window.time), -np.pi/7, 12*np.sin(-0.05*window.time)]
         planet_3.rotation = [0, -0.3*window.time, 0]
 
 
@@ -252,7 +257,7 @@ void main() {
         window.fov = clamp(window.fov, 10, 90)
 
 
-    pyglet.clock.schedule_interval(update, 1 / 60)  # Uno aqui arrogante con 165Hz en su monitor principal
+    pyglet.clock.schedule_interval(update, 1 / 165)  # Uno aqui arrogante con 165Hz en su monitor principal
     pyglet.app.run()
 
 
