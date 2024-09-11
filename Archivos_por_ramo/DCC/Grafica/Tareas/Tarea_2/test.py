@@ -1,6 +1,30 @@
 '''
-RECUERDA BORRAR EL # DEL from numpy._core.multiarray import dtype
+=======================================================================================================================
+    Tarea 2: Modelación y Computación Gráfica para Ingenieros (CC3501-1)
+-----------------------------------------------------------------------------------------------------------------------
+    Autor: Jorge Cummins
+    Rut: 21353175-1
+    Fecha de Redaccion: 11 de Septiembre de 2024
+    Fecha Limite de Entrega: 13 de Septiembre de 2024
+-----------------------------------------------------------------------------------------------------------------------
+    Palabras Previas:
 
+    Este archivo (hasta el momento en que se envia) contiene los codigos utilizados para la implementacion de la tarea
+    2 de la asignatura de Modelación y Computación Gráfica para Ingenieros. Esta fue dividida en diferentes secciones
+    para intentar mejorar su comprension. Ademas, se intento incluir la mayor cantidad de comentarios posibles para
+    explicar que se intentaba realizar. En caso de cualquier sugerencia que pueda hacer mas simple la correccion o
+    de manera general es bien recibida.
+
+    A la hora de realizar esta tarea fue de gran relevancia el material entregado por el equipo docente, de esta forma
+    se agradece este material que sirvio de fundamento para el desarrollo de la tarea, donde implementaciones como
+    la clase "Model", "Camara" y la funcion "models_from_file" fueron adaptaciones de las otorgadas por el equipo
+    docente. Tambien, si bien se realizo en un documento aparte, se tomo como inspiracion el template otorgado por los
+    profesores.
+
+    La realizacion de esta tarea conto con la implementacion de objetos externos, todos provenientes de la pagina
+    "sketcfab", comunidad que se encarga del desarrollo y distribucion de, entre diferentes productos, objetos para
+    modelacion (.obj). Se incorporo al final del documento las referencias respectivas a cada uno de los objetos.
+=======================================================================================================================
 '''
 # Seccion 1: importamos paquetes ######################################################################################
 #######################################################################################################################
@@ -44,14 +68,17 @@ window.set_exclusive_mouse(True)
 
 # Seccion 3: definimos las clases y funciones que se usaran ###########################################################
 #######################################################################################################################
+# Funcion para insertar los valores de los colores en vez de normalizarlos .
 def real_rgb(r, g, b):
     return r / 255, g / 255, b / 255
 
 
+# Clase para la nave.
 class Ship:
     pass
 
 
+# Clase para la camara.
 class Camara():
     def __init__(self, x, y, z, speed=1) -> None:
         self.position = np.array([x, y, z], dtype=np.float32)
@@ -80,6 +107,7 @@ class Camara():
         return Mat4.look_at(Vec3(*self.position), Vec3(*(self.position + self.front)), Vec3(*self.up))
 
 
+# Clase para los modelos, es decir, para los objetos que se implementan.
 class Model():
     def __init__(self, size, vertices, indices, pipeline) -> None:
         self.color = np.zeros(3, dtype=np.float32)
@@ -100,6 +128,7 @@ class Model():
         self._buffer.draw(GL_TRIANGLES)
 
 
+# Funcion para cargar los modelos desde un archivo, estos son en formato .obj (objetos).
 def models_from_file(path, pipeline):
     geom = tm.load(path)
     meshes = []
@@ -154,40 +183,56 @@ void main() {
     pipeline = ShaderProgram(Shader(vsource, "vertex"), Shader(fsource, "fragment"))
 
     # Objetos que se usaran
+    # Configuracion del sol
     sol = models_from_file("objects/sun.obj", pipeline)[0]
     sol.color = real_rgb(255, 255, 0)
     sol.scale = [1.5]*3
     sol.position = [0, 0, 0]
 
+    # Configuracion planetas
+    # Planeta 1
     planet_1 = models_from_file("objects/planet.obj", pipeline)[0]
     planet_1.color = real_rgb(30, 50, 120)
     planet_1.scale = [.3] * 3
     planet_1.position = [4, 0, 4]
 
+    # Planeta 2
     planet_2 = models_from_file("objects/craneo.OBJ", pipeline)[0]
     planet_2.color = real_rgb(220, 220, 220)
     planet_2.scale = [.5] * 3
     planet_2.position = [8, 0, 8]
 
+    # Planeta 3
+    planet_3 = models_from_file("objects/New rojoooect.obj", pipeline)[0]
+    planet_3.color = real_rgb(80, 80, 80)
+    planet_3.scale = [1] * 3
+    planet_3.position = [11, 0, 11]
 
+    # Planeta 4
+    planet_4 = models_from_file("objects/skipper.obj", pipeline)[0]
+    planet_4.color = real_rgb(150, 42, 50)
+    planet_4.scale = [0.4] * 3
+    planet_4.position = [13, 0, 13]
+
+
+    # Extras
+    # Nave provisional
+    provitional_ship = models_from_file("objects/ImageToStl.com_untitled8.obj", pipeline)[0]
+    provitional_ship.color = real_rgb(150, 140, 150)
+    provitional_ship.scale = [.2] * 3
+    provitional_ship.position = [11+1, 0, 11+1]
+
+    # Bonus: luna, en este, este caso, del planeta 2
     planet_2_moon = models_from_file("objects/planet.obj", pipeline)[0]
     planet_2_moon.color = real_rgb(70, 150, 80)
     planet_2_moon.scale = [.1] * 3
     planet_2_moon.position = [planet_2.position[0]+0.5, planet_2.position[1]+0.5, planet_2.position[2]+0.5]
 
 
-    planet_3 = models_from_file("objects/New rojoooect.obj", pipeline)[0]
-    planet_3.color = real_rgb(80, 80, 80)
-    planet_3.scale = [1] * 3
-    planet_3.position = [12, 0, 12]
+    # Escena
+    scene = [sol, planet_1, planet_2, planet_3, planet_4, provitional_ship, planet_2_moon]
 
-    provitional_ship = models_from_file("objects/ImageToStl.com_untitled8.obj", pipeline)[0]
-    provitional_ship.color = real_rgb(192, 140, 98)
-    provitional_ship.scale = [.9] * 3
-    provitional_ship.position = [12, 0, 12]
-
-    scene = [sol, planet_1, planet_2, planet_2_moon, planet_3]
-
+    # Camara
     cam = Camara(0, 0, 0, 5)
 
 
@@ -215,19 +260,21 @@ void main() {
         planet_2.position = [8*np.cos(0.1*dtheta), 0, 4*np.sin(0.1*dtheta)]
         planet_2.rotation = [0, 0.6*dtheta, 0]
 
-        planet_3.position = [12*np.cos(-0.05*dtheta), -np.pi/7, 12*np.sin(-0.05*dtheta)]
+        planet_3.position = [11*np.cos(-0.05*dtheta), -np.pi/7, 11*np.sin(-0.05*dtheta)]
         planet_3.rotation = [0, -0.3*dtheta, 0]
 
+        planet_4.position = [13*np.cos(0.15 * dtheta), 0, 13*np.sin(0.15 * dtheta)]
+        planet_4.rotation = [0, 0.3 * dtheta, 0]
 
 
         planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
+        provitional_ship.position = [11*np.cos(-0.05*dtheta)+1*np.cos(0.3*dtheta), -np.pi/7, 11*np.sin(-0.05*dtheta)+1*np.sin(0.3*dtheta)]
+        provitional_ship.rotation = [0, -(3/4)*dtheta, 0]
 
         window.time += dt
         cam.update(dt)
-
-
 
 
     # Pa ponerle weno a la maquina
@@ -237,6 +284,7 @@ void main() {
         cam.yaw += dx * cam.sensitivity
         cam.pitch += dy * cam.sensitivity
         cam.pitch = clamp(cam.pitch, -(np.pi / 2 - 0.01), np.pi / 2 - 0.01)
+
 
     # Meterle shala a la maquina (Presionar tecla)
     @window.event
