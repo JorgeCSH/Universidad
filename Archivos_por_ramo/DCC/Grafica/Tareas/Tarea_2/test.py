@@ -257,7 +257,7 @@ void main() {
         planet_1.rotation = [0, 0.5*dtheta, 0]
 
         planet_2.position = [8*np.cos(0.1*dtheta), 0, 4*np.sin(0.1*dtheta)]
-        planet_2.rotation = [0, 0.6*dtheta, 0]
+        planet_2.rotation = [0, 0.2*dtheta, 0]
 
         planet_3.position = [11*np.cos(-0.05*dtheta), -np.pi/7, 11*np.sin(-0.05*dtheta)]
         planet_3.rotation = [0, -0.3*dtheta, 0]
