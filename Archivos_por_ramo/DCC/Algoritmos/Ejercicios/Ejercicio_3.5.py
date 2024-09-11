@@ -26,13 +26,12 @@ def salida(i, j):
     if L[i][j]!=" ": # espacio ocupado
         return False
     L[i]=L[i][:j]+"x"+L[i][j+1:]
-    if (salida(i, j-1)
-    or salida(i, j+1)
-    or salida(i-1, j)
-    or salida(i+1, j)):
+    if salida(i, j-1) \
+    or salida(i, j+1) \
+    or salida(i-1, j) \
+    or salida(i+1, j):
         return True
-    # Si no es exitoso, marcamos con "."
-    L[i] = L[i][:j] + "." + L[i][j+1:]
+    L[i] = L[i][:j] + "." + L[i][j+1:] # no enuentra la salida
     return False
 
 
@@ -46,7 +45,7 @@ L = [
 "|  |     |  |",
 "+--+-----+--+"
 ]
-print(salida_original(4,10))
+print(salida(4,10))
 for linea in L:
     print(linea)
 
@@ -64,7 +63,9 @@ L = [
 "|  |     |  |",
 "+--+-----+--+"
 ]
-print(salida_original(1,1))
+
+# (1, 4) (1, 10)
+print(salida(4,11))
 
 
 for linea in L:

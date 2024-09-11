@@ -45,7 +45,7 @@ window.set_exclusive_mouse(True)
 # Seccion 3: definimos las clases y funciones que se usaran ###########################################################
 #######################################################################################################################
 def real_rgb(r, g, b):
-    return [r / 255, g / 255, b / 255]
+    return r / 255, g / 255, b / 255
 
 
 class Ship:
@@ -89,10 +89,10 @@ class Model():
         self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
         self._buffer.position = vertices
 
-    def model(self):
+    def model(self, dt=window.time):
         translation = Mat4.from_translation(Vec3(*self.position))
         rotation = Mat4.from_rotation(self.rotation[0], Vec3(1, 0, 0)).rotate(self.rotation[1], Vec3(0, 1, 0)).rotate(
-            self.rotation[2], Vec3(0, 0, 1))
+            self.rotation[2] , Vec3(0, 0, 1))
         scale = Mat4.from_scale(Vec3(*self.scale))
         return translation @ rotation @ scale
 
@@ -122,18 +122,14 @@ def models_from_file(path, pipeline):
 if __name__ == "__main__":
     vsource = """
 #version 330
-// No se si sera legal agregar comentarios en C pero igual lo agrego
-// Vectores con datos de entrada
 in vec3 position;
 in vec3 color;
 
-// Uniform, llega la info 
 uniform mat4 transform;
 uniform mat4 model;
 uniform mat4 projection = mat4(1.0);
 uniform mat4 view = mat4(1.0);
 
-// Valores de salida, paran al fragment shader
 out vec3 fragColor;
 
 void main() {
@@ -144,13 +140,10 @@ void main() {
 
     fsource = """
 #version 330
-// Vectores con datos de entrada
 in vec3 fragColor;
 
-// Uniform, llega la info
 uniform vec3 color;
 
-// Valores de salida
 out vec4 outColor;
 
 void main() {
@@ -159,21 +152,25 @@ void main() {
   """
 
     pipeline = ShaderProgram(Shader(vsource, "vertex"), Shader(fsource, "fragment"))
+
+    # Objetos que se usaran
     sol = models_from_file("sun.obj", pipeline)[0]
     sol.color = real_rgb(255, 255, 0)
-    sol.scale = [5] * 3
     sol.position = [0, 0, 0]
-    sol.rotation[1] = np.pi / 4
 
-    Magrathea  = models_from_file("planet.obj", pipeline)[0]
-    Magrathea .color = real_rgb(57, 49, 46)
-    Magrathea .scale = [.5] * 3
-    Magrathea .position = [7, 0, 7]
-    Magrathea .rotation[1] = -np.pi / 2
+    planet_1 = models_from_file("planet.obj", pipeline)[0]
+    planet_1.color = real_rgb(173, 121, 36)
+    planet_1.scale = [.3] * 3
+    planet_1.position = [4, 0, 4]
 
-    scene = [sol, Magrathea ]
+    planet_2 = models_from_file("planet.obj", pipeline)[0]
+    planet_2.color = real_rgb(97, 87, 92)
+    planet_2.scale = [.5] * 3
+    planet_2.position = [8, 1, 8]
 
-    cam = Camara(8, 2, 8, 5)
+    scene = [sol, planet_1, planet_2]
+
+    cam = Camara(0, 0, 0, 5)
 
 
     @window.event
@@ -181,6 +178,7 @@ void main() {
         window.clear()
         glClearColor(0.1, 0.1, 0.1, 0.0)
         glEnable(GL_DEPTH_TEST)
+        pipeline.use()
         with pipeline:
             pipeline["view"] = cam.view()
             pipeline["projection"] = Mat4.perspective_projection(window.aspect_ratio, 1, 10, window.fov)
@@ -192,8 +190,14 @@ void main() {
 
     @window.event
     def update(dt):
-        cam.update(dt)
+        planet_1.position = [4*np.cos(0.2*window.time), 0, 4*np.sin(0.2*window.time)]
+        planet_1.rotation = [0, 0.5*window.time, 0]
+
+
         window.time += dt
+        cam.update(dt)
+
+
 
 
     # Pa ponerle weno a la maquina
@@ -235,7 +239,7 @@ void main() {
         window.fov = clamp(window.fov, 10, 90)
 
 
-    pyglet.clock.schedule_interval(update, 1 / 165)  # Uno aqui arrogante con 165Hz en su monitor principal
+    pyglet.clock.schedule_interval(update, 1 / 60)  # Uno aqui arrogante con 165Hz en su monitor principal
     pyglet.app.run()
 
 
