@@ -160,14 +160,21 @@ void main() {
     sol.position = [0, 0, 0]
 
     planet_1 = models_from_file("objects/planet.obj", pipeline)[0]
-    planet_1.color = real_rgb(173, 121, 36)
+    planet_1.color = real_rgb(30, 50, 120)
     planet_1.scale = [.3] * 3
     planet_1.position = [4, 0, 4]
 
-    planet_2 = models_from_file("objects/planet.obj", pipeline)[0]
-    planet_2.color = real_rgb(192, 140, 98)
+    planet_2 = models_from_file("objects/craneo.OBJ", pipeline)[0]
+    planet_2.color = real_rgb(220, 220, 220)
     planet_2.scale = [.5] * 3
     planet_2.position = [8, 0, 8]
+
+
+    planet_2_moon = models_from_file("objects/planet.obj", pipeline)[0]
+    planet_2_moon.color = real_rgb(70, 150, 80)
+    planet_2_moon.scale = [.1] * 3
+    planet_2_moon.position = [planet_2.position[0]+0.5, planet_2.position[1]+0.5, planet_2.position[2]+0.5]
+
 
     planet_3 = models_from_file("objects/New rojoooect.obj", pipeline)[0]
     planet_3.color = real_rgb(80, 80, 80)
@@ -179,7 +186,7 @@ void main() {
     provitional_ship.scale = [.9] * 3
     provitional_ship.position = [12, 0, 12]
 
-    scene = [sol, planet_1, planet_2, planet_3]
+    scene = [sol, planet_1, planet_2, planet_2_moon, planet_3]
 
     cam = Camara(0, 0, 0, 5)
 
@@ -200,16 +207,21 @@ void main() {
 
     @window.event
     def update(dt):
-        planet_1.position = [4*np.cos(0.2*window.time), 0, 4*np.sin(0.2*window.time)]
-        planet_1.rotation = [0, 0.5*window.time, 0]
+        dtheta = window.time
+
+        planet_1.position = [4*np.cos(0.2*dtheta), 0, 4*np.sin(0.2*dtheta)]
+        planet_1.rotation = [0, 0.5*dtheta, 0]
+
+        planet_2.position = [8*np.cos(0.1*dtheta), 0, 4*np.sin(0.1*dtheta)]
+        planet_2.rotation = [0, 0.6*dtheta, 0]
+
+        planet_3.position = [12*np.cos(-0.05*dtheta), -np.pi/7, 12*np.sin(-0.05*dtheta)]
+        planet_3.rotation = [0, -0.3*dtheta, 0]
 
 
-        planet_2.position = [8*np.cos(0.1*window.time), 0, 4*np.sin(0.1*window.time)]
-        planet_2.rotation = [0, 0.6*window.time, 0]
 
-
-        planet_3.position = [12*np.cos(-0.05*window.time), -np.pi/7, 12*np.sin(-0.05*window.time)]
-        planet_3.rotation = [0, -0.3*window.time, 0]
+        planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
+        planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
 
         window.time += dt
