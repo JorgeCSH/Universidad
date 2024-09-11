@@ -55,11 +55,12 @@ class Controller(Window):
         self.fov = 90
         super().set_exclusive_mouse(True)
 
+# Configurar la ventana.
 WIDTH = 1366
 HEIGHT = 768
 window = Controller(WIDTH, HEIGHT, "Tarea 2")
 
-#Para los contorles
+# Configurar los contorles.
 keys = pyglet.window.key.KeyStateHandler()
 window.push_handlers(keys)
 window.set_exclusive_mouse(True)
