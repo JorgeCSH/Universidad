@@ -75,20 +75,29 @@ def real_rgb(r, g, b):
 
 # Clase para la nave.
 class Ship:
-    def __init__(self, size, vertices, indices, pipeline) -> None:
+    def __init__(self, size, vertices, indices, speed, pipeline) -> None:
         self.color = np.zeros(3, dtype=np.float32)
         self.position = np.zeros(3, dtype=np.float32)
         self.scale = np.ones(3, dtype=np.float32)
+        self.speed = speed
+        self.yaw = 0
+        self.pitch = 0
         self.rotation = np.zeros(3, dtype=np.float32)
         self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
         self._buffer.position = vertices
 
     def model(self):
         translation = Mat4.from_translation(Vec3(*self.position))
-        rotation = Mat4.from_rotation(self.rotation[0], Vec3(1, 0, 0)).rotate(self.rotation[1], Vec3(0, 1, 0)).rotate(
+        rotation = Mat4.from_rotation(self.rotation[0]+self.pitch, Vec3(1, 0, 0)).rotate(self.rotation[1]+self.yaw, Vec3(0, 1, 0)).rotate(
             self.rotation[2], Vec3(0, 0, 1))
         scale = Mat4.from_scale(Vec3(*self.scale))
         return translation @ rotation @ scale
+
+
+    def draw(self):
+        self._buffer.draw(GL_TRIANGLES)
+
+
 
 
 # Clase para la camara.
@@ -195,6 +204,12 @@ void main() {
 
     pipeline = ShaderProgram(Shader(vsource, "vertex"), Shader(fsource, "fragment"))
 
+    # Camara
+    cam = Camara(0, 2, 0, 5)
+
+    nae = models_from_file("objects/Extremely basic space shuttle (2).obj", pipeline)[0]
+
+
     # Objetos que se usaran
     # Configuracion del sol
     sol = models_from_file("objects/sun.obj", pipeline)[0]
@@ -230,10 +245,10 @@ void main() {
 
     # Extras
     # Nave provisional
-    provitional_ship = models_from_file("objects/ImageToStl.com_untitled8.obj", pipeline)[0]
+    provitional_ship = models_from_file("objects/Extremely basic space shuttle (2).obj", pipeline)[0]
     provitional_ship.color = real_rgb(150, 140, 150)
-    provitional_ship.scale = [.2] * 3
-    provitional_ship.position = [11+1, 0, 11+1]
+    provitional_ship.scale = [.5] * 3
+    provitional_ship.position = [2, 0, 2]
 
     # Bonus: luna, en este, este caso, del planeta 2
     planet_2_moon = models_from_file("objects/planet.obj", pipeline)[0]
@@ -245,8 +260,6 @@ void main() {
     # Escena
     scene = [sol, planet_1, planet_2, planet_3, planet_4, provitional_ship, planet_2_moon]
 
-    # Camara
-    cam = Camara(0, 0, 0, 5)
 
 
     @window.event
@@ -283,10 +296,9 @@ void main() {
         planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
-        provitional_ship.position = [11*np.cos(-0.05*dtheta)+1*np.cos(0.3*dtheta), -np.pi/7, 11*np.sin(-0.05*dtheta)+1*np.sin(0.3*dtheta)]
-        provitional_ship.rotation = [0, -(3/4)*dtheta, 0]
+        provitional_ship.rotation = [1,1 , 0]
 
-        window.time *= dt
+        window.time += dt
         cam.update(dt)
 
 
@@ -297,6 +309,7 @@ void main() {
         cam.yaw += dx * cam.sensitivity
         cam.pitch += dy * cam.sensitivity
         cam.pitch = clamp(cam.pitch, -(np.pi / 2 - 0.01), np.pi / 2 - 0.01)
+
 
 
     # Meterle shala a la maquina (Presionar tecla)
@@ -313,6 +326,7 @@ void main() {
             cam.direction[1] = -1
 
 
+
     # To' duro (Soltar la tecla)
     @window.event
     def on_key_release(symbol, modifiers):
@@ -323,11 +337,13 @@ void main() {
             cam.direction[1] = 0
 
 
+
     # Manejar to' volao (Scroll del mouse)
     @window.event
     def on_mouse_scroll(x, y, scroll_x, scroll_y):
         window.fov += scroll_y * .5
         window.fov = clamp(window.fov, 10, 90)
+
 
 
     pyglet.clock.schedule_interval(update, 1 / 165)  # Uno aqui arrogante con 165Hz en su monitor principal
