@@ -81,7 +81,7 @@ class Ship:
         self.scale = np.ones(3, dtype=np.float32)
         self.rotation = np.zeros(3, dtype=np.float32)
 
-        self.sensitivity = 0.01
+        self.sensitivity = 0.001
         self.yaw = 0
         self.pitch = 0
 
@@ -124,7 +124,7 @@ class Camara:
         self.pitch = 0
         self.speed = speed
         self.sensitivity = 0.01
-        self.front = np.array([0, 0, -1], dtype=np.float32)
+        self.front = np.array([1, 0, -1], dtype=np.float32)
         self.up = np.array([0, 1, 0], dtype=np.float32)
         self.direction = np.zeros(2)
 
