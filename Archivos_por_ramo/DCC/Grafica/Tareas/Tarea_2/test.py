@@ -81,6 +81,7 @@ class Ship:
         self.scale = np.ones(3, dtype=np.float32)
         self.rotation = np.zeros(3, dtype=np.float32)
 
+        self.sensitivity = 0.01
         self.yaw = 0
         self.pitch = 0
         self.direction = np.zeros(2)
@@ -301,7 +302,6 @@ void main() {
         planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
-        nae.rotation = [1,1 , 0]
 
         window.time += dt
         cam.update(dt)
@@ -311,9 +311,13 @@ void main() {
     # Volante de la nae (Mover el mouse)
     @window.event
     def on_mouse_motion(x, y, dx, dy):
-        cam.yaw *= dx * cam.sensitivity
-        cam.pitch *= dy * cam.sensitivity
-        cam.pitch *= clamp(cam.pitch, -(np.pi / 2 - 0.01), np.pi / 2 - 0.01)
+        cam.yaw *= dx * cam.sensitivity # += PARA QUE FUNCIONE
+        cam.pitch *= dy * cam.sensitivity # += PARA QUE FUNCIONE
+        cam.pitch = clamp(cam.pitch, -(np.pi / 2 - 0.01), np.pi / 2 - 0.01) # = PARA QUE FUNCIONE
+
+        nae.yaw += dx * nae.sensitivity # += PARA QUE FUNCIONE
+        nae.pitch += dy * nae.sensitivity   # += PARA QUE FUNCIONE
+        nae.pitch = clamp(nae.pitch, -(np.pi / 2 - 0.01), np.pi / 2 - 0.01)  # = PARA QUE FUNCIONE
 
 
 
@@ -321,14 +325,14 @@ void main() {
     @window.event
     def on_key_press(symbol, modifiers):
         if symbol == key.W:
-            cam.direction[0] = 1
+            cam.direction[0] *= 1
         if symbol == key.S:
-            cam.direction[0] = -1
+            cam.direction[0] *= -1
 
         if symbol == key.A:
-            cam.direction[1] = 1
+            cam.direction[1] *= 1
         if symbol == key.D:
-            cam.direction[1] = -1
+            cam.direction[1] *= -1
 
 
 
