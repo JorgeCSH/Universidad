@@ -236,7 +236,7 @@ void main() {
     planet_1.position = [4, 0, 4]
 
     # Planeta 2
-    planet_2 = models_from_file("objects/craneo.OBJ", pipeline, "model", 0)[0]
+    planet_2 = models_from_file("objects/craneo.obj", pipeline, "model", 0)[0]
     planet_2.color = real_rgb(220, 220, 220)
     planet_2.scale = [.5] * 3
     planet_2.position = [8, 0, 8]
