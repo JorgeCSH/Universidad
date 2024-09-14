@@ -92,7 +92,7 @@ class Ship:
 
     def update(self, dt):
         self.front[0] = np.cos(self.yaw) * np.cos(self.pitch)
-        self.front[1] = np.sin(self.pitch)*0
+        self.front[1] = np.sin(self.pitch) # z?
         self.front[2] = np.sin(self.yaw) * np.cos(self.pitch)
         self.front /= np.linalg.norm(self.front)
         dir = self.direction[0]*self.front + self.direction[1]*np.cross(self.up, self.front)
@@ -320,10 +320,6 @@ void main() {
     # Volante de la nae (Mover el mouse)
     @window.event
     def on_mouse_motion(x, y, dx, dy):
-        cam.yaw *= dx * cam.sensitivity # += PARA QUE FUNCIONE
-        cam.pitch *= dy * cam.sensitivity # += PARA QUE FUNCIONE
-        cam.pitch = clamp(cam.pitch, -(np.pi / 2 - 0.01), np.pi / 2 - 0.01) # = PARA QUE FUNCIONE
-
         nae.yaw += dy * nae.sensitivity # += PARA QUE FUNCIONE
         nae.pitch += dx * nae.sensitivity   # += PARA QUE FUNCIONE
         nae.pitch = clamp(nae.pitch, -(np.pi /4), np.pi / 4)  # = PARA QUE FUNCIONE
@@ -334,16 +330,12 @@ void main() {
     @window.event
     def on_key_press(symbol, modifiers):
         if symbol == key.W:
-            cam.direction[0] *= 1
             nae.direction[0] = 1
         if symbol == key.S:
-            cam.direction[0] *= -1
             nae.direction[0] = -1
         if symbol == key.A:
-            cam.direction[1] *= 1
             nae.direction[1] = 1
         if symbol == key.D:
-            cam.direction[1] *= -1
             nae.direction[1] = -1
 
 
@@ -352,11 +344,8 @@ void main() {
     @window.event
     def on_key_release(symbol, modifiers):
         if symbol == key.W or symbol == key.S:
-            cam.direction[0] = 0
             nae.direction[0] = 0
-
         if symbol == key.A or symbol == key.D:
-            cam.direction[1] = 0
             nae.direction[1] = 0
 
 
