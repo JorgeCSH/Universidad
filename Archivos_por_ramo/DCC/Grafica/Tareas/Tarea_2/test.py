@@ -80,16 +80,13 @@ class Ship:
         self.position = np.zeros(3, dtype=np.float32)
         self.scale = np.ones(3, dtype=np.float32)
         self.rotation = np.zeros(3, dtype=np.float32)
-
         self.sensitivity = 0.001
         self.yaw = 0
         self.pitch = 0
-
         self.speed = speed
         self.direction = np.zeros(2)
         self.front = np.array([0, 0, -1], dtype=np.float32)
         self.up = np.array([0, 1, 0], dtype=np.float32)
-
         self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
         self._buffer.position = vertices
 
@@ -98,12 +95,10 @@ class Ship:
         self.front[1] = np.sin(self.pitch)*0
         self.front[2] = np.sin(self.yaw) * np.cos(self.pitch)
         self.front /= np.linalg.norm(self.front)
-
         dir = self.direction[0]*self.front + self.direction[1]*np.cross(self.up, self.front)
         dir_norm = np.linalg.norm(dir)
         if dir_norm:
             dir /= dir_norm
-
         self.position += dir*self.speed*dt
 
     def model(self):
@@ -133,12 +128,10 @@ class Camara:
         self.front[1] = np.sin(self.pitch)
         self.front[2] = np.sin(self.yaw) * np.cos(self.pitch)
         self.front /= np.linalg.norm(self.front)
-
         dir = self.direction[0] * self.front + self.direction[1] * np.cross(self.up, self.front)
         dir_norm = np.linalg.norm(dir)
         if dir_norm:
             dir /= dir_norm
-
         self.position += dir * self.speed * dt
 
     def view(self):
@@ -175,7 +168,6 @@ def models_from_file(path, pipeline, clase, speed):
             meshes.append(m)
     else:
         meshes = [geom]
-
     models = []
     if clase == "model":
         for m in meshes:
@@ -189,7 +181,6 @@ def models_from_file(path, pipeline, clase, speed):
             m.apply_translation([-m.centroid[0], 0, -m.centroid[2]])
             vlist = tm.rendering.mesh_to_vertexlist(m)
             models.append(Ship(vlist[0], vlist[4][1], vlist[3], speed, pipeline))
-
     return models
 
 
