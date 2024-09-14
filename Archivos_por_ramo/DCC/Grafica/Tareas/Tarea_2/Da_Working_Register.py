@@ -6,27 +6,42 @@ class Ship:
         self.scale = np.ones(3, dtype=np.float32)
         self.rotation = np.zeros(3, dtype=np.float32)
 
+        self.sensitivity = 0.01
         self.yaw = 0
         self.pitch = 0
-        self.direction = np.zeros(2)
+
         self.speed = speed
-'''        
-        self.ship = models_from_file(path, self.pipeline)[0]
-        self.indices = models_from_file(path, self.pipeline)[3]
-        self.size = len(models_from_file(path, self.pipeline)[4][1]) // 3
-        self._buffer = pipeline.vertex_list_indexed(self.size, GL_TRIANGLES, self.indices)
-        self._buffer.position = models_from_file(path, self.pipeline)[4][1]
-'''
-    def place(self):
+        self.direction = np.zeros(2)
+        self.front = np.array([0, 0, -1], dtype=np.float32)
+        self.up = np.array([0, 1, 0], dtype=np.float32)
+
+        self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
+        self._buffer.position = vertices
+
+    def update(self, dt):
+        self.front[0] = np.cos(self.yaw) * np.cos(self.pitch)
+        self.front[1] = np.sin(self.pitch)
+        self.front[2] = np.sin(self.yaw) * np.cos(self.pitch)
+        self.front /= np.linalg.norm(self.front)
+
+        dir = self.direction[0]*self.front + self.direction[1]*np.cross(self.up, self.front)
+        dir_norm = np.linalg.norm(dir)
+        if dir_norm:
+            dir /= dir_norm
+
+        self.position += dir*self.speed*dt
+
+    def model(self):
         translation = Mat4.from_translation(Vec3(*self.position))
-        rotation = Mat4.from_rotation(self.rotation[0] + self.pitch, Vec3(1, 0, 0)).rotate(self.rotation[1] + self.yaw,
-                                                                                           Vec3(0, 1, 0)).rotate(
-            self.rotation[2], Vec3(0, 0, 1))
+        rotation = Mat4.from_rotation(self.rotation[0] + self.pitch, Vec3(1, 0, 0)).rotate(self.rotation[1] + self.yaw, Vec3(0, 1, 0)).rotate(self.rotation[2], Vec3(0, 0, 1))
         scale = Mat4.from_scale(Vec3(*self.scale))
         return translation @ rotation @ scale
 
     def draw(self):
         self._buffer.draw(GL_TRIANGLES)
+
+
+
 
 
 def file_to_vertexlist(self, path, pipeline):
