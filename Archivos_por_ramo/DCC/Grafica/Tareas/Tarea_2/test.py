@@ -75,32 +75,28 @@ def real_rgb(r, g, b):
 
 # Clase para la nave.
 class Ship:
-    def __init__(self, path, size, speed, pipeline) -> None:
+    def __init__(self, size, vertices, indices, speed, pipeline) -> None:
         self.color = np.zeros(3, dtype=np.float32)
         self.position = np.zeros(3, dtype=np.float32)
         self.scale = np.ones(3, dtype=np.float32)
         self.rotation = np.zeros(3, dtype=np.float32)
-        self.indices = models_from_file(self.path, self.pipeline)[3]
+
         self.yaw = 0
         self.pitch = 0
-        self.speed = speed
-        self.ship = models_from_file(self.path, self.pipeline)[0]
         self.direction = np.zeros(2)
-        self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, self.indices)
-        self._buffer.position = self.models_from_file(self.path, self.pipeline)[4][1]
+        self.speed = speed
 
-    def place(self):
+        self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
+        self._buffer.position = vertices
+
+    def model(self):
         translation = Mat4.from_translation(Vec3(*self.position))
-        rotation = Mat4.from_rotation(self.rotation[0]+self.pitch, Vec3(1, 0, 0)).rotate(self.rotation[1]+self.yaw, Vec3(0, 1, 0)).rotate(
-            self.rotation[2] , Vec3(0, 0, 1))
+        rotation = Mat4.from_rotation(self.rotation[0] + self.pitch, Vec3(1, 0, 0)).rotate(self.rotation[1] + self.yaw, Vec3(0, 1, 0)).rotate(self.rotation[2], Vec3(0, 0, 1))
         scale = Mat4.from_scale(Vec3(*self.scale))
         return translation @ rotation @ scale
 
     def draw(self):
         self._buffer.draw(GL_TRIANGLES)
-
-
-
 
 
 # Clase para la camara.
@@ -154,7 +150,7 @@ class Model():
 
 
 # Funcion para cargar los modelos desde un archivo, estos son en formato .obj (objetos).
-def models_from_file(path, pipeline):
+def models_from_file(path, pipeline, clase, speed):
     geom = tm.load(path)
     meshes = []
     if isinstance(geom, tm.Scene):
@@ -164,11 +160,18 @@ def models_from_file(path, pipeline):
         meshes = [geom]
 
     models = []
-    for m in meshes:
-        m.apply_scale(2.0 / m.scale)
-        m.apply_translation([-m.centroid[0], 0, -m.centroid[2]])
-        vlist = tm.rendering.mesh_to_vertexlist(m)
-        models.append(Model(vlist[0], vlist[4][1], vlist[3], pipeline))
+    if clase == "model":
+        for m in meshes:
+            m.apply_scale(2.0 / m.scale)
+            m.apply_translation([-m.centroid[0], 0, -m.centroid[2]])
+            vlist = tm.rendering.mesh_to_vertexlist(m)
+            models.append(Model(vlist[0], vlist[4][1], vlist[3], pipeline))
+    elif clase == "ship":
+        for m in meshes:
+            m.apply_scale(2.0 / m.scale)
+            m.apply_translation([-m.centroid[0], 0, -m.centroid[2]])
+            vlist = tm.rendering.mesh_to_vertexlist(m)
+            models.append(Ship(vlist[0], vlist[4][1], vlist[3], speed, pipeline))
 
     return models
 
@@ -210,58 +213,55 @@ void main() {
     # Camara
     cam = Camara(0, 2, 0, 5)
 
-    nae = models_from_file("objects/Extremely basic space shuttle (2).obj", pipeline)[0]
-
-
     # Objetos que se usaran
     # Configuracion del sol
-    sol = models_from_file("objects/sun.obj", pipeline)[0]
+    sol = models_from_file("objects/sun.obj", pipeline, "model", 0)[0]
     sol.color = real_rgb(255, 255, 0)
     sol.scale = [1.5]*3
     sol.position = [0, 0, 0]
 
     # Configuracion planetas
     # Planeta 1
-    planet_1 = models_from_file("objects/planet.obj", pipeline)[0]
+    planet_1 = models_from_file("objects/planet.obj", pipeline, "model", 0)[0]
     planet_1.color = real_rgb(30, 50, 120)
     planet_1.scale = [.3] * 3
     planet_1.position = [4, 0, 4]
 
     # Planeta 2
-    planet_2 = models_from_file("objects/craneo.OBJ", pipeline)[0]
+    planet_2 = models_from_file("objects/craneo.OBJ", pipeline, "model", 0)[0]
     planet_2.color = real_rgb(220, 220, 220)
     planet_2.scale = [.5] * 3
     planet_2.position = [8, 0, 8]
 
     # Planeta 3
-    planet_3 = models_from_file("objects/New rojoooect.obj", pipeline)[0]
+    planet_3 = models_from_file("objects/New rojoooect.obj", pipeline, "model", 0)[0]
     planet_3.color = real_rgb(80, 80, 80)
     planet_3.scale = [1] * 3
     planet_3.position = [11, 0, 11]
 
     # Planeta 4
-    planet_4 = models_from_file("objects/skipper.obj", pipeline)[0]
+    planet_4 = models_from_file("objects/skipper.obj", pipeline, "model", 0)[0]
     planet_4.color = real_rgb(150, 42, 50)
     planet_4.scale = [0.4] * 3
     planet_4.position = [13, 0, 13]
 
 
     # Extras
-    # Nave provisional
-    provitional_ship = Ship("objects/Extremely basic space shuttle (2).obj", speed=1, pipeline=pipeline)
-    provitional_ship.color = real_rgb(150, 140, 150)
-    provitional_ship.scale = [.5] * 3
-    provitional_ship.position = [2, 1, 1]
+    nae = models_from_file("objects/Extremely basic space shuttle (2).obj", pipeline, "ship", speed = 5)[0]
+    nae.color = real_rgb(150, 140, 150)
+    nae.scale = [.5] * 3
+    nae.position = [2, 1, 1]
+
 
     # Bonus: luna, en este, este caso, del planeta 2
-    planet_2_moon = models_from_file("objects/planet.obj", pipeline)[0]
+    planet_2_moon = models_from_file("objects/planet.obj", pipeline, "model", 0)[0]
     planet_2_moon.color = real_rgb(70, 150, 80)
     planet_2_moon.scale = [.1] * 3
     planet_2_moon.position = [planet_2.position[0]+0.5, planet_2.position[1]+0.5, planet_2.position[2]+0.5]
 
 
     # Escena
-    scene = [sol, planet_1, planet_2, planet_3, planet_4, provitional_ship, planet_2_moon]
+    scene = [sol, planet_1, planet_2, planet_3, planet_4, nae, planet_2_moon]
 
 
 
@@ -274,8 +274,8 @@ void main() {
         with pipeline:
             pipeline["view"] = cam.view()
             pipeline["projection"] = Mat4.perspective_projection(window.aspect_ratio, 1, 10, window.fov)
-            pipeline["color"] = provitional_ship.color
-            pipeline["model"] = provitional_ship.place()
+            pipeline["color"] = nae.color
+            pipeline["model"] = nae.model()
             for m in scene:
                 pipeline["color"] = m.color
                 pipeline["model"] = m.model()
@@ -301,7 +301,7 @@ void main() {
         planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
-        provitional_ship.rotation = [1,1 , 0]
+        nae.rotation = [1,1 , 0]
 
         window.time += dt
         cam.update(dt)
