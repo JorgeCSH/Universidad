@@ -362,9 +362,9 @@ void main() {
     # Movimiento del mouse
     @window.event
     def on_mouse_motion(x, y, dx, dy):
-        nae.yaw += dx * nae.sensitivity # += PARA QUE FUNCIONE
-        nae.pitch += dy * nae.sensitivity   # += PARA QUE FUNCIONE
-        nae.pitch = clamp(nae.pitch, -(np.pi /2), np.pi / 2)  # = PARA QUE FUNCIONE
+        nae.yaw += dx * nae.sensitivity
+        nae.pitch += dy * nae.sensitivity
+        nae.pitch = clamp(nae.pitch, -(np.pi /2), np.pi / 2)
 
 
     # Presionar tecla W o S
