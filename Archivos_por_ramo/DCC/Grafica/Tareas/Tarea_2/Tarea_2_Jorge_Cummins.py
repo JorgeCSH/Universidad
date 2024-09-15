@@ -78,72 +78,66 @@ class Ship:
         self.color = np.zeros(3, dtype=np.float32)
         self.position = np.zeros(3, dtype=np.float32)
         self.scale = np.ones(3, dtype=np.float32)
-        self.rotation = np.zeros(3, dtype=np.float32)  # pitch, yaw, roll
+        self.rotation = np.array([0, -np.pi/2, 0])
         self.sensitivity = 0.001
-        self.yaw = 0  # Rotation around the y-axis
-        self.pitch = 0  # Rotation around the x-axis
+        self.yaw = 0
+        self.pitch = 0
         self.speed = speed
-        self.direction = np.zeros(2)  # Forward/backward and left/right
+        self.direction = np.zeros(2)
         self.front = np.array([0, 0, -1], dtype=np.float32)
         self.up = np.array([0, 1, 0], dtype=np.float32)
         self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
         self._buffer.position = vertices
 
     def model(self):
-        # Construct transformation matrix
+        # Montamos matriz de transformacion
+        posx = self.position
         translation = Mat4.from_translation(Vec3(*self.position))
-        rotation = Mat4.from_rotation(self.rotation[0] + self.pitch, Vec3(1, 0, 0)).rotate(
-            self.rotation[1] - self.yaw, Vec3(0, 1, 0)).rotate(self.rotation[2], Vec3(0, 0, 1))
+        rotation = Mat4.from_rotation(self.pitch, Vec3(1, 0, 0)).rotate(self.rotation[1]-self.yaw, Vec3(0, 1, 0)).rotate(self.rotation[2], Vec3(0, 0, 1))
         scale = Mat4.from_scale(Vec3(*self.scale))
         return translation @ rotation @ scale
 
     def update(self, dt):
-        # Update the front vector based on yaw and pitch
+        # Update la parte delantera (vector front)
         self.front[0] = np.cos(self.yaw) * np.cos(self.pitch)
         self.front[1] = np.sin(self.pitch)
         self.front[2] = np.sin(self.yaw) * np.cos(self.pitch)
         self.front /= np.linalg.norm(self.front)
 
-        # Calculate the movement direction
-        right = np.cross(self.up, self.front)
-        dir = self.direction[0] * self.front + self.direction[1] * right
+        # Moviemiento basado en direccion de la nave
+        dir = self.direction[0] * self.front + self.direction[1] * np.cross(self.up, self.front)
         dir_norm = np.linalg.norm(dir)
         if dir_norm:
             dir /= dir_norm
 
-        # Update the ship's position
+        # Updatear la posicion de la nae
         self.position += dir * self.speed * dt
 
     def draw(self):
         self._buffer.draw(GL_TRIANGLES)
 
 
+
+
 class Camara:
-    def __init__(self, target, distance=5, height=2, speed=1) -> None:
-        self.target = target  # Reference to the ship
-        self.distance = distance
-        self.height = height
-        self.speed = speed
-        self.sensitivity = 0.01
+    def __init__(self, target) -> None:
+        self.target = target # objeto que queremos seguir
         self.position = np.zeros(3, dtype=np.float32)
         self.front = np.array([0, 0, -1], dtype=np.float32)
         self.up = np.array([0, 1, 0], dtype=np.float32)
 
     def update(self, dt):
-        # Calculate the camera position in spherical coordinates
-        offset = np.array([0, self.height, -self.distance], dtype=np.float32)
-        right = np.cross(self.target.up, self.target.front)
-        camera_position = self.target.position + self.target.front * offset[2] + self.target.up * offset[1] + right * offset[0]
+        self.position = self.target.position - self.target.front + self.target.up
 
-        # Set the camera position and update the front vector
-        self.position = camera_position
+        # Actualizar la direccion de la camara
         self.front = self.target.position - self.position
-
-        # Ensure the front vector is normalized
         self.front /= np.linalg.norm(self.front)
+
+        self.up = np.array([0, 1, 0], dtype=np.float32)
 
     def view(self):
         return Mat4.look_at(Vec3(*self.position), Vec3(*(self.position + self.front)), Vec3(*self.up))
+
 
 
 
@@ -228,7 +222,6 @@ void main() {
 
     pipeline = ShaderProgram(Shader(vsource, "vertex"), Shader(fsource, "fragment"))
 
-    # Camara
 
 
     # Objetos que se usaran
@@ -265,12 +258,10 @@ void main() {
 
 
     # Extras
-    nae = models_from_file("objects/ufo.obj", pipeline, "ship", speed = 5)[0]
+    nae = models_from_file("objects/Extremely basic space shuttle (2).obj", pipeline, "ship", speed = 5)[0]
     nae.color = real_rgb(150, 140, 150)
-    #nae.rotation = [0, -np.pi/2, 0]
     nae.scale = [.5] * 3
     nae.position = [2, 1, 0]
-
 
     # Bonus: luna, en este, este caso, del planeta 2
     planet_2_moon = models_from_file("objects/planet.obj", pipeline, "model", 0)[0]
@@ -279,7 +270,7 @@ void main() {
     planet_2_moon.position = [planet_2.position[0]+0.5, planet_2.position[1]+0.5, planet_2.position[2]+0.5]
 
 
-    cam = Camara(nae, 2, 0, 0)
+    cam = Camara(nae)
     # Escena
     scene = [sol, planet_1, planet_2, planet_3, planet_4, nae, planet_2_moon]
 
@@ -321,6 +312,8 @@ void main() {
 
         planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
+
+        #nae.rotation = [np.cos(nae.pitch), np.sin(nae.yaw), 0]
 
 
         window.time += dt
@@ -371,7 +364,7 @@ void main() {
 
 
 
-    pyglet.clock.schedule_interval(update, 1 / 165)  # Uno aqui arrogante con 165Hz en su monitor principal
+    pyglet.clock.schedule_interval(update, 1 / 60)  # Uno aqui arrogante con 165Hz en su monitor principal
     pyglet.app.run()
 
 
