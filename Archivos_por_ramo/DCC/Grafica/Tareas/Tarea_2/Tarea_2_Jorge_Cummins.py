@@ -48,31 +48,36 @@ sys.path.append(os.path.dirname((os.path.dirname(__file__))))
 
 # Seccion 2: configuracion ############################################################################################
 #######################################################################################################################
+# Clase "Controller" para la ventana
+# Es la que fue entregada por el cuerpo docente
 class Controller(Window):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.time = 0.0
         self.fov = 90
-        super().set_exclusive_mouse(True)
 
-# Configurar la ventana.
-WIDTH = 800
-HEIGHT = 600
+
+# Configurar la ventana, tambien la que fue entregada por el cuerpo docente con las mismas dimensiones.
+WIDTH = 1000
+HEIGHT = 1000
 window = Controller(WIDTH, HEIGHT, "Tarea 2")
 
 # Configurar los contorles.
 keys = pyglet.window.key.KeyStateHandler()
 window.push_handlers(keys)
 window.set_exclusive_mouse(True)
-
-
 # Seccion 3: definimos las clases y funciones que se usaran ###########################################################
 #######################################################################################################################
-# Funcion para insertar los valores de los colores en vez de normalizarlos .
+# Funcion para insertar los valores de los colores en vez de normalizarlos.
+# El objetivo de esta funcion es tomar los valores de RGB originales [0, 255] y normalizarlos a [0, 1].
+# Fue para insertar los colores sin tener la necesidad de normalizarlos en cada instante.
+# Toma los valores asociados a RGB y devuelve una tupla normalizada.
 def real_rgb(r, g, b):
     return r / 255, g / 255, b / 255
 
 
+# Clase "Ship" para la nave
+# Clase que se encarga de contener todos los atributos de la nave
 class Ship:
     def __init__(self, size, vertices, indices, speed, pipeline) -> None:
         self.color = np.zeros(3, dtype=np.float32)
@@ -118,7 +123,8 @@ class Ship:
 
 
 
-
+# Clase camara
+# Clase que se encarga de tener todos los atributos de la camara.
 class Camara:
     def __init__(self, target) -> None:
         self.target = target # objeto que queremos seguir
@@ -139,8 +145,14 @@ class Camara:
         return Mat4.look_at(Vec3(*self.position), Vec3(*(self.position + self.front)), Vec3(*self.up))
 
 
+'''
+Clase Model
 
+Clase que se encarga de contener todos los atributos de los objetos que seran utilizados en la escena que no son 
+la nave.
 
+Fue hecha en base a la utilizada y creada en la clase por el auxiliar (auxiliar numero 4).
+'''
 class Model:
     def __init__(self, size, vertices, indices, pipeline) -> None:
         self.color = np.zeros(3, dtype=np.float32)
@@ -162,8 +174,13 @@ class Model:
 
 
 
-# Funcion para cargar los modelos desde un archivo, estos son en formato .obj (objetos).
-def models_from_file(path, pipeline, clase, speed):
+'''
+Funcion models_from_file.
+
+Al igual que la clase model, fue usada en clase auxiliar y permite, en base a un "path" (o direccion) de un objeto, 
+cargarlo seleccionando en "clase" si corresponde a algun modelo o una nave que se movera con una rapidez "speed". 
+'''
+def models_from_file(path, clase, speed, pipeline):
     geom = tm.load(path)
     meshes = []
     if isinstance(geom, tm.Scene):
@@ -172,12 +189,14 @@ def models_from_file(path, pipeline, clase, speed):
     else:
         meshes = [geom]
     models = []
+
     if clase == "model":
         for m in meshes:
             m.apply_scale(2.0 / m.scale)
             m.apply_translation([-m.centroid[0], 0, -m.centroid[2]])
             vlist = tm.rendering.mesh_to_vertexlist(m)
             models.append(Model(vlist[0], vlist[4][1], vlist[3], pipeline))
+
     elif clase == "ship":
         for m in meshes:
             m.apply_scale(2.0 / m.scale)
@@ -187,9 +206,13 @@ def models_from_file(path, pipeline, clase, speed):
     return models
 
 
-
+# Seccion 4: Configuracion de la escena ###############################################################################
+#######################################################################################################################
+'''
+Configuracion de los Shaders
+'''
 if __name__ == "__main__":
-    vsource = """
+    vertex_source = """
 #version 330
 in vec3 position;
 in vec3 color;
@@ -207,7 +230,7 @@ void main() {
 }
     """
 
-    fsource = """
+    fragment_source = """
 #version 330
 in vec3 fragColor;
 
@@ -220,60 +243,67 @@ void main() {
 }
   """
 
-    pipeline = ShaderProgram(Shader(vsource, "vertex"), Shader(fsource, "fragment"))
+    # Aca creamos el pipeline con los shaders
+    vert_program = pyglet.graphics.shader.Shader(vertex_source, "vertex")
+    frag_program = pyglet.graphics.shader.Shader(fragment_source, "fragment")
+    pipeline = pyglet.graphics.shader.ShaderProgram(vert_program, frag_program)
 
 
 
-    # Objetos que se usaran
-    # Configuracion del sol
-    sol = models_from_file("objects/sun.obj", pipeline, "model", 0)[0]
-    sol.color = real_rgb(255, 255, 0)
-    sol.scale = [1.5]*3
-    sol.position = [0, 0, 0]
+    # Aca van los objetos que se van a usar en la escena
+    # Configuramos el sol.
+    sol = models_from_file("objects/sun.obj", "model", 0, pipeline)[0]  # Cargamos el path y creamos usando "Model".
+    sol.color = real_rgb(255, 255, 0)                                            # Le damos color usando la funcion "real_rgb" para normalizarla.
+    sol.scale = [1.5]*3                                                                   # Escalamos el sol.
+    sol.position = [0, 0, 0]                                                              # Posicion, lo situamos en el origen
+
 
     # Configuracion planetas
-    # Planeta 1
-    planet_1 = models_from_file("objects/planet.obj", pipeline, "model", 0)[0]
+    # Planeta 1, el mas cercano al sol, usamos el modelo 3D dado por el cuerpo docente.
+    planet_1 = models_from_file("objects/planet.obj", "model", 0, pipeline)[0]
     planet_1.color = real_rgb(30, 50, 120)
     planet_1.scale = [.3] * 3
     planet_1.position = [4, 0, 4]
 
-    # Planeta 2
-    planet_2 = models_from_file("objects/craneo.obj", pipeline, "model", 0)[0]
+    # Planeta 2, segundo mas cercano al sol, usamos un modelo de la comunidad de Sketchfab.
+    planet_2 = models_from_file("objects/craneo.obj", "model", 0, pipeline)[0]
     planet_2.color = real_rgb(220, 220, 220)
     planet_2.scale = [.5] * 3
     planet_2.position = [8, 0, 8]
 
-    # Planeta 3
-    planet_3 = models_from_file("objects/New rojoooect.obj", pipeline, "model", 0)[0]
+    # Planeta 3, tercer planeta, usamos un modelo de la comunidad de Sketchfab.
+    planet_3 = models_from_file("objects/Moai.obj", "model", 0, pipeline)[0]
     planet_3.color = real_rgb(80, 80, 80)
     planet_3.scale = [1] * 3
     planet_3.position = [11, 0, 11]
 
-    # Planeta 4
-    planet_4 = models_from_file("objects/skipper.obj", pipeline, "model", 0)[0]
+    # Planeta 4, planeta mas alejado del sol, usamos un modelo de la comunidad de Sketchfab.
+    planet_4 = models_from_file("objects/skipper.obj", "model", 0, pipeline)[0]
     planet_4.color = real_rgb(150, 42, 50)
     planet_4.scale = [0.4] * 3
     planet_4.position = [13, 0, 13]
 
 
-    # Extras
-    nae = models_from_file("objects/Extremely basic space shuttle (2).obj", pipeline, "ship", speed = 5)[0]
+    # Cargamos la nave usando un modelo de la comunidad de Sketchfab.
+    nae = models_from_file("objects/space_shuttle.obj", "ship", 5, pipeline)[0] # Similar al resto de objetos, solo que ahora se usa "Ship" y se le otorga una velocidad diferente de 0.
     nae.color = real_rgb(150, 140, 150)
     nae.scale = [.5] * 3
     nae.position = [2, 1, 0]
 
-    # Bonus: luna, en este, este caso, del planeta 2
-    planet_2_moon = models_from_file("objects/planet.obj", pipeline, "model", 0)[0]
+
+    # Bonus: luna para un planeta, en este, este caso, del planeta 2. Se usa el objeto entregado por el cuerpo docente
+    planet_2_moon = models_from_file("objects/planet.obj", "model", 0, pipeline)[0]
     planet_2_moon.color = real_rgb(70, 150, 80)
     planet_2_moon.scale = [.1] * 3
     planet_2_moon.position = [planet_2.position[0]+0.5, planet_2.position[1]+0.5, planet_2.position[2]+0.5]
 
 
-    cam = Camara(nae)
-    # Escena
+    # En una lista metemos todos los objetos que se usaran en la escena.
     scene = [sol, planet_1, planet_2, planet_3, planet_4, nae, planet_2_moon]
 
+
+    # Cargamos la camara, recibe como parametro la nave/objeto que quiere seguir.
+    cam = Camara(nae)
 
 
     @window.event

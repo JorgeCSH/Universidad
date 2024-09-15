@@ -65,10 +65,10 @@ def file_to_vertexlist(self, path, pipeline):
 
 
 
-Ship("objects/Extremely basic space shuttle (2).obj", speed = 1)
+Ship("objects/space_shuttle.obj", speed = 1)
 
 # Para no borrarlo por accidente:
-provitional_ship = models_from_file("objects/Extremely basic space shuttle (2).obj", pipeline)[0]
+provitional_ship = models_from_file("objects/space_shuttle.obj", pipeline)[0]
 provitional_ship.color = real_rgb(150, 140, 150)
 provitional_ship.scale = [.5] * 3
 provitional_ship.position = [2, 1, 1]
