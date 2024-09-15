@@ -218,9 +218,9 @@ in vec3 position;
 in vec3 color;
 
 uniform mat4 transform;
-uniform mat4 model;
-uniform mat4 projection = mat4(1.0);
 uniform mat4 view = mat4(1.0);
+uniform mat4 projection = mat4(1.0);
+uniform mat4 model;
 
 out vec3 fragColor;
 
@@ -232,6 +232,7 @@ void main() {
 
     fragment_source = """
 #version 330
+
 in vec3 fragColor;
 
 uniform vec3 color;
@@ -306,22 +307,28 @@ void main() {
     cam = Camara(nae)
 
 
+    # Dibjuamos en la ventana
     @window.event
     def on_draw():
-        window.clear()
+
         glClearColor(0.1, 0.1, 0.1, 0.0)
-        glEnable(GL_DEPTH_TEST)
+
+        window.clear()
+
         pipeline.use()
-        with pipeline:
-            pipeline["view"] = cam.view()
-            pipeline["projection"] = Mat4.perspective_projection(window.aspect_ratio, 1, 20, window.fov)
-            pipeline["color"] = nae.color
-            pipeline["model"] = nae.model()
-            cam.target = nae
-            for m in scene:
-                pipeline["color"] = m.color
-                pipeline["model"] = m.model()
-                m.draw()
+
+        pipeline["view"] = cam.view()
+        pipeline["projection"] = Mat4.perspective_projection(WIDTH/HEIGHT, 1, 20, window.fov)
+
+        pipeline["color"] = nae.color
+        pipeline["model"] = nae.model()
+        nae.draw()
+
+        cam.target = nae
+        for m in scene:
+            pipeline["color"] = m.color
+            pipeline["model"] = m.model()
+            m.draw()
 
     @window.event
     def update(dt):
@@ -352,8 +359,7 @@ void main() {
 
 
 
-    # Pa ponerle weno a la maquina
-    # Volante de la nae (Mover el mouse)
+    # Movimiento del mouse
     @window.event
     def on_mouse_motion(x, y, dx, dy):
         nae.yaw += dx * nae.sensitivity # += PARA QUE FUNCIONE
@@ -361,40 +367,23 @@ void main() {
         nae.pitch = clamp(nae.pitch, -(np.pi /2), np.pi / 2)  # = PARA QUE FUNCIONE
 
 
-
-    # Meterle shala a la maquina (Presionar tecla)
+    # Presionar tecla W o S
     @window.event
     def on_key_press(symbol, modifiers):
         if symbol == key.W:
             nae.direction[0] = 1
-        if symbol == key.S:
-            nae.direction[0] = -1
-        if symbol == key.A:
-            nae.direction[1] = 1
         if symbol == key.D:
             nae.direction[1] = -1
 
 
-
-    # To' duro (Soltar la tecla)
+    # Soltar tecla W o S
     @window.event
     def on_key_release(symbol, modifiers):
         if symbol == key.W or symbol == key.S:
             nae.direction[0] = 0
-        if symbol == key.A or symbol == key.D:
-            nae.direction[1] = 0
 
 
-
-    # Manejar to' volao (Scroll del mouse)
-    @window.event
-    def on_mouse_scroll(x, y, scroll_x, scroll_y):
-        window.fov += scroll_y * .5
-        window.fov = clamp(window.fov, 10, 90)
-
-
-
-    pyglet.clock.schedule_interval(update, 1 / 60)  # Uno aqui arrogante con 165Hz en su monitor principal
+    pyglet.clock.schedule_interval(update, 1 / 60)
     pyglet.app.run()
 
 
