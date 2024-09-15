@@ -83,24 +83,16 @@ class Ship:
         self.color = np.zeros(3, dtype=np.float32)
         self.position = np.zeros(3, dtype=np.float32)
         self.scale = np.ones(3, dtype=np.float32)
-        self.rotation = np.array([0, -np.pi/2, 0])
+        self.rotation = np.zeros(3, dtype=np.float32)
         self.sensitivity = 0.001
         self.yaw = 0
         self.pitch = 0
         self.speed = speed
-        self.direction = np.zeros(2)
+        self.direction = 0
         self.front = np.array([0, 0, -1], dtype=np.float32)
         self.up = np.array([0, 1, 0], dtype=np.float32)
         self._buffer = pipeline.vertex_list_indexed(size, GL_TRIANGLES, indices)
         self._buffer.position = vertices
-
-    def model(self):
-        # Montamos matriz de transformacion
-        posx = self.position
-        translation = Mat4.from_translation(Vec3(*self.position))
-        rotation = Mat4.from_rotation(self.pitch, Vec3(1, 0, 0)).rotate(self.rotation[1]-self.yaw, Vec3(0, 1, 0)).rotate(self.rotation[2], Vec3(0, 0, 1))
-        scale = Mat4.from_scale(Vec3(*self.scale))
-        return translation @ rotation @ scale
 
     def update(self, dt):
         # Update la parte delantera (vector front)
@@ -110,13 +102,15 @@ class Ship:
         self.front /= np.linalg.norm(self.front)
 
         # Moviemiento basado en direccion de la nave
-        dir = self.direction[0] * self.front + self.direction[1] * np.cross(self.up, self.front)
-        dir_norm = np.linalg.norm(dir)
-        if dir_norm:
-            dir /= dir_norm
+        self.position += self.direction * self.front* self.speed*dt
 
-        # Updatear la posicion de la nae
-        self.position += dir * self.speed * dt
+    def model(self):
+        # Montamos matriz de transformacion
+        translation = Mat4.from_translation(Vec3(*self.position))
+        rotation = Mat4.from_rotation(self.rotation[0], Vec3(1, 0, 0)).rotate(-np.pi/2+self.rotation[1]-self.yaw, Vec3(0, 1, 0)).rotate(self.rotation[2], Vec3(0, 0, 1))
+        scale = Mat4.from_scale(Vec3(*self.scale))
+        return translation @ rotation @ scale
+
 
     def draw(self):
         self._buffer.draw(GL_TRIANGLES)
@@ -353,9 +347,9 @@ void main() {
         #nae.rotation = [np.cos(nae.pitch), np.sin(nae.yaw), 0]
 
 
-        window.time += dt
         nae.update(dt)
         cam.update(dt)
+        window.time += dt
 
 
 
@@ -371,16 +365,16 @@ void main() {
     @window.event
     def on_key_press(symbol, modifiers):
         if symbol == key.W:
-            nae.direction[0] = 1
-        if symbol == key.D:
-            nae.direction[1] = -1
+            nae.direction = 1
+        if symbol == key.S:
+            nae.direction = -1
 
 
     # Soltar tecla W o S
     @window.event
     def on_key_release(symbol, modifiers):
         if symbol == key.W or symbol == key.S:
-            nae.direction[0] = 0
+            nae.direction = 0
 
 
     pyglet.clock.schedule_interval(update, 1 / 60)
