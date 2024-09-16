@@ -9,20 +9,20 @@
     Fecha en que se Entrego: 15 de Septiembre de 2024 (atraso autorizado)
 -----------------------------------------------------------------------------------------------------------------------
     Palabras Previas:
-    Este archivo (hasta el momento en que se envia) contiene los codigos utilizados para la implementacion de la tarea
+    Este archivo (hasta el momento en que se envía) contiene los códigos utilizados para la implementación de la tarea
     2 de la asignatura de Modelación y Computación Gráfica para Ingenieros. Esta fue dividida en diferentes secciones
-    para intentar mejorar su comprension. Ademas, se intento incluir la mayor cantidad de comentarios posibles para
-    explicar que se intentaba realizar. En caso de cualquier sugerencia que pueda hacer mas simple la correccion o
+    para intentar mejorar su comprensión. Ademas, se intento incluir la mayor cantidad de comentarios posibles para
+    explicar que se intentaba realizar. En caso de cualquier sugerencia que pueda hacer más simple la corrección o
     de manera general es bien recibida.
 
     A la hora de realizar esta tarea fue de gran relevancia el material entregado por el equipo docente, de esta forma
-    se agradece este material que sirvio de fundamento para el desarrollo de la tarea, donde se implementaron clases
-    como la clase "Model", "Camara" y la funcion "models_from_file" fueron adaptaciones de las otorgadas por el equipo
-    docente. Tambien, si bien se realizo en un documento aparte, se tomo como inspiracion el template otorgado por los
+    se agradece este material que sirvió de fundamento para el desarrollo de la tarea, donde se implementaron clases
+    como la clase "Model", "Camara" y la función "models_from_file" fueron adaptaciones de las otorgadas por el equipo
+    docente. También, si bien se realizó en un documento aparte, se tomó como inspiración el template otorgado por los
     profesores.
 
-    La realizacion de esta tarea conto con la implementacion de objetos externos, todos provenientes de la pagina
-    "sketcfab", comunidad que se desarrolladores y distribuidores de, entre diferentes productos, objetos para
+    La realización de esta tarea contó con la implementación de objetos externos, todos provenientes de la página
+    "sketcfab", comunidad de desarrolladores y distribuidores de, entre diferentes productos, objetos para
     modelacion (.obj).
 =======================================================================================================================
 """
@@ -76,8 +76,8 @@ window.set_exclusive_mouse(True)
 # Seccion 3: definimos las clases y funciones que se usaran ###########################################################
 #######################################################################################################################
 '''
-Funcion para insertar los valores de los colores en vez de normalizarlos.
-El objetivo de esta funcion es tomar los valores de RGB originales [0, 255] y normalizarlos a [0, 1].
+Función para insertar los valores de los colores en vez de normalizarlos.
+El objetivo de esta función es tomar los valores de RGB originales [0, 255] y normalizarlos a [0, 1].
 Fue para insertar los colores sin tener la necesidad de normalizarlos en cada instante.
 Toma los valores asociados a RGB y devuelve una tupla normalizada.
 '''
@@ -87,7 +87,7 @@ def real_rgb(r, g, b):
 '''
 Clase "Ship" 
 Clase que se encarga de contener todos los atributos de la nave.
-Para su creacion se tomo como inspiracion la clase "Camera" de la clase auxiliar 4.
+Para su creación se tomó como inspiración la clase "Camera" de la clase auxiliar 4.
 '''
 class Ship:
     def __init__(self, size, vertices, indices, speed, pipeline) -> None:
@@ -126,9 +126,9 @@ class Ship:
 
 
 '''
-Clase camara
-Clase que se encarga de tener todos los atributos de la camara.
-Calcula la posicion de la camara de tal manera que sigue al objeto que se le entregue
+Clase Camara
+Clase que se encarga de tener todos los atributos de la cámara.
+Calcula la posición de la cámara de tal manera que sigue al objeto que se le entregue
 '''
 class Camara():
     # Inicializamos los atributos
@@ -154,10 +154,10 @@ class Camara():
 '''
 Clase Model
 
-Clase que se encarga de contener todos los atributos de los objetos que seran utilizados en la escena que no son 
+Clase que se encarga de contener todos los atributos de los objetos que serán utilizados en la escena que no son 
 la nave.
 
-Fue hecha en base a la utilizada y creada en la clase por el auxiliar (auxiliar numero 4).
+Fue hecha basándonos en la utilizada y creada en la clase por el auxiliar (auxiliar número 4).
 '''
 class Model():
     # Inicializamos los atributos
@@ -184,10 +184,10 @@ class Model():
 
 
 '''
-Funcion models_from_file.
+Función models_from_file.
 
-Al igual que la clase model, fue usada en clase auxiliar y permite, en base a un "path" (o direccion) de un objeto, 
-cargarlo seleccionando en "clase" si corresponde a algun modelo o una nave que se movera con una rapidez "speed". 
+Al igual que la clase model, fue usada en clase auxiliar y permite, a base de un "path" (o direccion) de un objeto, 
+cargarlo seleccionando en "clase" si corresponde a algún modelo o una nave que se moverá con una rapidez "speed". 
 '''
 def models_from_file(path, clase, speed, pipeline):
     geom = tm.load(path)
@@ -262,6 +262,7 @@ void main() {
 
     # Aca van los objetos que se van a usar en la escena
     # Cargamos la nave usando un modelo de la comunidad de Sketchfab.
+    # Extra, diseño de nave.
     Spacecraft = models_from_file("objects/UFO.obj", "ship", 5, pipeline)[0] # Similar al resto de objetos, solo que ahora se usa "Ship" y se le otorga una velocidad diferente de 0.
     Spacecraft.color = real_rgb(150, 140, 150)
     Spacecraft.scale = [0.5] * 3
@@ -292,14 +293,21 @@ void main() {
     planet_3.scale = [1] * 3
     planet_3.position = [11+sol.position[0], 0, 11+sol.position[0]]
 
+    # Extra, planeta extra.
     # Planeta 4, planeta mas alejado del sol, usamos un modelo de la comunidad de Sketchfab.
     planet_4 = models_from_file("objects/skipper.obj", "model", 0, pipeline)[0]
     planet_4.color = real_rgb(150, 42, 50)
     planet_4.scale = [0.4] * 3
     planet_4.position = [13+sol.position[0], 0, 13+sol.position[1]]
 
+    # Planeta 5, planeta mas alejado del sol, usamos un modelo de la comunidad de Sketchfab.
+    planet_5 = models_from_file("objects/Hmmm.obj", "model", 0, pipeline)[0]
+    planet_5.color = real_rgb(170, 170, 170)
+    planet_5.scale = [0.5] * 3
+    planet_5.position = [15+sol.position[0], 0, 15+sol.position[1]]
 
-    # Extra
+
+    # Extra, luna.
     # Bonus: luna para un planeta, en este, este caso, del planeta 2. Se usa el objeto entregado por el cuerpo docente
     planet_2_moon = models_from_file("objects/planet.obj", "model", 0, pipeline)[0]
     planet_2_moon.color = real_rgb(70, 150, 80)
@@ -308,7 +316,7 @@ void main() {
 
 
     # En una lista metemos todos los objetos que se usaran en la escena.
-    scene = [sol, planet_1, planet_2, planet_3, planet_4, planet_2_moon]
+    scene = [sol, planet_1, planet_2, planet_3, planet_4, planet_5, planet_2_moon]
 
 
     # Cargamos la camara, recibe como parametro la nave/objeto que quiere seguir.
@@ -329,7 +337,7 @@ void main() {
 
         # Camara
         pipeline["view"] = cam.view()
-        pipeline["projection"] = Mat4.perspective_projection(WIDTH/HEIGHT, 0.1, 10, window.fov)
+        pipeline["projection"] = Mat4.perspective_projection(WIDTH/HEIGHT, 0.1, 20, window.fov)
 
         # Nave
         pipeline["color"] = Spacecraft.color
@@ -370,6 +378,9 @@ void main() {
         planet_4.position = [13*np.cos(0.15 * dtheta), 0, 13*np.sin(0.15 * dtheta)]
         planet_4.rotation = [0, 0.3 * dtheta, 0]
 
+        #Planeta 5
+        planet_5.position = [15*np.cos(-0.1 * dtheta), 0, 15*np.sin(-0.1 * dtheta)]
+        planet_5.rotation = [0, -0.3 * dtheta, 0]
 
         # Luna del planeta 2
         planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
@@ -411,20 +422,24 @@ void main() {
 """
 =======================================================================================================================
 Links de donde se sacaron los modelos:
-- Sol: Entregado por el cuerpo docente
-- Nave: https://sketchfab.com/3d-models/ufo-by-jeroen-2a3256decde84d9c9aa42704c1293126
-- Planeta 1: Entregado por el cuerpo docente
-- Planeta 2: https://sketchfab.com/3d-models/calavera-a04a252f8376401bad417f0d9f263b2a
-- Planeta 3: https://sketchfab.com/3d-models/chicken-gun-moai-24807e56e7df4fbd882bb9f9f98b9ba3
-- Planeta 4: https://sketchfab.com/3d-models/skipper-eb3db0d0e67944c2b80a16a1b3b78ea7
-- Luna: Entregado por el cuerpo docente
+- Sol: Entregado por el cuerpo docente.
+- Nave: https://sketchfab.com/3d-models/ufo-by-jeroen-2a3256decde84d9c9aa42704c1293126. (no me funciono el rayo mcqueen)
+- Planeta 1: Entregado por el cuerpo docente.
+- Planeta 2: https://sketchfab.com/3d-models/calavera-a04a252f8376401bad417f0d9f263b2a.
+- Planeta 3: https://sketchfab.com/3d-models/chicken-gun-moai-24807e56e7df4fbd882bb9f9f98b9ba3.
+- Planeta 4: https://sketchfab.com/3d-models/skipper-eb3db0d0e67944c2b80a16a1b3b78ea7.
+- Planeta 5: https://sketchfab.com/3d-models/meme-4dc0ae04eec541c68b81b1b1e8a7aab9.
+- Luna: Entregado por el cuerpo docente.
 
 Como ejecutar (o ejecute) la tarea:
 La tarea fue ejecutada en dos condiciones que para tener referencia fueron:
-- Windows 11, python3.12, IDLE: Pycharm, grafica.transformations segun mostrado en catedra y ejecutado con la opcion
+- Windows 11, python3.12, IDLE: Pycharm, grafica.transformations según mostrado en cátedra y ejecutado con la opción
   de ejecutar del IDLE.
-- Debian 12, python, Neovim, grafica.transformations segun mostrado en catedra y ejecutado desde la terminal.
-Todo esto despues de haber seguido las instrucciones de setup en el repositorio, esto para windows version pip y 
+- Debian 12, python, Neovim, grafica.transformations segun mostrado en cátedra y ejecutado desde la terminal.
+Todo esto después de haber seguido las instrucciones de setup en el repositorio, esto para windows version pip y 
 Linux.
+
+Nota de autor: originalmente iba a agregar más planetas, pero en un momento me di cuenta de que había perdido 3 horas 
+buscando diseños así que decidí parar.
 =======================================================================================================================
 """
