@@ -6,6 +6,7 @@
     Rut: 21353175-1
     Fecha de Redaccion: 11 de Septiembre de 2024
     Fecha Limite de Entrega: 13 de Septiembre de 2024
+    Fecha en que se Entrego: 15 de Septiembre de 2024 (atraso autorizado)
 -----------------------------------------------------------------------------------------------------------------------
     Palabras Previas:
     Este archivo (hasta el momento en que se envia) contiene los codigos utilizados para la implementacion de la tarea
