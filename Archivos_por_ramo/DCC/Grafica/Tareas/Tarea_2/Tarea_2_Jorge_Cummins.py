@@ -1,4 +1,4 @@
-'''
+"""
 =======================================================================================================================
     Tarea 2: Modelación y Computación Gráfica para Ingenieros (CC3501-1)
 -----------------------------------------------------------------------------------------------------------------------
@@ -24,7 +24,7 @@
     "sketcfab", comunidad que se desarrolladores y distribuidores de, entre diferentes productos, objetos para
     modelacion (.obj).
 =======================================================================================================================
-'''
+"""
 # Seccion 1: importamos librerias #####################################################################################
 #######################################################################################################################
 # numpys.
@@ -261,10 +261,10 @@ void main() {
 
     # Aca van los objetos que se van a usar en la escena
     # Cargamos la nave usando un modelo de la comunidad de Sketchfab.
-    Spacecraft = models_from_file("objects/space_shuttle.obj", "ship", 5, pipeline)[0] # Similar al resto de objetos, solo que ahora se usa "Ship" y se le otorga una velocidad diferente de 0.
+    Spacecraft = models_from_file("objects/object.obj", "ship", 5, pipeline)[0] # Similar al resto de objetos, solo que ahora se usa "Ship" y se le otorga una velocidad diferente de 0.
     Spacecraft.color = real_rgb(150, 140, 150)
-    Spacecraft.scale = [.5] * 3
-    Spacecraft.position = [2, 1, 0]
+    Spacecraft.scale = [0.5] * 3
+    Spacecraft.position = [4, 0, 4]
 
     # Configuramos el sol.
     sol = models_from_file("objects/sun.obj", "model", 0, pipeline)[0]  # Cargamos el path y creamos usando "Model".
@@ -276,26 +276,26 @@ void main() {
     # Planeta 1, el mas cercano al sol, usamos el modelo 3D dado por el cuerpo docente.
     planet_1 = models_from_file("objects/planet.obj", "model", 0, pipeline)[0]
     planet_1.color = real_rgb(30, 50, 120)
-    planet_1.scale = [.3] * 3
-    planet_1.position = [4, 0, 4]
+    planet_1.scale = [0.3] * 3
+    planet_1.position = [4+sol.position[0], 0, 4+sol.position[2]]
 
     # Planeta 2, segundo mas cercano al sol, usamos un modelo de la comunidad de Sketchfab.
-    planet_2 = models_from_file("objects/craneo.obj", "model", 0, pipeline)[0]
+    planet_2 = models_from_file("objects/Skull.obj", "model", 0, pipeline)[0]
     planet_2.color = real_rgb(220, 220, 220)
-    planet_2.scale = [.5] * 3
-    planet_2.position = [8, 0, 8]
+    planet_2.scale = [0.5] * 3
+    planet_2.position = [8+sol.position[0], 0, 8+sol.position[0]]
 
     # Planeta 3, tercer planeta, usamos un modelo de la comunidad de Sketchfab.
     planet_3 = models_from_file("objects/Moai.obj", "model", 0, pipeline)[0]
     planet_3.color = real_rgb(80, 80, 80)
     planet_3.scale = [1] * 3
-    planet_3.position = [11, 0, 11]
+    planet_3.position = [11+sol.position[0], 0, 11+sol.position[0]]
 
     # Planeta 4, planeta mas alejado del sol, usamos un modelo de la comunidad de Sketchfab.
     planet_4 = models_from_file("objects/skipper.obj", "model", 0, pipeline)[0]
     planet_4.color = real_rgb(150, 42, 50)
     planet_4.scale = [0.4] * 3
-    planet_4.position = [13, 0, 13]
+    planet_4.position = [13+sol.position[0], 0, 13+sol.position[1]]
 
 
     # Extra
@@ -303,7 +303,7 @@ void main() {
     planet_2_moon = models_from_file("objects/planet.obj", "model", 0, pipeline)[0]
     planet_2_moon.color = real_rgb(70, 150, 80)
     planet_2_moon.scale = [.1] * 3
-    planet_2_moon.position = [planet_2.position[0]+0.5, planet_2.position[1]+0.5, planet_2.position[2]+0.5]
+    planet_2_moon.position = [planet_2.position[0]+0.5+sol.position[0], planet_2.position[1]+0.5, planet_2.position[2]+0.5+sol.position[0]]
 
 
     # En una lista metemos todos los objetos que se usaran en la escena.
@@ -335,6 +335,7 @@ void main() {
         pipeline["model"] = Spacecraft.model()
         Spacecraft.draw()
 
+
         # Objetos de la escena
         for m in scene:
             pipeline["color"] = m.color
@@ -343,44 +344,50 @@ void main() {
 
     @window.event
     def update(dt):
-        dtheta = window.time
+        # Pasa el tiempo
+        window.time += dt
+        dtheta = window.time # Reduntante pero es por costumbre jeje
 
+        #Actualice la posición de la cámara
+        Spacecraft.update(dt)
+        cam.update(dt)
+
+        #Actualice los planetas para que giren
+        # Posicion y rotacion planeta 1
         planet_1.position = [4*np.cos(0.2*dtheta), 0, 4*np.sin(0.2*dtheta)]
         planet_1.rotation = [0, 0.5*dtheta, 0]
 
+        # Planeta 2
         planet_2.position = [8*np.cos(0.1*dtheta), 0, 4*np.sin(0.1*dtheta)]
         planet_2.rotation = [0, 0.2*dtheta, 0]
 
+        #Planeta 3
         planet_3.position = [11*np.cos(-0.05*dtheta), -np.pi/7, 11*np.sin(-0.05*dtheta)]
         planet_3.rotation = [0, -0.3*dtheta, 0]
 
+        #Planeta 4
         planet_4.position = [13*np.cos(0.15 * dtheta), 0, 13*np.sin(0.15 * dtheta)]
         planet_4.rotation = [0, 0.3 * dtheta, 0]
 
 
+        # Luna del planeta 2
         planet_2_moon.position = [8*np.cos(0.1*dtheta)-0.5*np.cos(0.5*dtheta), 0, 4*np.sin(0.1*dtheta)-0.5*np.sin(0.5*dtheta)]
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
-        Spacecraft.rotation = [0, -np.pi/2-Spacecraft.yaw, 0]
+        # Movimiento del mouse...la pase mal con esto...
+        Spacecraft.rotation = [0*Spacecraft.pitch*np.abs(np.sin(np.abs(Spacecraft.yaw))), -Spacecraft.yaw, Spacecraft.pitch*np.abs(np.cos(np.abs(Spacecraft.yaw)))]
 
 
 
-
-        Spacecraft.update(dt)
-        cam.update(dt)
-        window.time += dt
-
-
-
-    # Movimiento del mouse
+    # Movimiento del mouse.
     @window.event
     def on_mouse_motion(x, y, dx, dy):
         Spacecraft.yaw += dx * Spacecraft.sensitivity
         Spacecraft.pitch += dy * Spacecraft.sensitivity
-        Spacecraft.pitch = clamp(Spacecraft.pitch, -(np.pi /2), np.pi / 2)
+        Spacecraft.pitch = clamp(Spacecraft.pitch, -(np.pi /4), np.pi / 4)
 
 
-    # Presionar tecla W o S
+    # Presionar tecla W o S, no se especifico A y D por ende para evitar complicaciones se decidio omitir.
     @window.event
     def on_key_press(symbol, modifiers):
         if symbol == key.W:
@@ -389,7 +396,7 @@ void main() {
             Spacecraft.direction = -1
 
 
-    # Soltar tecla W o S
+    # Soltar tecla W o S.
     @window.event
     def on_key_release(symbol, modifiers):
         if symbol == key.W or symbol == key.S:
@@ -400,3 +407,23 @@ void main() {
     pyglet.app.run()
 
 
+"""
+=======================================================================================================================
+Links de donde se sacaron los modelos:
+- Sol: Entregado por el cuerpo docente
+- Nave: https://sketchfab.com/3d-models/extremely-basic-space-shuttle-f4cb73440c674ad69f9f72fab788fe65
+- Planeta 1: Entregado por el cuerpo docente
+- Planeta 2: https://sketchfab.com/3d-models/calavera-a04a252f8376401bad417f0d9f263b2a
+- Planeta 3: https://sketchfab.com/3d-models/chicken-gun-moai-24807e56e7df4fbd882bb9f9f98b9ba3
+- Planeta 4: https://sketchfab.com/3d-models/skipper-eb3db0d0e67944c2b80a16a1b3b78ea7
+- Luna: Entregado por el cuerpo docente
+
+Como ejecutar (o ejecute) la tarea:
+La tarea fue ejecutada en dos condiciones que para tener referencia fueron:
+- Windows 11, python3.12, IDLE: Pycharm, grafica.transformations segun mostrado en catedra y ejecutado con la opcion
+  de ejecutar del IDLE.
+- Debian 12, python, Neovim, grafica.transformations segun mostrado en catedra y ejecutado desde la terminal.
+Todo esto despues de haber seguido las instrucciones de setup en el repositorio, esto para windows version pip y 
+Linux.
+=======================================================================================================================
+"""
