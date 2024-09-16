@@ -261,7 +261,7 @@ void main() {
 
     # Aca van los objetos que se van a usar en la escena
     # Cargamos la nave usando un modelo de la comunidad de Sketchfab.
-    Spacecraft = models_from_file("objects/object.obj", "ship", 5, pipeline)[0] # Similar al resto de objetos, solo que ahora se usa "Ship" y se le otorga una velocidad diferente de 0.
+    Spacecraft = models_from_file("objects/UFO.obj", "ship", 5, pipeline)[0] # Similar al resto de objetos, solo que ahora se usa "Ship" y se le otorga una velocidad diferente de 0.
     Spacecraft.color = real_rgb(150, 140, 150)
     Spacecraft.scale = [0.5] * 3
     Spacecraft.position = [4, 0, 4]
@@ -375,7 +375,7 @@ void main() {
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
         # Movimiento del mouse...la pase mal con esto...
-        Spacecraft.rotation = [0*Spacecraft.pitch*np.abs(np.sin(np.abs(Spacecraft.yaw))), -Spacecraft.yaw, Spacecraft.pitch*np.abs(np.cos(np.abs(Spacecraft.yaw)))]
+        Spacecraft.rotation = [0, -Spacecraft.yaw, np.sin(Spacecraft.pitch)]
 
 
 
@@ -411,7 +411,7 @@ void main() {
 =======================================================================================================================
 Links de donde se sacaron los modelos:
 - Sol: Entregado por el cuerpo docente
-- Nave: https://sketchfab.com/3d-models/extremely-basic-space-shuttle-f4cb73440c674ad69f9f72fab788fe65
+- Nave: https://sketchfab.com/3d-models/ufo-by-jeroen-2a3256decde84d9c9aa42704c1293126
 - Planeta 1: Entregado por el cuerpo docente
 - Planeta 2: https://sketchfab.com/3d-models/calavera-a04a252f8376401bad417f0d9f263b2a
 - Planeta 3: https://sketchfab.com/3d-models/chicken-gun-moai-24807e56e7df4fbd882bb9f9f98b9ba3
