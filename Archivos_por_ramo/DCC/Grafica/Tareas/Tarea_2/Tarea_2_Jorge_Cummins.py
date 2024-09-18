@@ -387,7 +387,7 @@ void main() {
         planet_2_moon.rotation = [0, 1.2*dtheta, 0]
 
         # Movimiento del mouse...la pase mal con esto...
-        Spacecraft.rotation = [0, -Spacecraft.yaw, np.sin(Spacecraft.pitch)]
+        Spacecraft.rotation = [0, -Spacecraft.yaw, Spacecraft.pitch]
 
 
 
