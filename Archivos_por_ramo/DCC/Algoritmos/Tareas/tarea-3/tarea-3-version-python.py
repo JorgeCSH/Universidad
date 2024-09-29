@@ -16,9 +16,12 @@ def procesar_comando(comando, dicc_var):
     calc = []
     aux = []
     parentesis_counter = 0
+    n = len(comando)
     k = 0
     activador = 0
-    while k<len(comando):
+
+    # Aca trataremos con el lado "izquierdo" de la expresion
+    while k<n:
         # Caso donde en vez de definir una variable se agrega un "="
         if k == 0 and comando[k] == "=":
             resultado = f'ERROR: al procesar "{comando[k]}"'
@@ -58,7 +61,50 @@ def procesar_comando(comando, dicc_var):
             resultado = f'{val_izquierdo[len(val_izquierdo)]} = {dicc_var[val_izquierdo[len(val_izquierdo)]]}'
             print(resultado)
             break
+        valores = [valores[len(valores)]]
         k += 1
+
+    n_2 = n-k
+    i = k+1
+    # Aca trataremos con el lado derecho de la expresion.
+    while i<n_2:
+        # Caso donde el lado derecho empieza con error (= extra, *, /, ^)
+        if comando[i] == "=" or i == k+1 and (comando[i] == "*" or comando[i] == "/" or comando[i] == "^"):
+            resultado = f'ERROR: al procesar "{comando[i]}"'
+            print(resultado)
+            break
+
+        # Caso donde hay un espacio, recordar que aca ya hay una ecuacion asi que puede permitirse
+        if comando[i] == " ":
+            val_derecho += [val_derecho[len(val_derecho)]]
+
+        # Parentesis, aca lo agregaremos y les daremos una cuenta para corroborar al final si estan bien o faltan/sobran
+        if comando[i] == "(":
+            parentesis_counter += 1
+            val_derecho += [val_derecho[len(val_derecho)]+comando[i]]
+            aux += [val_derecho[len(val_derecho)]]
+        if comando[i] == ")":
+            parentesis_counter -= 1
+            val_derecho += [val_derecho[len(val_derecho)]+comando[i]]
+            aux += [val_derecho[len(val_derecho)]]
+        if parentesis_counter < 0:
+            resultado = f'ERROR: al procesar "{comando[i]}"'
+            print(resultado)
+            break
+        if i == n_2-1 and parentesis_counter != 0:
+            resultado = f'ERROR: al procesar parentesis'
+            print(resultado)
+            break
+
+        # Caso donde el ultimo valor sea alguna operacion
+        if i == n_2-1 and (comando[i] == "+" or comando[i] == "-" or comando[i] == "*" or comando[i] == "/" or comando[i] == "^"):
+            resultado = f'ERROR: al procesar "{comando[i]}"'
+            print(resultado)
+            break
+
+
+
+
     return dicc_var
 
 
