@@ -41,7 +41,7 @@ from pyglet.window import Window, key
 from pyglet.graphics.shader import Shader, ShaderProgram
 
 # Misc.
-import grafica.transformations as tr
+#import grafica.transformations as tr
 import trimesh as tm
 import os
 import sys

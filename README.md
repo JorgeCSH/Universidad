@@ -1,6 +1,7 @@
 # Tareas Universidad o Similar
 ## Sobre el repositorio
 La principal idea es contener todo lo relacionado a la U, desde codigos, tareas, apuntes, etc. Basicamente, es un repositorio universidad.
+Cuidado con el virtual environmet, esta siendo usado, no borrar porfavor.
 
 ## Contenidos
 * Archivos por ramo: directorio que contiene todo lo que vaya haciendo por cada ramo que vaya cursando, esta dividido en Archivos por ramo -> departamentos -> ramo.
