@@ -21,13 +21,13 @@ def procesar_comando(comando, dicc_var):
     while k<len(comando):
         # Caso donde en vez de definir una variable se agrega un "="
         if k == 0 and comando[k] == "=":
-            resultado = f'Error: al procesar "{comando[k]}"'
+            resultado = f'ERROR: al procesar "{comando[k]}"'
             print(resultado)
             break
 
         # Caso donde al definir una variable se tiene un espacio en vez de un "_"
         if comando[k] == " ":
-            resultado = f'Error: al procesar "{comando[k]}"'
+            resultado = f'ERROR: al procesar "{comando[k]}"'
             print(resultado)
             break
 
@@ -36,7 +36,7 @@ def procesar_comando(comando, dicc_var):
             # Si despues del "=" no hay nada/no hay espacio o solamente operadores
             if (k==len(comando)-1 or (k==len(comando)-2 and(comando[k+1]==" " or comando[k+1]=="+" or comando[k+1]=="-"
                 or comando[k+1]=="*" or comando[k+1]=="/" or comando[k+1]=="^"))):
-                resultado = f'Error: al procesar "{comando[k]+comando[k+1]}"'
+                resultado = f'ERROR: al procesar "{comando[k]+comando[k+1]}"'
                 print(resultado)
                 break
             # Caso donde hay algo despues del "=" y tenemos que pasar al lado derecho
@@ -50,7 +50,7 @@ def procesar_comando(comando, dicc_var):
         if k == len(comando)-1:
             # Si el valor pre ingresado no existe se lanza error
             if not dicc_var[val_izquierdo[len(val_izquierdo)]]:
-                resultado = f'Error: variable indefinida "{val_izquierdo[len(val_izquierdo)]}"'
+                resultado = f'ERROR: variable indefinida "{val_izquierdo[len(val_izquierdo)]}"'
                 print(resultado)
                 break
         # Si tenemos un valor pre ingresado, se printea
