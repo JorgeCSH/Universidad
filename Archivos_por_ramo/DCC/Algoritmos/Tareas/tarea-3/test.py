@@ -4,6 +4,7 @@ operaciones = "+-*/^"
 
 
 def evaluar_expresion(expresion, dicc_var):
+    expresion = simplificar_operaciones(expresion)
     k = 0
     n = len(expresion)
     resultado = 0
@@ -124,10 +125,30 @@ def aplicar_operacion(expresion1, expresion2, operador):
         return int(izq ** der)
 
 
+def simplificar_operaciones(expresion):
+    expresion_simplificada = ""
+    i = 0
+    while i < len(expresion):
+        if expresion[i] in '+-' and i + 1 < len(expresion) and expresion[i + 1] in '+-':
+            # Combine consecutive + and - operations
+            if expresion[i] == '+' and expresion[i + 1] == '+':
+                expresion_simplificada += '+'
+            elif expresion[i] == '+' and expresion[i + 1] == '-':
+                expresion_simplificada += '-'
+            elif expresion[i] == '-' and expresion[i + 1] == '+':
+                expresion_simplificada += '-'
+            elif expresion[i] == '-' and expresion[i + 1] == '-':
+                expresion_simplificada += '+'
+            i += 1  # Skip the next character since we've handled it
+        else:
+            expresion_simplificada += expresion[i]
+        i += 1
+    return expresion_simplificada
+
+
 # Esta función recibe un comando en string y el diccionario de variables. Con él,
 # procesa el comando, imprime el resultado de la expresion
 # y posiblemente modifica el diccionario. La función retorna el diccionario
-
 def procesar_comando(comando, dicc_var):
     k = 0
     n = len(comando)
@@ -180,10 +201,12 @@ def calculadora(lista_comandos):
             vars = procesar_comando(comando, vars)
 
 
+
 # Ejemplo 1:
 lista1 = ["n=5", "hanoi=2^n-1", "var_1 = 23 - 13 + hanoi * 2", "h2 = hanoi /2", "", "n"]
 calculadora(lista1)
 print()
+
 
 # Ejemplo 2:
 print()
