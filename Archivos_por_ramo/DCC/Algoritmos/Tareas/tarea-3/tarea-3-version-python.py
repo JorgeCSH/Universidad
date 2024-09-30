@@ -1,79 +1,174 @@
-"""
-Esta tarea consiste en desarrollar una calculadora de expresiones matemáticas al estilo Matlab o Maple, pero con capacidad de procesar un conjunto de comandos bien restringido. Algunos ejemplos de los comandos que acepta y de lo que debe imprimir en la salida van a continuación:
+# Manually processes and evaluates an expression with parentheses, spaces, and error handling for undefined variables
+abecedario = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+numeros = "0123456789"
+operaciones = "+-*/^"
+def evaluar_expresion(expresion, dicc_var):
+    k = 0
+    n = len(expresion)
+    resultado = 0
+    num_aux = ""
+    ultima_operacion = operaciones[0]
+    parentesis = 0
+    posicion_parentesis_izquierdo = []
+    posicion_parentesis_derecho = []
+    while k < n:
 
-|Entrada (lo que el usuario escribe)   | Salida(lo que imprime el programa)  |
-|---|---|
-|n=5   | n=5 |
-|   | 5 |
-|hanoi=2^n-1    |hanoi = 2^n-1  |
-|    |31   |
-|var_1 = 23 - 13 + hanoi * 2    |var_1 = 23 - 13 + hanoi * 2   |
-|    | 82   |
-|h2 = hanoi /2   |h2 = hanoi /2 |
-|   | 15   |
-|var_2 = (2+n)*2   |var_2 = (2+n)*2    |
-|   | 14   |
-|var_3 = ((1+n)/2 +3)^2   |var_3 = ((1+n)/2 +3)^2   |
-|   | 36   |
-|n   |n   |
-|  | 5   |
+        if expresion[k] in operaciones:    
+          if( expresion[0] in '*/^') or (k>0 and expresion[k-1] in operaciones) or (k+1<n and expresion[k+1] in operaciones):
+              if k==0:
+                
+                return(f"ERROR: al procesar {expresion[k]}")
+                #break
+              elif expresion[k-1] in operaciones:
+                return(f"ERROR: al procesar {expresion[k-1]}")
+                #break
+              elif expresion[k+1] in operaciones:
+                return (f"ERROR: al procesar {expresion[k+1]}")
+               # break
 
-A continuación definimos más en detalle lo que se debe implementar:
-
-
-
-1.   Cada comando es de la forma "variable=expresión". El efecto es que primero se debe imprimir el comando y luego se debe calcular la expresión de la derecha, guardar el resultado en la variable de la izquierda e imprimir el resultado en la salida. Si se omite desde el "=" hacia adelante (como en el último ejemplo), solo se imprime el valor de la variable. Las variables comienzan con letra y continúan con letras, dígitos y el signo "_".
-2.   Los operadores permitidos son "+","-","*", "/", "^".
-3.   Solo se trabaja con números enteros y todas las operaciones dan resultado entero (incluyendo la división, que trunca).
-4.   Se puede usar paréntesis, y si no los hay, la expresión se evalúa estrictamente de izquierda a derecha. Eso explica el resultado que se obtiene para "var_1", no hay prioridad de operadores. Pueden venir paréntesis anidados (ver ejemplos)
-
-  **Nota**: Se puede optar por el 70% de la nota si se implementa todo lo solicitado salvo el manejo de paréntesis. En este caso, las expresiones se evaluarán estrictamente de izquierda a derecha sin considerar la prioridad de operadores, y no se permitirá el uso de paréntesis en las expresiones.
-
-5.   Si se utiliza una variable que aún no ha sido definida, se debe dar un error
-
-      ERROR: variable indefinida "..."
-
-6.   Si la sintaxis no es correcta, se debe imprimir en la salida un mensaje de la forma
-
-      ERROR: al procesar "..."
-
-      donde el string que se imprime es la parte de la entrada desde el punto del error hacia adelante.
+        # Caso donde el caracxter de la expresion es un numero.
+        if expresion[k] in numeros:
+            num_aux += expresion[k]
 
 
-Antes de empezar a escribir código, usted debe dibujar un diagrama de estados que describa la estructura de la entrada. Si le resulta más conveniente, pueden ser varios diagramas (por ejemplo, uno que describa la estructura de una variable, otro la de un número, otra la de un comando). Luego, a partir de ahí escriba el código que implementa esos diagramas. **Importante:** Su código debe ir procesando de un caracter a la vez, para este procesamiento no se puede utilizar funciones de Python que operen sobre strings de largo mayor que uno. Se recomienda tener una función que reciba un comando en un string y lo procese, y otra que reciba una lista de comandos y vaya invocando a la función antes mencionada para procesarlos.
+        # Caso donde el caracter de la expresion es una letra (o un "_")
+        elif expresion[k] in abecedario:
+            variable = ""
+            k_factor = 0
+            while k_factor < n and not expresion[k] in operaciones:
+                variable += expresion[k]
+                k += 1
+            k -= 1
 
-Para almacenar los nombres y valores de las variables, está permitido el uso de un diccionario de Python.
+            # Vemos si esta precalculada la variable
+            if variable in dicc_var:
+                num_aux = dicc_var[variable]
+            else:
+                return f'ERROR: variable indefinida "{variable}"'
 
-En su entrega debe describir brevemente el problema, luego describir la estrategia de solución haciendo referencia a su(s) diagrama(s) de estados, y a continuación el código ejecutable respectivo, agregando todas las explicaciones necesarias para que se entienda.
-"""
+        # Realizar las operaciones
+        elif expresion[k] in operaciones:
+            # Aplicamos el operando al valor actual que pasa a ser valor 
+            # derecho con el valor anterior a que se encontrara una operacion
+            # que originalmente era el resultado
+            if num_aux != "":
+                valor_izquierdo = resultado
+                valor_derecho = num_aux
+                valor_izquierdo = aplicar_operacion(valor_izquierdo, valor_derecho, ultima_operacion)
+                resultado = valor_izquierdo
+            ultima_operacion = expresion[k]
+            num_aux = ""
+
+        # Handle opening parenthesis '(' by evaluating the sub-expression inside
+        elif expresion[k] == '(':
+            # Find the matching closing parenthesis
+            sub_expr_start = k + 1
+            open_parens = 1
+            while open_parens > 0 and k < n - 1:
+                k += 1
+                if expresion[k] == '(':
+                    open_parens += 1
+                elif expresion[k] == ')':
+                    open_parens -= 1
+
+            sub_expr_end = k
+            # Recursively evaluate the sub-expression
+            sub_expr_value = evaluar_expresion(expresion[sub_expr_start:sub_expr_end], dicc_var)
+
+            num_aux = str(sub_expr_value)
+        if expresion[k] == '(':
+            posicion_parentesis_izquierdo += [k]
+            parentesis +=1
+        if expresion[k] == ')':
+            parentesis -=1
+            posicion_parentesis_derecho += [k]
+        if k == n-1 and not parentesis == 0:
+            return f'ERROR: parentesis no cerrado'
+
+        k += 1
+
+    # Apply the final operation to the last number
+    if num_aux != "":
+        resultado = aplicar_operacion(resultado, int(num_aux), ultima_operacion)
+
+    return resultado
+
+# Applies an operation (+, -, *, /, ^) between two numbers
+def aplicar_operacion(expresion1, expresion2, operador):
+    izq = int(expresion1)
+    der = int(expresion2)
+    assert operador in operaciones
+    assert type(izq) == int and type(der) == int
+    if operador == '+':
+        return int(izq + der)
+    elif operador == '-':
+        return int(izq - der)
+    elif operador == '*':
+        return int(izq * der)
+    elif operador == '/':
+        return int(izq / der) 
+    elif operador == '^':
+        return int(izq ** der)
 
 
-# Esta función recibe un comando en string y el diccionario de variables. Con él,
-# procesa el comando, imprime el resultado de la expresion
-# y posiblemente modifica el diccionario. La función retorna el diccionario
+# Processes each individual command character by character (handles errors and prints them)
 def procesar_comando(comando, dicc_var):
-    # procesa el comando e imprime el resultado
+    i = 0
+    length = len(comando)
+    var_name = ""
+
+    # Parse the variable name manually (left side of '=')
+    while i < length and comando[i] != '=':
+        if comando[i] != ' ':  # Skip spaces
+            var_name += comando[i]
+        i += 1
+
+    # If '=' is found, process the expression
+    if i < length and comando[i] == '=':
+        var_name = var_name  # No strip, we are processing character by character
+        i += 1  # Move past '='
+        expr = ""
+
+        # Collect the right-hand expression, skipping spaces
+        while i < length:
+            if comando[i] != ' ':  # Ignore spaces
+                expr += comando[i]
+            i += 1
+
+        # Evaluate the expression and handle potential errors
+        result = evaluar_expresion(expr, dicc_var)
+        if isinstance(result, str) and result.startswith("ERROR"):  # If an error message is returned
+            print(f"{var_name} = {expr}")
+            print(result)
+        else:
+            dicc_var[var_name] = result
+            print(f"{var_name} = {expr}")
+            print(dicc_var[var_name])
+
+    # If no '=' is present, print the variable value
+    else:
+        var_name = var_name  # No strip, manually processed
+        if var_name in dicc_var:
+            print(f"{var_name}")
+            print(dicc_var[var_name])
+        else:
+            print(f"ERROR: {var_name} not defined.")
 
     return dicc_var
 
 
-
-
-
-
+# Main calculator function (processes a list of commands one by one, handling errors)
 def calculadora(lista_comandos):
-  # Este diccionario almacena las variables que se vayan definiendo en la calculadora
-  # Este diccionario se inicializa cuando se usa la calculadora
-  vars = dict()
-
-  # Se procesan todos los comandos de la lista (lista de string)
-  for i in range(0, len(lista_comandos)):
-    vars = procesar_comando(lista_comandos[i], vars)
+    vars = dict()  # Dictionary to store variables
+    for comando in lista_comandos:
+        if comando != '':  # Ignore empty lines
+            vars = procesar_comando(comando, vars)
 
 
-'''
-# EJEMPLO 1:
-lista = ["n=5","hanoi=2^n-1","var_1 = 23 - 13 + hanoi * 2","h2 = hanoi /2","","n"]
-calculadora(lista)
-
-'''
+# Example usage:
+lista1 = ["n=5","hanoi=2^n-1","var_1 = 23 - 13 + hanoi * 2","h2 = hanoi /2","","n"]
+calculadora(lista1)
+print()
+print()
+lista2 = ["n=5","hanoi=2^n-1","var_1 = 23 - 13 + hanoi2 * 2","h2 = hanoi /2","","n"]
+calculadora(lista2)

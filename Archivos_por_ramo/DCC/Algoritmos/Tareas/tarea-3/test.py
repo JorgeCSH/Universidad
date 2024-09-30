@@ -1,4 +1,7 @@
 # Manually processes and evaluates an expression with parentheses, spaces, and error handling for undefined variables
+abecedario = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+numeros = "0123456789"
+
 def evaluar_expresion(expr, dicc_var):
     i = 0
     length = len(expr)
@@ -15,11 +18,11 @@ def evaluar_expresion(expr, dicc_var):
             continue
 
         # If it's a digit, accumulate it for the current number
-        if char in '0123456789':
+        if char in numeros:
             current_number += char
 
         # If it's a letter (variable), get the value from dicc_var
-        elif char in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_':
+        elif char in abecedario:
             var_name = ""
             while i < length and (expr[i].isalpha() or expr[i].isdigit() or expr[i] == '_'):
                 var_name += expr[i]
