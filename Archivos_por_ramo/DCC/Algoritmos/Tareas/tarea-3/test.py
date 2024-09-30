@@ -15,11 +15,11 @@ def evaluar_expresion(expr, dicc_var):
             continue
 
         # If it's a digit, accumulate it for the current number
-        if char.isdigit():
+        if char in '0123456789':
             current_number += char
 
         # If it's a letter (variable), get the value from dicc_var
-        elif char.isalpha():
+        elif char in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_':
             var_name = ""
             while i < length and (expr[i].isalpha() or expr[i].isdigit() or expr[i] == '_'):
                 var_name += expr[i]
