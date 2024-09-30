@@ -164,11 +164,13 @@ def calculadora(lista_comandos):
         if comando != '':  # Ignore empty lines
             vars = procesar_comando(comando, vars)
 
-
+'''
 # Example usage:
 lista1 = ["n=5","hanoi=2^n-1","var_1 = 23 - 13 + hanoi * 2","h2 = hanoi /2","","n"]
 calculadora(lista1)
 print()
 print()
 lista2 = ["n=5","hanoi=2^n-1","var_1 = 23 - 13 + hanoi2 * 2","h2 = hanoi /2","","n"]
-calculadora(lista2)
+calculadora(lista2)'''
+
+print('ERROR'[0:5])
