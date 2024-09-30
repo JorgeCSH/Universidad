@@ -141,44 +141,6 @@ def evaluar_expresion(expresion, dicc_var):
     return resultado
 
 
-# Realizamos las operaciones
-def aplicar_operacion(expresion1, expresion2, operador):
-    izq = int(expresion1)
-    der = int(expresion2)
-    assert operador in operaciones
-    assert type(izq) == int and type(der) == int
-    if operador == '+':
-        return int(izq + der)
-    elif operador == '-':
-        return int(izq - der)
-    elif operador == '*':
-        return int(izq * der)
-    elif operador == '/':
-        return int(izq / der)
-    elif operador == '^':
-        return int(izq ** der)
-
-
-def simplificar_operaciones(expresion):
-    expresion_simplificada = ""
-    j = 0
-    while j < len(expresion):
-        if expresion[j] in '+-' and j + 1 < len(expresion) and expresion[j + 1] in '+-':
-            if expresion[j] == '+' and expresion[j + 1] == '+':
-                expresion_simplificada += '+'
-            elif expresion[j] == '+' and expresion[j + 1] == '-':
-                expresion_simplificada += '-'
-            elif expresion[j] == '-' and expresion[j + 1] == '+':
-                expresion_simplificada += '-'
-            elif expresion[j] == '-' and expresion[j + 1] == '-':
-                expresion_simplificada += '+'
-            j += 1
-        else:
-            expresion_simplificada += expresion[j]
-        j += 1
-    return expresion_simplificada
-
-
 # Esta función recibe un comando en string y el diccionario de variables. Con él,
 # procesa el comando, imprime el resultado de la expresion
 # y posiblemente modifica el diccionario. La función retorna el diccionario
