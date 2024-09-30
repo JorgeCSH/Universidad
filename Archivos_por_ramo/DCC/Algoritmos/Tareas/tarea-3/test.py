@@ -15,7 +15,7 @@ def evaluar_expresion(expresion, dicc_var):
     while k < n:
 
         if expresion[k] in operaciones:
-            i f( expresion[0] in '*/^') or ( k >0 and expresion[ k -1] in operaciones) or \
+            if( expresion[0] in '*/^') or ( k >0 and expresion[ k -1] in operaciones) or \
                     (k + 1 < n and expresion[k + 1] in operaciones):
                 if k == 0:
 
