@@ -10,6 +10,7 @@ def evaluar_expresion(expresion, dicc_var):
     num_aux = ""
     ultima_operacion = operaciones[0]
     while k < n:
+        # Caso donde el caracter inicial es una operacion o dos o mas operaciones seguidas que no son posibles
         if expresion[k] in operaciones:
             if expresion[0] in '*/^' or (k > 0 and expresion[k - 1] in operaciones) or (k + 1 < n and expresion[k + 1] in operaciones):
                 if k == 0 or expresion[k + 1] in operaciones:
@@ -21,6 +22,7 @@ def evaluar_expresion(expresion, dicc_var):
         if expresion[k] in numeros:
             num_aux += expresion[k]
 
+        # Caso donde el caracter final es una operacion
         elif k == n-1 and expresion[k] in operaciones:
             return(f'ERROR: al procesar "{expresion[k]}"')
 
@@ -31,28 +33,13 @@ def evaluar_expresion(expresion, dicc_var):
                 variable += expresion[k]
                 k += 1
             k -= 1
-
             # Vemos si esta precalculada la variable
             if variable in dicc_var:
                 num_aux = dicc_var[variable]
             else:
                 return f'ERROR: variable indefinida "{variable}"'
 
-        # Realizar las operaciones
-        elif expresion[k] in operaciones:
-            # Aplicamos el operando al valor actual que pasa a ser valor
-            # derecho con el valor anterior a que se encontrara una operacion
-            # que originalmente era el resultado
-            if num_aux != "":
-                valor_izquierdo = resultado
-                valor_derecho = num_aux
-                valor_izquierdo = aplicar_operacion(valor_izquierdo, valor_derecho, ultima_operacion)
-                resultado = valor_izquierdo
-            ultima_operacion = expresion[k]
-            num_aux = ""
-
-        # Buscamos un parentesis de la forma ( y lo consideramos una
-        # expresion que analizaremos por separado
+        # Calculo de expresiones en parentesis
         elif expresion[k] == '(':
             # Buscamos parentesis final
             inicio_parentesis = k + 1
@@ -66,10 +53,24 @@ def evaluar_expresion(expresion, dicc_var):
             fin_parentesis = k
             # De manera recursiva reevaluamos cada uno de los elementos
             expresion_parentesis = evaluar_expresion(expresion[inicio_parentesis:fin_parentesis], dicc_var)
-
             num_aux = str(expresion_parentesis)
+
+        # Calculo de operaciones
+        elif expresion[k] in operaciones:
+            # Aplicamos el operando al valor actual que pasa a ser valor
+            # derecho con el valor anterior a que se encontrara una operacion
+            # que originalmente era el resultado
+            if num_aux != "":
+                valor_izquierdo = resultado
+                valor_derecho = num_aux
+                valor_izquierdo = aplicar_operacion(valor_izquierdo, valor_derecho, ultima_operacion)
+                resultado = valor_izquierdo
+            ultima_operacion = expresion[k]
+            num_aux = ""
+
         k += 1
 
+    # Error asociado al parentesis
     i = 0
     parentesis = 0
     posicion_parentesis_izquierdo = []
@@ -91,7 +92,6 @@ def evaluar_expresion(expresion, dicc_var):
             return f'ERROR: al procesar "{expresion[posicion_parentesis_izquierdo[0]:posicion_parentesis_derecho[len(posicion_parentesis_derecho)-1]]}"'
         elif posicion_parentesis_izquierdo[0] > posicion_parentesis_derecho[0]:
             return f'ERROR: al procesar "{expresion[posicion_parentesis_derecho[0]:posicion_parentesis_izquierdo[len(posicion_parentesis_izquierdo)-1]]}"'
-
 
     # Ultimo operador antes de finalizar
     if num_aux != "":
@@ -133,12 +133,11 @@ def procesar_comando(comando, dicc_var):
             nombre_variable += comando[k]
         k += 1
 
-    # de llegar al = procesamos
+    # Llegamos al punto donde se separa la variable de su expresion
     if k < n and comando[k] == '=':
         nombre_variable = nombre_variable
         k += 1
         expresion = ""
-
         # Separamos los valores del lado derecho de la expresion
         while k < n:
             if comando[k] != ' ':
