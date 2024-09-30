@@ -15,7 +15,8 @@ def evaluar_expresion(expresion, dicc_var):
         if expresion[k] in operaciones:
             if k == 0 and expresion[k] in '*/^':
                 return(f"ERROR: al procesar {expresion}")
-            elif expresion[k] in '*/^' and ((k > 0 and expresion[k - 1] in '*/^') or (k + 1 < n and expresion[k + 1] in '*/^')):
+            elif (expresion[k] in '*/^' and ((k > 0 and expresion[k - 1] in '*/^')
+                or (k + 1 < n and expresion[k + 1] in '*/^'))):
                 if k > 0 and expresion[k - 1] in '*/^':
                     return (f"ERROR: al procesar {expresion[k - 1:]}")
                 elif k + 1 < n and expresion[k + 1] in '*/^':
@@ -32,9 +33,6 @@ def evaluar_expresion(expresion, dicc_var):
         # Caso donde el caracxter de la expresion es un numero.
         if expresion[k] in numeros:
             num_aux += expresion[k]
-
-        # Caso donde el caracter final es una operacion
-
 
         # Caso donde el caracter de la expresion es una letra (o un "_")
         elif expresion[k] in abecedario:
@@ -127,22 +125,21 @@ def aplicar_operacion(expresion1, expresion2, operador):
 
 def simplificar_operaciones(expresion):
     expresion_simplificada = ""
-    i = 0
-    while i < len(expresion):
-        if expresion[i] in '+-' and i + 1 < len(expresion) and expresion[i + 1] in '+-':
-            # Combine consecutive + and - operations
-            if expresion[i] == '+' and expresion[i + 1] == '+':
+    j = 0
+    while j < len(expresion):
+        if expresion[j] in '+-' and j + 1 < len(expresion) and expresion[j + 1] in '+-':
+            if expresion[j] == '+' and expresion[j + 1] == '+':
                 expresion_simplificada += '+'
-            elif expresion[i] == '+' and expresion[i + 1] == '-':
+            elif expresion[j] == '+' and expresion[j + 1] == '-':
                 expresion_simplificada += '-'
-            elif expresion[i] == '-' and expresion[i + 1] == '+':
+            elif expresion[j] == '-' and expresion[j + 1] == '+':
                 expresion_simplificada += '-'
-            elif expresion[i] == '-' and expresion[i + 1] == '-':
+            elif expresion[j] == '-' and expresion[j + 1] == '-':
                 expresion_simplificada += '+'
-            i += 1  # Skip the next character since we've handled it
+            j += 1
         else:
-            expresion_simplificada += expresion[i]
-        i += 1
+            expresion_simplificada += expresion[j]
+        j += 1
     return expresion_simplificada
 
 
