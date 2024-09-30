@@ -12,19 +12,28 @@ def evaluar_expresion(expresion, dicc_var):
     while k < n:
         # Caso donde el caracter inicial es una operacion o dos o mas operaciones seguidas que no son posibles
         if expresion[k] in operaciones:
-            if expresion[0] in '*/^' or (k > 0 and expresion[k - 1] in operaciones) or (k + 1 < n and expresion[k + 1] in operaciones):
-                if k == 0 or expresion[k + 1] in operaciones:
+            if k == 0 and expresion[k] in '*/^':
+                return(f"ERROR: al procesar {expresion}")
+            elif expresion[k] in '*/^' and ((k > 0 and expresion[k - 1] in '*/^') or (k + 1 < n and expresion[k + 1] in '*/^')):
+                if k > 0 and expresion[k - 1] in '*/^':
+                    return (f"ERROR: al procesar {expresion[k - 1:]}")
+                elif k + 1 < n and expresion[k + 1] in '*/^':
                     return(f"ERROR: al procesar {expresion[k:]}")
-                elif expresion[k - 1] in operaciones:
-                    return(f"ERROR: al procesar {expresion[k - 1:]}")
+            elif k == 0 and expresion[k] in '+-':
+                if k + 1 < n and expresion[k + 1] in '*/^':
+                    return(f"ERROR: al procesar {expresion[k:]}")
+                elif k>0 and expresion[k-1] in '*/^':
+                    return(f"ERROR: al procesar {expresion[k-1:]}")
+            elif k == n - 1 and expresion[k] in operaciones:
+                return (f'ERROR: al procesar "{expresion[k]}"')
+
 
         # Caso donde el caracxter de la expresion es un numero.
         if expresion[k] in numeros:
             num_aux += expresion[k]
 
         # Caso donde el caracter final es una operacion
-        elif k == n-1 and expresion[k] in operaciones:
-            return(f'ERROR: al procesar "{expresion[k]}"')
+
 
         # Caso donde el caracter de la expresion es una letra (o un "_")
         elif expresion[k] in abecedario:
@@ -61,10 +70,7 @@ def evaluar_expresion(expresion, dicc_var):
             # derecho con el valor anterior a que se encontrara una operacion
             # que originalmente era el resultado
             if num_aux != "":
-                valor_izquierdo = resultado
-                valor_derecho = num_aux
-                valor_izquierdo = aplicar_operacion(valor_izquierdo, valor_derecho, ultima_operacion)
-                resultado = valor_izquierdo
+                resultado = aplicar_operacion(resultado, num_aux, ultima_operacion)
             ultima_operacion = expresion[k]
             num_aux = ""
 
