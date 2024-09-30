@@ -1,7 +1,7 @@
-
 abecedario = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_"
 numeros = "0123456789"
 operaciones = "+-*/^"
+
 
 def evaluar_expresion(expresion, dicc_var):
     k = 0
@@ -9,29 +9,20 @@ def evaluar_expresion(expresion, dicc_var):
     resultado = 0
     num_aux = ""
     ultima_operacion = operaciones[0]
-    parentesis = 0
-    posicion_parentesis_izquierdo = []
-    posicion_parentesis_derecho = []
     while k < n:
-
         if expresion[k] in operaciones:
-            if( expresion[0] in '*/^') or ( k >0 and expresion[ k -1] in operaciones) or \
-                    (k + 1 < n and expresion[k + 1] in operaciones):
-                if k == 0:
-
-                    return (f"ERROR: al procesar {expresion[k]}")
-                    # break
+            if expresion[0] in '*/^' or (k > 0 and expresion[k - 1] in operaciones) or (k + 1 < n and expresion[k + 1] in operaciones):
+                if k == 0 or expresion[k + 1] in operaciones:
+                    return(f"ERROR: al procesar {expresion[k:]}")
                 elif expresion[k - 1] in operaciones:
-                    return (f"ERROR: al procesar {expresion[k - 1]}")
-                    # break
-                elif expresion[k + 1] in operaciones:
-                    return (f"ERROR: al procesar {expresion[k + 1]}")
-                # break
+                    return(f"ERROR: al procesar {expresion[k - 1:]}")
 
         # Caso donde el caracxter de la expresion es un numero.
         if expresion[k] in numeros:
             num_aux += expresion[k]
 
+        elif k == n-1 and expresion[k] in operaciones:
+            return(f'ERROR: al procesar "{expresion[k]}"')
 
         # Caso donde el caracter de la expresion es una letra (o un "_")
         elif expresion[k] in abecedario:
@@ -65,29 +56,42 @@ def evaluar_expresion(expresion, dicc_var):
         elif expresion[k] == '(':
             # Buscamos parentesis final
             inicio_parentesis = k + 1
-            open_parens = 1
-            while open_parens > 0 and k < n - 1:
+            parentesis_abierto = 1
+            while parentesis_abierto > 0 and k < n - 1:
                 k += 1
                 if expresion[k] == '(':
-                    open_parens += 1
+                    parentesis_abierto += 1
                 elif expresion[k] == ')':
-                    open_parens -= 1
-
+                    parentesis_abierto -= 1
             fin_parentesis = k
             # De manera recursiva reevaluamos cada uno de los elementos
             expresion_parentesis = evaluar_expresion(expresion[inicio_parentesis:fin_parentesis], dicc_var)
 
             num_aux = str(expresion_parentesis)
-        if expresion[k] == '(':
-            posicion_parentesis_izquierdo += [k]
-            parentesis += 1
-        if expresion[k] == ')':
-            parentesis -= 1
-            posicion_parentesis_derecho += [k]
-        if k == n - 1 and not parentesis == 0:
-            return f'ERROR: parentesis no cerrado'
-
         k += 1
+
+    i = 0
+    parentesis = 0
+    posicion_parentesis_izquierdo = []
+    posicion_parentesis_derecho = []
+    while i<n:
+        if expresion[i] == '(':
+            parentesis += 1
+            posicion_parentesis_izquierdo = [i]
+        elif expresion[i] == ')':
+            parentesis -= 1
+            posicion_parentesis_derecho = [i]
+        i += 1
+    if parentesis != 0:
+        if posicion_parentesis_izquierdo == []:
+            return f'ERROR: al procesar "{expresion[posicion_parentesis_derecho[0]:]}"'
+        elif posicion_parentesis_derecho == []:
+            return f'ERROR: al procesar "{expresion[posicion_parentesis_izquierdo[0]:]}"'
+        elif posicion_parentesis_izquierdo[0] < posicion_parentesis_derecho[0]:
+            return f'ERROR: al procesar "{expresion[posicion_parentesis_izquierdo[0]:posicion_parentesis_derecho[len(posicion_parentesis_derecho)-1]]}"'
+        elif posicion_parentesis_izquierdo[0] > posicion_parentesis_derecho[0]:
+            return f'ERROR: al procesar "{expresion[posicion_parentesis_derecho[0]:posicion_parentesis_izquierdo[len(posicion_parentesis_izquierdo)-1]]}"'
+
 
     # Ultimo operador antes de finalizar
     if num_aux != "":
