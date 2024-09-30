@@ -1,4 +1,4 @@
-# Manually processes and evaluates an expression with parentheses and spaces handled character by character
+# Manually processes and evaluates an expression with parentheses, spaces, and error handling for undefined variables
 def evaluar_expresion(expr, dicc_var):
     i = 0
     length = len(expr)
@@ -30,8 +30,7 @@ def evaluar_expresion(expr, dicc_var):
             if var_name in dicc_var:
                 current_number = str(dicc_var[var_name])
             else:
-                print(f"Error: variable '{var_name}' not defined")
-                return 0
+                return f"Error: variable '{var_name}' not defined"
 
         # Handle operators
         elif char in '+-*/^':
@@ -56,6 +55,8 @@ def evaluar_expresion(expr, dicc_var):
             sub_expr_end = i
             # Recursively evaluate the sub-expression
             sub_expr_value = evaluar_expresion(expr[sub_expr_start:sub_expr_end], dicc_var)
+            if isinstance(sub_expr_value, str):  # Check if an error occurred in sub-expression
+                return sub_expr_value
             current_number = str(sub_expr_value)
 
         i += 1
@@ -81,7 +82,7 @@ def aplicar_operacion(izq, der, operador):
         return izq ** der
 
 
-# Processes each individual command character by character (no strip used, spaces handled manually)
+# Processes each individual command character by character (handles errors and prints them)
 def procesar_comando(comando, dicc_var):
     i = 0
     length = len(comando)
@@ -105,10 +106,15 @@ def procesar_comando(comando, dicc_var):
                 expr += comando[i]
             i += 1
 
-        # Evaluate the expression and store the result in the variable
-        dicc_var[var_name] = evaluar_expresion(expr, dicc_var)
-        print(f"{var_name} = {expr}")
-        print(dicc_var[var_name])
+        # Evaluate the expression and handle potential errors
+        result = evaluar_expresion(expr, dicc_var)
+        if isinstance(result, str) and result.startswith("Error"):  # If an error message is returned
+            print(f"{var_name} = {expr}")
+            print(result)
+        else:
+            dicc_var[var_name] = result
+            print(f"{var_name} = {expr}")
+            print(dicc_var[var_name])
 
     # If no '=' is present, print the variable value
     else:
@@ -122,7 +128,7 @@ def procesar_comando(comando, dicc_var):
     return dicc_var
 
 
-# Main calculator function (processes a list of commands one by one)
+# Main calculator function (processes a list of commands one by one, handling errors)
 def calculadora(lista_comandos):
     vars = dict()  # Dictionary to store variables
     for comando in lista_comandos:
@@ -131,5 +137,5 @@ def calculadora(lista_comandos):
 
 
 # Example usage:
-lista = ["n=5","hanoi=2^n-1","var_1 = 23 - 13 + hanoi2 * 2","h2 = hanoi /2","","n"]
+lista = ["n=5","hanoi=2^n-1","var_1 = 23 - 13 + hanoi * 2","h2 = hanoi /2","","n"]
 calculadora(lista)
