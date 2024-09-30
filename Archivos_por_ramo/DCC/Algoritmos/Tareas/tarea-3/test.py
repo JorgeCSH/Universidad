@@ -3,6 +3,44 @@ numeros = "0123456789"
 operaciones = "+-*/^"
 
 
+# Realizamos las operaciones
+def aplicar_operacion(expresion1, expresion2, operador):
+    izq = int(expresion1)
+    der = int(expresion2)
+    assert operador in operaciones
+    assert type(izq) == int and type(der) == int
+    if operador == '+':
+        return int(izq + der)
+    elif operador == '-':
+        return int(izq - der)
+    elif operador == '*':
+        return int(izq * der)
+    elif operador == '/':
+        return int(izq / der)
+    elif operador == '^':
+        return int(izq ** der)
+
+
+def simplificar_operaciones(expresion):
+    expresion_simplificada = ""
+    j = 0
+    while j < len(expresion):
+        if expresion[j] in '+-' and j + 1 < len(expresion) and expresion[j + 1] in '+-':
+            if expresion[j] == '+' and expresion[j + 1] == '+':
+                expresion_simplificada += '+'
+            elif expresion[j] == '+' and expresion[j + 1] == '-':
+                expresion_simplificada += '-'
+            elif expresion[j] == '-' and expresion[j + 1] == '+':
+                expresion_simplificada += '-'
+            elif expresion[j] == '-' and expresion[j + 1] == '-':
+                expresion_simplificada += '+'
+            j += 1
+        else:
+            expresion_simplificada += expresion[j]
+        j += 1
+    return expresion_simplificada
+
+
 def evaluar_expresion(expresion, dicc_var):
     expresion = simplificar_operaciones(expresion)
     k = 0
@@ -28,7 +66,6 @@ def evaluar_expresion(expresion, dicc_var):
                     return(f"ERROR: al procesar {expresion[k-1:]}")
             elif k == n - 1 and expresion[k] in operaciones:
                 return (f'ERROR: al procesar "{expresion[k]}"')
-
 
         # Caso donde el caracxter de la expresion es un numero.
         if expresion[k] in numeros:
@@ -72,7 +109,6 @@ def evaluar_expresion(expresion, dicc_var):
                 resultado = aplicar_operacion(resultado, num_aux, ultima_operacion)
             ultima_operacion = expresion[k]
             num_aux = ""
-
         k += 1
 
     # Error asociado al parentesis
@@ -196,7 +232,6 @@ def calculadora(lista_comandos):
     for comando in lista_comandos:
         if comando != '':
             vars = procesar_comando(comando, vars)
-
 
 
 # Ejemplo 1:
