@@ -57,11 +57,16 @@ def resultado2(n):
     for i in range(n+1):
         a_n += [a*b*(((phi_1)**i)-((phi_2)**i))]
     return a_n
+<<<<<<< HEAD
 '''
+=======
+
+>>>>>>> tarea-3-pain
 print(f"Resultados\n"
       f"Oficial: {aa(20)}\n"
       f"Matraca: {resultado2(20)}\n"
       f"El resultado esta: {resultado(aa(5), resultado2(5))}")
+<<<<<<< HEAD
 '''
 def lanzarMoneda():
     lado = np.random.randint(0, 2,1)
@@ -142,3 +147,6 @@ def T_ef(n):
     return T
 
 print(T_ef(5))
+=======
+
+>>>>>>> tarea-3-pain
