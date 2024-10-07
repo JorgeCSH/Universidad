@@ -14,16 +14,19 @@
 =========================================================================================================================
 """
 # Seccion 1: importamos librerias ########################################################################################
-##########################################################################################################################
+########################################################################################################################### 
+# Librerias utilizadas
 import pyglet
 from pyglet.gl import *
 from pyglet.graphics.shader import Shader, ShaderProgram
 import numpy as np
 
+# Librerias del cuerpo docente
 from grafica.scene_graph import SceneGraph
 from grafica.camera import OrbitCamera
 from grafica.helpers import mesh_from_file
 from grafica.drawables import Model
+
 
 # Seccion 2: configuracion ################################################################################################
 ###########################################################################################################################
@@ -95,6 +98,12 @@ def generate_ring(definition):
 
     return Model(positions, uv, None, indices)
 
+
+# Seccion 4: Configuracion de la escena ###############################################################################
+###########################################################################################################################
+'''
+Configuracion de los Shaders
+'''
 if __name__ == "__main__":
     vert_source = """
 #version 330
