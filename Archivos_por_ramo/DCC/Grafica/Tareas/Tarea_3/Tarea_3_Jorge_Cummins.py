@@ -199,9 +199,6 @@ void main() {
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
 
-    planet = create_sphere(36)
-    planet.init_gpu_data(pipeline)
-
     world.add_node("sun_to_root")
     world.add_node("sun_base", attach_to="sun_to_root", mesh=sphere, pipeline=pipeline, scale=[1.5, 1.5, 1.5])
     world.add_node("earth_to_sun", attach_to="sun_to_root")
@@ -209,8 +206,6 @@ void main() {
     world.add_node("saturn_to_sun", attach_to="sun_to_root")
     world.add_node("saturn_base",attach_to="saturn_to_sun", mesh=sphere, pipeline=pipeline, scale=[.8, .8, .8], position=[10,0,0])
     world.add_node("saturn_ring", attach_to="saturn_base", mesh=ring, pipeline=pipeline, scale=[2, 2, 2], rotation=[np.pi/2, 0, 0], cull_face=False)
-    world.add_node("planet_to_sun", attach_to="sun_to_root")
-    world.add_node("planet_base", attach_to="planet_to_sun", mesh=planet, pipeline=pipeline, scale=[.5, .5, .5], position=[2, 0, 0])
 
 
 
@@ -241,7 +236,6 @@ void main() {
     def update(dt):
         world["saturn_to_sun"]["rotation"][1] = window.time
         world["earth_to_sun"]["rotation"][1] = -window.time
-        world["planet_to_sun"]["rotation"][1] = window.time
         world.update()
         cam.update()
         window.time+=dt
