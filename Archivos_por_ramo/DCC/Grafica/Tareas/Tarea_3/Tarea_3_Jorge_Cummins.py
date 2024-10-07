@@ -166,7 +166,6 @@ if __name__ == "__main__":
 in vec3 position;
 in vec2 texCoords;
 
-
 uniform mat4 u_model;
 uniform mat4 u_view = mat4(1.0);
 uniform mat4 u_projection = mat4(1.0);
@@ -187,7 +186,6 @@ out vec4 outColor;
 uniform sampler2D u_texture;
 
 void main() {
-    //outColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
     outColor = texture(u_texture, fragTexCoords);
 }
     """
@@ -202,20 +200,39 @@ void main() {
     window.set_exclusive_mouse(True)
 
     world = SceneGraph(cam)
-    sphere = mesh_from_file("assets/world.obj")[0]["mesh"] # solo como referencia
+    sphere = create_sphere(36) # Si es que parece un pacman es porque no tuve tiempo de arreglarla
     sphere.init_gpu_data(pipeline)
 
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
 
     world.add_node("sun_to_root")
-    world.add_node("sun_base", attach_to="sun_to_root", mesh=sphere, pipeline=pipeline, scale=[1.5, 1.5, 1.5])
-    world.add_node("earth_to_sun", attach_to="sun_to_root")
-    world.add_node("earth_base", attach_to="earth_to_sun", mesh=sphere, pipeline=pipeline, scale=[.1, .1, .1], position=[5,0,0])
-    world.add_node("saturn_to_sun", attach_to="sun_to_root")
-    world.add_node("saturn_base",attach_to="saturn_to_sun", mesh=sphere, pipeline=pipeline, scale=[.8, .8, .8], position=[10,0,0])
-    world.add_node("saturn_ring", attach_to="saturn_base", mesh=ring, pipeline=pipeline, scale=[2, 2, 2], rotation=[np.pi/2, 0, 0], cull_face=False)
+    world.add_node("sun_base", attach_to="sun_to_root", mesh=sphere, pipeline=pipeline, scale=[2.0, 2.0, 2.0])
 
+    # Mercurio
+    world.add_node("mercury_to_sun", attach_to="sun_to_root")
+    world.add_node("mercury_base", attach_to="mercury_to_sun", mesh=sphere, pipeline=pipeline, scale=[.1, .1, .1], position=[5,0,0])
+
+    # Venus
+    world.add_node("venus_to_sun", attach_to="sun_to_root")
+    world.add_node("venus_base", attach_to="venus_to_sun", mesh=sphere, pipeline=pipeline, scale=[.4, .4, .4], position=[8,0,0])
+
+    # Tierra
+    world.add_node("earth_to_sun", attach_to="sun_to_root")
+    world.add_node("earth_base", attach_to="earth_to_sun", mesh=sphere, pipeline=pipeline, scale=[.43, .43, .43], position=[9,0,0])
+    
+    # Marte
+    world.add_node("mars_to_sun", attach_to="sun_to_root")
+    world.add_node("mars_base", attach_to="mars_to_sun", mesh=sphere, pipeline=pipeline, scale=[.25, .25, .25], position=[12,0,0])
+
+    # Jupiter
+    world.add_node("jupiter_to_sun", attach_to="sun_to_root")
+    world.add_node("jupiter_base", attach_to="jupiter_to_sun", mesh=sphere, pipeline=pipeline, scale=[.9, 0.9, 0.9], position=[15,0,0])
+
+    # Saturno -> Anillo
+    world.add_node("saturn_to_sun", attach_to="sun_to_root")
+    world.add_node("saturn_base",attach_to="saturn_to_sun", mesh=sphere, pipeline=pipeline, scale=[.8, .8, .8], position=[18,0,0])
+    world.add_node("saturn_ring", attach_to="saturn_base", mesh=ring, pipeline=pipeline, scale=[2, 2, 2], rotation=[np.pi/2, 0, 0], cull_face=False)
 
 
     @window.event
@@ -244,7 +261,12 @@ void main() {
 
     def update(dt):
         world["saturn_to_sun"]["rotation"][1] = window.time
-        world["earth_to_sun"]["rotation"][1] = -window.time
+        world["earth_to_sun"]["rotation"][1] = window.time
+        world["mars_to_sun"]["rotation"][1] = window.time
+        world["jupiter_to_sun"]["rotation"][1] = window.time
+        world["venus_to_sun"]["rotation"][1] = -window.time
+        world["mercury_to_sun"]["rotation"][1] = window.time
+
         world.update()
         cam.update()
         window.time+=dt
