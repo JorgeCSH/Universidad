@@ -30,7 +30,6 @@ from grafica.drawables import Model
 
 # Seccion 2: configuracion ################################################################################################
 ###########################################################################################################################
-
 class Controller(pyglet.window.Window):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -51,18 +50,6 @@ int int int -> float float float
 '''
 def real_rgb(r, g, b):
     return r/255, g/255, b/255
-
-
-''' Clase Model()
-
-Aun no esta definida, pero la pide la funcion generate_rings().
-
-'''
-class Model():
-    def __init__(self):
-        pass
-    pass
-
 
 
 

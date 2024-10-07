@@ -1,34 +1,43 @@
-# Corresponde al archivo donde voy testeando custiones
+import pyglet
+from pyglet.gl import *
+from pyglet.graphics.shader import Shader, ShaderProgram
+import numpy as np
 
-def generate_ring(definition):
+from grafica.scene_graph import SceneGraph
+from grafica.camera import OrbitCamera
+from grafica.helpers import mesh_from_files
+from grafica.drawables import Model()
+
+
+
+# Corresponde al archivo donde voy testeando custiones
+''' Funcion create_sphere()
+Funcion que, inspirada en la funcion create_ring, crea una
+esfera discretizando en coordenadas esfericas phi y theta.
+
+Recibe "definition" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera.
+'''
+def create_sphere(definition):
     # coordenadas de posición
-    positions = np.zeros((definition)*3*2, dtype=np.float32) 
+    positions = np.zeros((definition)*3*3 , dtype=np.float32) 
     # coordenadas de texturas
-    uv = np.zeros((definition)*2*2, dtype=np.float32)
+    uv = np.zeros((definition)*3*3, dtype=np.float32)
     dtheta = 2*np.pi / definition
-    r1 = 0.5
-    r2 = 1.0
+    dphi = np.pi / definition
+    r = 1.0
 
     for i in range(definition):
         idx = 3*i
         tidx = 2*i
+        phi = (i+1)*dphi
         theta = i*dtheta
-        positions[idx:idx+3] = [np.cos(theta)*r2, np.sin(theta)*r2, 0.0]
-        if i%2==0:
-            uv[tidx:tidx+2] = [1, 1]
-        else:
-            uv[tidx:tidx+2] = [1, 0]
-
-    for i in range(definition):
-        idx = 3*(i+definition)
-        tidx = 2*(i+definition)
-        theta = i*dtheta
-        positions[idx:idx+3] = [np.cos(theta)*r1, np.sin(theta)*r1, 0.0]
+        positions[idx:idx+3] = [np.cos(theta)*np.sin(phi)*r, np.sin(theta)*np.sin(phi)*r, np.cos(phi)*r] 
+        uv[tidx:tidx+2] = [theta/(2*np.pi), phi/np.pi]
         if i%2==0:
             uv[tidx:tidx+2] = [0, 1]
         else:
             uv[tidx:tidx+2] = [0, 0]
-
+    
     indices = np.zeros(6*definition, dtype=np.int32)
     for i in range(definition-1):
         idx = 6*i
@@ -37,12 +46,12 @@ def generate_ring(definition):
         # t1
         indices[idx+3:idx+6] = [i+1, i+definition+1, i+definition]
    
-    # Completamos el anillo
-    # indices[3*definition:] = [definition, definition - 1, 0]
+    # Completamos la esfera
     idx = 6*(definition-1)
-    indices[idx:idx+3] = [definition-1, 0, 2*definition-1]
-    indices[idx+3:idx+6] = [2*definition-1, definition, 0]
-
+    # t0
+    indices[idx:idx+3] = [definition-1, 0, definition-1+definition]
+    # t1
+    indices[idx+3:idx+6] = [0, definition, definition-1+definition]
     return Model(positions, uv, None, indices)
 
 
