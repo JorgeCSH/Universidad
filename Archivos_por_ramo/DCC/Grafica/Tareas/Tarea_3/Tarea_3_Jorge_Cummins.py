@@ -41,7 +41,8 @@ class Controller(pyglet.window.Window):
 
 # Seccion 3: definimos las clases y funciones que se usaran ###############################################################
 ###########################################################################################################################
-'''
+''' Funcion real_rgb()
+
 Funcion para insertar los colores en vez de normalizarlos.
 El objetivo de esta funcion es tomar los valores de RGB originales [0, 255] y normalizarlos a [0, 1].
 Fue para insertar los colores sin tener la necesidad de normalizarlos en cada instante.
@@ -52,7 +53,23 @@ def real_rgb(r, g, b):
     return r/255, g/255, b/255
 
 
+''' Clase Model()
 
+Aun no esta definida, pero la pide la funcion generate_rings().
+
+'''
+class Model():
+    def __init__(self):
+        pass
+    pass
+
+
+
+
+''' Funcion generate_ring()
+
+Funcion para generar anillos de un astro. Esta funcion venia con el template original.
+'''
 def generate_ring(definition):
     # coordenadas de posición
     positions = np.zeros((definition)*3*2, dtype=np.float32) 
