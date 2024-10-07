@@ -110,50 +110,48 @@ esfera discretizando en coordenadas esfericas phi y theta.
 Recibe "definition" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera.
 '''
 def create_sphere(definition):
-    # coordenadas de posición
-    positions = np.zeros((definition)*3*3 , dtype=np.float32) 
-    # coordenadas de texturas
-    uv = np.zeros((definition)*3*3, dtype=np.float32)
-    dtheta = 2*np.pi / definition
-    dphi = np.pi / definition
+    # Coordenadas de posición (posiciones) para un esfera UV
+    positions = np.zeros((definition * definition) * 3, dtype=np.float32) 
+    # Coordenadas de texturas (uv)
+    uv = np.zeros((definition * definition) * 2, dtype=np.float32)
+    # Índices para formar los triángulos
+    indices = np.zeros((6 * (definition - 1) * (definition - 1)), dtype=np.int32)
+
+    dtheta = 2 * np.pi / definition  # Resolución azimutal
+    dphi = np.pi / definition         # Resolución polar
+
+    # Radios de la esfera
     r = 1.0
 
+    # Generar posiciones de vértices y coordenadas de texturas (UV)
     for i in range(definition):
-        idx = 3*i
-        tidx = 2*i
-        phi = (i+1)*dphi
-        theta = i*dtheta
-        positions[idx:idx+3] = [np.cos(theta)*np.sin(phi)*r, np.sin(theta)*np.sin(phi)*r, np.cos(phi)*r] 
-        uv[tidx:tidx+2] = [theta/(2*np.pi), phi/np.pi]
-        if i%2==0:
-            uv[tidx:tidx+2] = [0, 1]
-        else:
-            uv[tidx:tidx+2] = [0, 0]
-    
-    for i in range(definition):
-        idx = 3*(i+definition)
-        tidx = 2*(i+definition)
-        theta = i*dtheta 
-        positions[idx:idx+3] = [np.cos(theta)*np.sin(phi)*r, np.sin(theta)*np.sin(phi)*r, np.cos(phi)*r] 
-        if i%2==0:
-            uv[tidx:tidx+2] = [1, 1]
-        else:
-            uv[tidx:tidx+2] = [0, 1]
+        for j in range(definition):
+            idx = 3 * (i * definition + j)
+            tidx = 2 * (i * definition + j)
 
-    indices = np.zeros(6*definition, dtype=np.int32)
-    for i in range(definition-1):
-        idx = 6*i
-        # t0
-        indices[idx:idx+3] = [i, i+1, i+definition]
-        # t1
-        indices[idx+3:idx+6] = [i+1, i+definition+1, i+definition]
-   
-    # Completamos la esfera
-    idx = 6*(definition-1)
-    # t0
-    indices[idx:idx+3] = [definition-1, 0, definition-1+definition]
-    # t1
-    indices[idx+3:idx+6] = [0, definition, definition-1+definition]
+            theta = j * dtheta  # Ángulo azimutal
+            phi = i * dphi      # Ángulo polar
+
+            positions[idx:idx+3] = [r*np.cos(theta)*np.sin(phi), r*np.sin(theta)*np.sin(phi), r*np.cos(phi)]
+            uv[tidx:tidx+2] = [j / (definition - 1), i / (definition - 1)]
+
+    # Generar índices de triángulos
+    for i in range(definition - 1):
+        for j in range(definition - 1):
+            idx = 6 * (i * (definition - 1) + j)
+            p = i * definition + j
+
+            # Triángulos que forman la malla
+            indices[idx:idx+3] = [p, p+1, p+definition]
+            indices[idx+3:idx+6] = [p+1, p+definition+1, p+definition]
+
+    # Completamos la esfera
+    #idx = 6 * (definition - 1) * (definition - 1)
+    #indices[idx:idx+3] = [definition-1, 0, definition*(definition-1)]
+    #indices[idx+3:idx+6] = [0, definition*(definition-1), definition*(definition-1)+definition-1]
+
+
+    
     return Model(positions, uv, None, indices)
 
 

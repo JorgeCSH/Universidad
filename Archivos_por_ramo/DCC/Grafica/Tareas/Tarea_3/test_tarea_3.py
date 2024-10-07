@@ -17,7 +17,7 @@ esfera discretizando en coordenadas esfericas phi y theta.
 
 Recibe "definition" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera.
 '''
-def generate_sphere(definition):
+def create_sphere(definition):
     # Coordenadas de posición (posiciones) para un esfera UV
     positions = np.zeros((definition * definition) * 3, dtype=np.float32) 
     # Coordenadas de texturas (uv)
