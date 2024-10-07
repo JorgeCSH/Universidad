@@ -1,7 +1,7 @@
 # Corresponde al ejercicio 5.2 de algoritmos 
 # Enunciado
 """
-Agregar a la clase Heap un método ``modificar(k,x)`` que al ser invocado, cambie la prioridad del elemento del casillero ``k``, dándole como nuevo valor ``x`` y asegurando que el heap siga cumpliendo las restricciones de orden. Esta operación debe funcionar en tiempo $O(\log{n})$ en el peor caso. Escriba a continuación la definición del método ``modificar(k,x)``, y pruébela con las instrucciones que aparecen en el casillero siguiente.
+Agregar a la clase Heap un método ``modificar(k,x)`` que al ser invocado, cambie la prioridad del elemento del casillero ``k``, dándole como nuevo valor ``x`` y asegurando que el heap siga cumpliendo las restricciones de orden. Esta operación debe funcionar en tiempo $O(log{n})$ en el peor caso. Escriba a continuación la definición del método ``modificar(k,x)``, y pruébela con las instrucciones que aparecen en el casillero siguiente.
 """
 # Clase
 import numpy as np
@@ -37,7 +37,10 @@ class Heap:
         hundir(self.a,0,self.n)
         return x
     def modificar(self, k, x): #Implementar esta función
-        pass
+        assert k<self.n
+        self.a[k]=x
+        trepar(self.a,k)
+        hundir(self.a,k,self.n)
     def imprimir(self):
         print(self.a[0:self.n])
 
