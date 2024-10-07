@@ -1,3 +1,20 @@
+"""
+=========================================================================================================================
+    Tarea 3: Modelacion y Computacion Grafica para Ingenieros (CC3501-1)
+------------------------------------------------------------------------------------------------------------------------
+    Autor: Jorge Cummins
+    Rut: 21.353.175-1
+    Fecha de Redaccion: 06 de Octubre de 2024
+    Fecha Limite de Entrega: 04 de Octubre de 2024
+    Fecha en que se Entrego: 
+------------------------------------------------------------------------------------------------------------------------
+    Palabras Previas:
+
+
+=========================================================================================================================
+"""
+# Seccion 1: importamos librerias ########################################################################################
+##########################################################################################################################
 import pyglet
 from pyglet.gl import *
 from pyglet.graphics.shader import Shader, ShaderProgram
@@ -8,6 +25,8 @@ from grafica.camera import OrbitCamera
 from grafica.helpers import mesh_from_file
 from grafica.drawables import Model
 
+# Seccion 2: configuracion ################################################################################################
+###########################################################################################################################
 
 class Controller(pyglet.window.Window):
     def __init__(self, *args, **kwargs) -> None:
@@ -15,6 +34,20 @@ class Controller(pyglet.window.Window):
         self.time = 0
         self.focus = "sun_base"
         self.sensitivity = 0.1
+
+
+# Seccion 3: definimos las clases y funciones que se usaran ###############################################################
+###########################################################################################################################
+'''
+Funcion para insertar los colores en vez de normalizarlos.
+El objetivo de esta funcion es tomar los valores de RGB originales [0, 255] y normalizarlos a [0, 1].
+Fue para insertar los colores sin tener la necesidad de normalizarlos en cada instante.
+
+int int int -> float float float
+'''
+def real_rgb(r, g, b):
+    return r/255, g/255, b/255
+
 
 
 def generate_ring(definition):
