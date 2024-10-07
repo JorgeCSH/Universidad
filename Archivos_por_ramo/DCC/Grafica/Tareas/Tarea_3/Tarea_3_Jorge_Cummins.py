@@ -164,22 +164,31 @@ if __name__ == "__main__":
     vert_source = """
 #version 330
 in vec3 position;
+in vec2 texCoords;
+
 
 uniform mat4 u_model;
 uniform mat4 u_view = mat4(1.0);
 uniform mat4 u_projection = mat4(1.0);
 
+out vec2 fragTexCoords;
+
 void main() {
     gl_Position = u_projection * u_view * u_model * vec4(position, 1.0f);
+    fragTexCoords = texCoords;    
 }
     """
     frag_source = """
 #version 330
+in vec2 fragTexCoords;
 
 out vec4 outColor;
 
+uniform sampler2D u_texture;
+
 void main() {
-    outColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    //outColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    outColor = texture(u_texture, fragTexCoords);
 }
     """
 
