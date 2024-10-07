@@ -130,6 +130,16 @@ def create_sphere(definition):
         else:
             uv[tidx:tidx+2] = [0, 0]
     
+    for i in range(definition):
+        idx = 3*(i+definition)
+        tidx = 2*(i+definition)
+        theta = i*dtheta 
+        positions[idx:idx+3] = [np.cos(theta)*np.sin(phi)*r, np.sin(theta)*np.sin(phi)*r, np.cos(phi)*r] 
+        if i%2==0:
+            uv[tidx:tidx+2] = [1, 1]
+        else:
+            uv[tidx:tidx+2] = [0, 1]
+
     indices = np.zeros(6*definition, dtype=np.int32)
     for i in range(definition-1):
         idx = 6*i
