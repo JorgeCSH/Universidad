@@ -131,7 +131,6 @@ def create_sphere(definition):
             theta = j * dtheta  # Ángulo azimutal
             phi = i * dphi      # Ángulo polar
 
-            # Coordenadas esféricas convertidas a cartesiana
             positions[idx:idx+3] = [r * np.sin(phi) * np.cos(theta), r * np.sin(phi) * np.sin(theta),r * np.cos(phi)]
             uv[tidx:tidx+2] = [j / (definition - 1), i / (definition - 1)]
 
