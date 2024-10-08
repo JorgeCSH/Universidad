@@ -110,18 +110,17 @@ esfera discretizando en coordenadas esfericas phi y theta.
 Recibe "definition" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera.
 '''
 def create_sphere(definition):
-    # Coordenadas de posición (posiciones) para un esfera UV
-    positions = np.zeros((definition * definition) * 3, dtype=np.float32) 
+    # Coordenadas de posición (posiciones) para una esfera
+    positions = np.zeros((definition * definition) * 3, dtype=np.float32)
     # Coordenadas de texturas (uv)
     uv = np.zeros((definition * definition) * 2, dtype=np.float32)
     # Índices para formar los triángulos
-    indices = np.zeros((6 * (definition - 1) * (definition - 1)), dtype=np.int32)
+    indices = np.zeros((6 * (definition ) * (definition)), dtype=np.int32)
 
     dtheta = 2 * np.pi / definition  # Resolución azimutal
-    dphi = np.pi / definition         # Resolución polar
+    dphi = np.pi / (definition - 1)  # Resolución polar
 
-    # Radios de la esfera
-    r = 1.0
+    r = 1.0  # Radio de la esfera
 
     # Generar posiciones de vértices y coordenadas de texturas (UV)
     for i in range(definition):
@@ -132,26 +131,24 @@ def create_sphere(definition):
             theta = j * dtheta  # Ángulo azimutal
             phi = i * dphi      # Ángulo polar
 
-            positions[idx:idx+3] = [r*np.cos(theta)*np.sin(phi), r*np.sin(theta)*np.sin(phi), r*np.cos(phi)]
+            # Coordenadas esféricas convertidas a cartesiana
+            positions[idx:idx+3] = [r * np.sin(phi) * np.cos(theta), r * np.sin(phi) * np.sin(theta),r * np.cos(phi)]
             uv[tidx:tidx+2] = [j / (definition - 1), i / (definition - 1)]
 
     # Generar índices de triángulos
-    for i in range(definition - 1):
-        for j in range(definition - 1):
-            idx = 6 * (i * (definition - 1) + j)
-            p = i * definition + j
+    idx = 0
+    for i in range(definition ):
+        for j in range(definition ):
 
             # Triángulos que forman la malla
-            indices[idx:idx+3] = [p, p+1, p+definition]
-            indices[idx+3:idx+6] = [p+1, p+definition+1, p+definition]
+            indices[idx:idx+3] = [i * definition + j,
+                                  i * definition + j+1,
+                                  i * definition + j+definition]
+            indices[idx+3:idx+6] = [i * definition + j+1,
+                                    i * definition + j+definition+1,
+                                    i * definition + j+definition]
+            idx += 6
 
-    # Completamos la esfera
-    #idx = 6 * (definition - 1) * (definition - 1)
-    #indices[idx:idx+3] = [definition-1, 0, definition*(definition-1)]
-    #indices[idx+3:idx+6] = [0, definition*(definition-1), definition*(definition-1)+definition-1]
-
-
-    
     return Model(positions, uv, None, indices)
 
 
