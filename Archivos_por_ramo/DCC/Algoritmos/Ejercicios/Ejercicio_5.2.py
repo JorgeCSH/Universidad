@@ -36,11 +36,13 @@ class Heap:
         self.a[0]=self.a[self.n] # movemos el elemento sobrante hacia el casillero vacante
         hundir(self.a,0,self.n)
         return x
+
     def modificar(self, k, x): #Implementar esta función
         assert k<self.n
         self.a[k]=x
         trepar(self.a,k)
         hundir(self.a,k,self.n)
+        
     def imprimir(self):
         print(self.a[0:self.n])
 

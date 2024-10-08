@@ -110,36 +110,37 @@ esfera discretizando en coordenadas esfericas phi y theta.
 Recibe "definition" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera.
 '''
 def create_sphere(definition):
-    # Coordenadas de posición (posiciones) para una esfera
+    # Coordenadas de posicion (posiciones) para una esfera
     positions = np.zeros((definition * definition) * 3, dtype=np.float32)
-    # Coordenadas de texturas (uv)
+    # Coordenadas de texturas (uv), texturas aun no implementadas
     uv = np.zeros((definition * definition) * 2, dtype=np.float32)
-    # Índices para formar los triángulos
+    # Arreglo de indices
     indices = np.zeros((6 * (definition ) * (definition)), dtype=np.int32)
 
-    dtheta = 2 * np.pi / definition  # Resolución azimutal
-    dphi = np.pi / (definition - 1)  # Resolución polar
+    dtheta = 2 * np.pi / definition  # Angulo theta
+    dphi = np.pi / (definition - 1)  # Angulo phi
 
-    r = 1.0  # Radio de la esfera
+    r = 1  # radio, seteado a 1
 
-    # Generar posiciones de vértices y coordenadas de texturas (UV)
+    # Generar posiciones y coordenadas de texturas....aun (creo) no lo implemento
     for i in range(definition):
         for j in range(definition):
             idx = 3 * (i * definition + j)
             tidx = 2 * (i * definition + j)
 
-            theta = j * dtheta  # Ángulo azimutal
-            phi = i * dphi      # Ángulo polar
-
+            theta = j * dtheta  # Desplazamos por theta
+            phi = i * dphi      # Desplazamos por phi
+            
+            # Llenamos una lista con coordenadas tanto de posicion como de texturas, esto en coordenadas esfericas
             positions[idx:idx+3] = [r * np.sin(phi) * np.cos(theta), r * np.sin(phi) * np.sin(theta),r * np.cos(phi)]
             uv[tidx:tidx+2] = [j / (definition - 1), i / (definition - 1)]
 
-    # Generar índices de triángulos
+    # Generar indices de triangulos, originalmente era hasta definition-1, pero se cambio a definition para cerrar la esfera
     idx = 0
     for i in range(definition ):
         for j in range(definition ):
 
-            # Triángulos que forman la malla
+            # Triángulos que forman la malla, al igual que para las texturas pero esta vez para la forma
             indices[idx:idx+3] = [i * definition + j,
                                   i * definition + j+1,
                                   i * definition + j+definition]
