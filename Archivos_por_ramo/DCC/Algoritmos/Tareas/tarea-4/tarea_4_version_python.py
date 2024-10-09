@@ -39,6 +39,32 @@ import aed_utilities as aed
 
 # Clases/Codigo principal #############################################################################################
 #######################################################################################################################
+''' Clase Nodoi
+
+Esta clase que venia originalmente con el documentgo esta encargada de los nodos internos. Lo principal es que 
+se encarga de las diferentes opciones de operaciones. Esto es de la siguiente manera:
+
+Caso +: 
+    -> Sigue el la regla de la suma de derivadas, es decir, la derivada de la suma es la suma de las derivadas. Esto se realiza tomando retornando otro Nodoi donde la rama izquierda corresponde a la derivada de la izquierda del +, la info corresponde al "+" y el lado derecho corresponde a la derivada de la derecha del +.
+    -> d(f+g)/dx = df/dx + dg/dx. 
+
+Caso -:
+    -> Analogo a la suma.
+    -> d(f-g)/dx = df/dx - dg/dx.
+
+Caso *: 
+    -> En este caso se aplica la regla del producto. De esta manera se tomara tres nodoi, el primero para el lado izquierdo de la suma donde su lado izquierdo es la derivada de la funcion, la info un producto y el lado derecho la funcion, el lado derecho es analogo pero invirtiendo los lados y el nodo principal corresponde a los dos nodos pero con "+" como info de este nodo.
+    -> d(f*g)/dx = (df/dx)*g + f*(dg/dx).
+
+Caso /: 
+    -> Analogo al caso "*" solo que tiene la resta y esta todo dividido por el cuadrado del denominador. Basicamente la regla de la division.
+    -> d(f/g)/dx = (df/dx*g - f*dg/dx)/(g^2).
+
+Caso ^:
+    -> Considerando que en este caso no se tiene potencias con exponente dependiente del valor que se esta derivando (i.e. exponencial), en este caso se aplicara la regla de derivada de polinomios. Es decir, la derivada de x^n es n*x^(n-1), por lo que la derivada de la potencia sera el exponente por la base a la potencia del exponente menos 1. 
+    -> d(f^g)/dx = g*f^(g-1)*df/dx, donde g dg/dx = 0 => cte con respecto a la variable que se esta derivando.
+
+'''
 class Nodoi:
     def __init__(self, izq, info, der):
         self.izq=izq
@@ -75,7 +101,9 @@ class Nodoe:
     def postorden(self):
         print(self.info, end=" ")
     def derivada(self,x):
-        return self
+        if self.info==x:
+            # Derivada de x es 1.
+            return Nodoe("1")
 
 
 class Arbol:
