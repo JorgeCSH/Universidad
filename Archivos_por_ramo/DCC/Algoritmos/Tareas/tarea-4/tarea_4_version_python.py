@@ -64,6 +64,7 @@ Caso ^:
     -> Considerando que en este caso no se tiene potencias con exponente dependiente del valor que se esta derivando (i.e. exponencial), en este caso se aplicara la regla de derivada de polinomios. Es decir, la derivada de x^n es n*x^(n-1), por lo que la derivada de la potencia sera el exponente por la base a la potencia del exponente menos 1. 
     -> d(f^g)/dx = g*f^(g-1)*df/dx, donde g dg/dx = 0 => cte con respecto a la variable que se esta derivando.
 
+En el caso donde no se tenga ningun caso, ocurre que es cte y por ende se retorna el nodoe como cero.
 '''
 class Nodoi:
     def __init__(self, izq, info, der):
@@ -94,7 +95,10 @@ class Nodoi:
         return Nodoe("0")
 
 
-
+''' Clase Nodoe
+La clase corresponde al nodo externo. En este caso se encarga de las derivadas finales, es decir, si son constantes o variables.
+La clase tiene dos opciones para entregar, si es variable entonces la derivada que queda es solamente x^1, por ende se retornara 1, cualquier valor extra se encuentra en los nodos internos. EL otro caso corresponde a cuando no es constante, es decir, como nodo externo se retornara 0.
+'''
 class Nodoe:
     def __init__(self, info):
         self.info=info
@@ -105,7 +109,9 @@ class Nodoe:
             # Derivada de x es 1.
             return Nodoe("1")
 
+''' Clase Arbol.
 
+'''
 class Arbol:
     def __init__(self,formula):
         if type(formula)!=str: # se supone que viene el árbol ya construído
