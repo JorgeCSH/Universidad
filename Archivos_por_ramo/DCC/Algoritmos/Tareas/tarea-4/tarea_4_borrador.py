@@ -1,6 +1,36 @@
 """
 Documento para hacer la tarea 4 de algoritmo
+
+Enunciado (porque me da lata abrir el doc. a cada rato):
+
+El objetivo de esta tarea es aprender a procesar la información de árboles que representan fórmulas. Hay muchas cosas
+que uno puede hacer con estos árboles, y en esta tarea nos enfocaremos en particular en calcular la derivada de una
+fórmula respecto de una variable dada.
+
+Específicamente, el problema es: dado un árbol que representa una fórmula, construir y retornar otro árbol que
+representa la derivada de la primera fórmula respecto de una variable dada.
+
+La fórmula se entrega en notación de infijo (normal). En esta fórmula,
+los operadores de menor prioridad son la suma (``+``) y la resta (``-``), de igual prioridad entre sí, luego vienen la
+multiplicación (``*``) y la división (``/``), también de igual prioridad entre sí, y finalmente el operador de mayor
+prioridad es la elevación a potencia (``^``). También se puede usar paréntesis. Para simplificar no usaremos el
+operador "menos unario". **Nota importante**: Para no complicar excesivamente las cosas, supondremos que en la
+elevación a potencia el exponente no contiene la variable respecto de la cual se está derivando.
+
+A continuación usted encontrará las clases ``Nodoi``, ``Nodoe`` y ``Arbol`` que implementan árboles que representan
+fórmulas. La clase ``Arbol`` viene con un constructor que recibe un string como parámetro, el cual contiene una
+fórmula, y este constructor se encarga de transformar la fórmula de string a árbol, de modo que usted no necesita
+preocuparse de eso. Para simplificar, la fórmula solo podrá contener variables de una sola letra, números de un solo
+dígito, y sin espacios.
+
+Usted tiene que implementar para la clase ``Arbol`` y para los nodos una función ``derivada`` que al ser invocada
+indicando el nombre de una variable, retorne un árbol que represente la derivada de la fórmula respectiva.
+
+En este enunciado vienen funciones ``derivada`` triviales, que simplemente retornan la misma fórmula, sin derivarla.
+Usted debe reemplazarlas por la implementación correcta
 """
+
+
 # Imports #############################################################################################################
 #######################################################################################################################
 import numpy as np
