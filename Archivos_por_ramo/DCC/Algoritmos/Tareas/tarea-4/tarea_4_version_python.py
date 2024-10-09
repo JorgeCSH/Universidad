@@ -108,6 +108,9 @@ class Nodoe:
         if self.info==x:
             # Derivada de x es 1.
             return Nodoe("1")
+        elif self.info != "x":
+            return Nodoe("0")
+
 
 ''' Clase Arbol.
 
