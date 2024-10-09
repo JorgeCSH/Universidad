@@ -12,6 +12,8 @@ Cuidado con el virtual environmet, está siendo usado, no borrar porfavor[^1].
 ## Palabras finales
 Si bien en general lo desarrollado en este repositorio fue realizado por mi, existen algunos casos que pueden ser obtenidos y editados, en ese caso dejaré los créditos respectivos que, en caso de no incluirlos, el creador original está en su derecho de solicitar que los elimine o de recordar agregarlos[^2].
 
+Importante: [REDACTED] el que me copie.
+
 ## Contenidos obtenidos de otras fuentes[^3]
 * Templates de LaTeX: Pablo Pizarro.
 
