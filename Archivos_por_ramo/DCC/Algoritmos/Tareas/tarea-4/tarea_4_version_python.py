@@ -63,7 +63,7 @@ class Nodoi:
             return Nodoi(Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x))),"/",Nodoi(self.der,"^",Nodoe("2")))
         if self.info=="^":
             # Aca aplicamos la regla de la potencia, es decir, derivada de x^n es n*x^(n-1), por lo que la derivada de la potencia sera el exponente por la base a la potencia del exponente menos 1.
-            return Nodoi(Nodoi(Nodoi(self.der,"*",self.izq.derivada(x)),"*",Nodoe("x")), "+", Nodoi(Nodoi(Nodoi(self.izq,"^",Nodoi("x","-",Nodoe("1"))),"*",self.der),"*",self.izq.derivada(x)))
+            return Nodoi(Nodoi(Nodoi(self.der,"*",self.izq),"^",Nodoi(self.der, "-", "1"))  , "*", self.izq.derivada("x"))
         # Caso donde es constante retornamos 0.
         return Nodoe("0")
 
@@ -75,11 +75,7 @@ class Nodoe:
     def postorden(self):
         print(self.info, end=" ")
     def derivada(self,x):
-        if self.info==x:
-            # Si el valor es el que piden derivar entonces seria d/dx(x)=1.
-            return Nodoe("1")
-        # En este caso tenemos constante y d/dx(c)=0.
-        return Nodoe("0")
+        return self
 
 
 class Arbol:
