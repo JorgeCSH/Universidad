@@ -63,7 +63,7 @@ class Nodoi:
             return Nodoi(Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x))),"/",Nodoi(self.der,"^",Nodoe("2")))
         if self.info=="^":
             # Aca aplicamos la regla de la potencia, es decir, derivada de x^n es n*x^(n-1), por lo que la derivada de la potencia sera el exponente por la base a la potencia del exponente menos 1.
-            return Nodoi(Nodoi(Nodoi(self.der,"*",self.izq),"^",Nodoi(self.der, "-", "1"))  , "*", self.izq.derivada("x"))
+            return Nodoi(Nodoi(Nodoi(self.der,"*",self.izq),"^",Nodoi(self.der, "-", Nodoe("1")))  , "*", self.izq.derivada("x"))
         # Caso donde es constante retornamos 0.
         return Nodoe("0")
 
