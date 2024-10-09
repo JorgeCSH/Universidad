@@ -109,6 +109,7 @@ class Nodoe:
             # Derivada de x es 1.
             return Nodoe("1")
         elif self.info != "x":
+            # Derivada de x es 0.
             return Nodoe("0")
 
 
