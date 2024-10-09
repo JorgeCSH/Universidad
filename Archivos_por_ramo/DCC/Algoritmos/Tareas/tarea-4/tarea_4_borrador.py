@@ -58,7 +58,7 @@ class Nodoi:
         if self.info=="/":
             return Nodoi(Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x))),"/",Nodoi(self.der,"^",Nodoe("2")))
         if self.info=="^":
-            return Nodoi(Nodoi(Nodoi(self.der,"*",self.izq.derivada(x)),"*",Nodoe("log")), "*", Nodoe("exp")
+            return Nodoi(self.der,"*",self.izq.derivada(x))
 
 
 
