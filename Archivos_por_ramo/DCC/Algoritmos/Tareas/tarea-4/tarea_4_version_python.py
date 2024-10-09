@@ -50,15 +50,22 @@ class Nodoi:
         print(self.info, end=" ")
     def derivada(self,x):
         if self.info=="+":
+            # Derivada de la suma es la suma de las derivadas, entonces el nodo izquierdo sera la derivada del izquierdo y lo mismo con el derecho.
             return Nodoi(self.izq.derivada(x),"+",self.der.derivada(x))
         if self.info=="-":
+            # Analogo a la suma.
             return Nodoi(self.izq.derivada(x),"-",self.der.derivada(x))
         if self.info=="*":
+            # Este esta mas chistoso, en este caso tenemos que aplicar propiedad del producto, es decir tenemos que la derivada del producto sera en la izquierda derivada izquierda por derecha y a la derecha, izquierda por derivada derecha.
             return Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"+",Nodoi(self.izq,"*",self.der.derivada(x)))
         if self.info=="/":
-            return Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x)))
+            # Aca aplicamos regla de la division, es decir, analogo al producto pero con una resta y dividiendo por el cuadrado del denominador.
+            return Nodoi(Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x))),"/",Nodoi(self.der,"^",Nodoe("2")))
         if self.info=="^":
-            return Nodoi(self.der,"*",self.izq.derivada(x))
+            # Aca aplicamos la regla de la potencia, es decir, derivada de x^n es n*x^(n-1), por lo que la derivada de la potencia sera el exponente por la base a la potencia del exponente menos 1.
+            return Nodoi(Nodoi(Nodoi(self.der,"*",self.izq.derivada(x)),"*",Nodoe("x")), "+", Nodoi(Nodoi(Nodoi(self.izq,"^",Nodoi("x","-",Nodoe("1"))),"*",self.der),"*",self.izq.derivada(x)))
+        # Caso donde es constante retornamos 0.
+        return Nodoe("0")
 
 
 
@@ -69,7 +76,9 @@ class Nodoe:
         print(self.info, end=" ")
     def derivada(self,x):
         if self.info==x:
+            # Si el valor es el que piden derivar entonces seria d/dx(x)=1.
             return Nodoe("1")
+        # En este caso tenemos constante y d/dx(c)=0.
         return Nodoe("0")
 
 
@@ -145,6 +154,7 @@ class Arbol:
 
     def derivada(self,x):
         return Arbol(self.raiz.derivada(x))
+
 
     def dibujar(self):
       btd = aed.BinaryTreeDrawer(fieldData="info", fieldLeft="izq", fieldRight="der",classNone=Nodoe )
