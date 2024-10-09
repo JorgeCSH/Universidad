@@ -49,9 +49,17 @@ class Nodoi:
         self.der.postorden()
         print(self.info, end=" ")
     def derivada(self,x):
-        # Esta función la tiene que escribir usted
-        # Por mientras, retorna la misma fórmula sin derivarla
-        return self
+        if self.info=="+":
+            return Nodoi(self.izq.derivada(x),"+",self.der.derivada(x))
+        if self.info=="-":
+            return Nodoi(self.izq.derivada(x),"-",self.der.derivada(x))
+        if self.info=="*":
+            return Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"+",Nodoi(self.izq,"*",self.der.derivada(x)))
+        if self.info=="/":
+            return Nodoi(Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x))),"/",Nodoi(self.der,"^",Nodoe("2")))
+        if self.info=="^":
+            return Nodoi(Nodoi(Nodoi(self.der,"*",self.izq.derivada(x)),"*",Nodoe("log")), "*", Nodoe("exp")
+
 
 
 class Nodoe:
@@ -60,9 +68,9 @@ class Nodoe:
     def postorden(self):
         print(self.info, end=" ")
     def derivada(self,x):
-        # Esta función la tiene que escribir usted
-        # Por mientras, retorna la misma fórmula sin derivarla
-        return self
+        if self.info==x:
+            return Nodoe("1")
+        return Nodoe("0")
 
 
 class Arbol:
@@ -76,6 +84,7 @@ class Arbol:
         global s
         s=formula+";" # agregamos una marca de fin de la entrada
         k=0 # indica próximo caracter por procesar
+
         # definimos funciones para analizar la fórmula
         def expresion(): # retorna puntero a la raíz de un árbol que representa a la fórmula s
             global k
@@ -87,6 +96,7 @@ class Arbol:
                 b=factor()
                 a=Nodoi(a,op,b)
             return a
+
         def factor():
             global k
             global s
@@ -97,6 +107,7 @@ class Arbol:
                 b=termino()
                 a=Nodoi(a,op,b)
             return a
+
         def termino():
             global k
             global s
@@ -107,6 +118,7 @@ class Arbol:
                 b=termino()
                 a=Nodoi(a,op,b)
             return a
+
         def primario(): # posible constante, variable o formula parentizada
             global k
             global s
