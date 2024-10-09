@@ -56,7 +56,7 @@ class Nodoi:
         if self.info=="*":
             return Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"+",Nodoi(self.izq,"*",self.der.derivada(x)))
         if self.info=="/":
-            return Nodoi(Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x))),"/",Nodoi(self.der,"^",Nodoe("2")))
+            return Nodoi(Nodoi(self.izq.derivada(x),"*",self.der),"-",Nodoi(self.izq,"*",self.der.derivada(x)))
         if self.info=="^":
             return Nodoi(self.der,"*",self.izq.derivada(x))
 
