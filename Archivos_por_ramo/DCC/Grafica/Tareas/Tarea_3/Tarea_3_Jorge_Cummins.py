@@ -105,8 +105,8 @@ def create_sphere(definition):
     # Índices para formar los triángulos
     indices = np.zeros((6 * (definition ) * (definition)), dtype=np.int32)
 
-    dtheta = 2 * np.pi / definition  # Resolución azimutal
-    dphi = np.pi / (definition - 1)  # Resolución polar
+    dtheta = 2 * np.pi / (definition-1)  # Resolución azimutal
+    dphi = np.pi / (definition-1)  # Resolución polar
 
     r = -1.0  # Radio de la esfera
 
@@ -120,7 +120,7 @@ def create_sphere(definition):
             phi = i * dphi      # Ángulo polar
 
             positions[idx:idx+3] = [r * np.sin(phi) * np.cos(theta), r * np.sin(phi) * np.sin(theta),r * np.cos(phi)]
-            uv[tidx:tidx+2] = [j / (definition -1), i / (definition -1)]
+            uv[tidx:tidx+2] = [j / (definition), i / (definition )]
 
     # Generar índices de triángulos
     idx = 0
@@ -136,16 +136,7 @@ def create_sphere(definition):
                                     i * definition + j+definition]
             idx += 6
     
-    # Para las normales
-    normals = np.zeros((definition * definition) * 3, dtype=np.float32)
-    for i in range(definition):
-        for j in range(definition):
-            idx = 3 * (i * definition + j)
-            theta = j * dtheta
-            phi = i * dphi
-            normals[idx:idx+3] = [np.sin(phi) * np.cos(theta), np.sin(phi) * np.sin(theta), np.cos(phi)]
-
-    return Model(positions, uv, normals, indices)
+    return Model(positions, uv, None, indices)
 
 
 # Seccion 4: Configuracion de la escena ###############################################################################
@@ -196,9 +187,6 @@ void main() {
     sphere = create_sphere(36) # Si es que parece un pacman es porque no tuve tiempo de arreglarla
     sphere.init_gpu_data(pipeline)
    
-    #epic_sphere = mesh_from_file("assets/world.obj")
-    #epic_sphere.init_gpu_data(pipeline)
-
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
 
