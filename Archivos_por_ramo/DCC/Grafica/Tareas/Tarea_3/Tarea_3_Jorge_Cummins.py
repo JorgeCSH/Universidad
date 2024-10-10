@@ -199,7 +199,6 @@ void main() {
                    pipeline=pipeline,
                    position=[0,0,0],
                    rotation=[-np.pi/2, 0, 0],
-                   scale=[2.5, 2.5, 2.5],
                    texture=Texture("assets/sun.jpg"))
 
     # Mercurio
@@ -341,17 +340,35 @@ void main() {
 
     # Update de la escena 
     def update(dt):
-        dif = window.time
-#        world["sun_base"]["scale"][0:3] = [2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif)]
+        domega = window.time/2
+        domega_ax = window.time
+        world["sun_base"]["scale"][0:3] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
+        
         world["mercury_to_sun"]["rotation"][1] = window.time
+        world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
+        
         world["venus_to_sun"]["rotation"][1] = -0.73*window.time
+        world["venus_base"]["rotation"][1] = (1/8)*domega_ax
+
         world["earth_to_sun"]["rotation"][1] = 0.62*window.time
+        world["earth_base"]["rotation"][1] = (4/8)*domega_ax
+        
         world["mars_to_sun"]["rotation"][1] = 0.502*window.time
+        world["mars_base"]["rotation"][1] = (3/8)*domega_ax
+
         world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
+        world["jupiter_base"]["rotation"][1] = domega_ax
+
         world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
+        world["saturn_base"]["rotation"][1] = (7/8)*window.time
+
         world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
+        
         world["uranus_to_centre"]["rotation"][1] = 0.22*window.time
+        world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax
+
         world["neptune_to_centre"]["rotation"][1] = -0.20*window.time
+        world["neptune_base"]["rotation"][1] = (5/8)*domega_ax
 
         world.update()
         cam.update()
