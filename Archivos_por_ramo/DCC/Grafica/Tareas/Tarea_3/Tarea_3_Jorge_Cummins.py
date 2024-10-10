@@ -268,9 +268,7 @@ void main() {
 
     # Centro del centro de rotacion binario.
     world.add_node("Liu_Cixin",
-                   attach_to="sun_to_root")
-    world.add_node("liu_base",
-                   attach_to="Liu_Cixin",
+                   attach_to="sun_to_root",
                    position=[32.295*np.cos(5*omega), 0, 32.295*np.sin(5*omega)])
 
     # Urano
@@ -280,9 +278,20 @@ void main() {
                    attach_to="uranus_to_centre",
                    mesh = sphere,
                    pipeline=pipeline,
-                   scale=[0.65, 0.65, 0.65])
+                   scale=[0.65, 0.65, 0.65],
+                   position=[7.17*np.cos(6*omega), 0, 7.17*np.sin(6*omega)])
+    # Neptune
+    world.add_node("neptune_to_centre",
+                   attach_to = "Liu_Cixin")
+    world.add_node("neptune_base",
+                   attach_to = "neptune_centre",
+                   mesh = sphere,
+                   pipeline = pipeline,
+                   scale = [0.62, 0.62, 0.62],
+                   position = [3.62*np.cos(7*omega), 0, 3.62*np.sin(7*omega)])
 
 
+    # Dibujamos
     @window.event
     def on_draw():
         window.clear()
@@ -297,18 +306,20 @@ void main() {
             world.draw()
         glDisable(GL_DEPTH_TEST)
 
+    # Mouse
     @window.event
     def on_mouse_motion(x, y, dx, dy):
         # Modificamos la camara segun el movimento del mouse
         cam.phi += dx * 0.001
         cam.theta += dy * 0.001
-
+    
+    # Teclado
     @window.event
     def on_key_press(symbol, modifiers):
         pass
 
+    # Update de la escena 
     def update(dt):
-        domega = window.time
         world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
         world["mercury_to_sun"]["rotation"][1] = window.time
         world["venus_to_sun"]["rotation"][1] = -0.73*window.time
@@ -317,7 +328,8 @@ void main() {
         world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
         world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
         world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
-        world["uranus_to_centre"]["position"][0:3] = [16/(5+3*np.cos(domega))*np.cos(domega), 0, 16/(5+3*np.cos(domega))*np.sin(domega)]
+        world["uranus_to_centre"]["rotation"][1] = 0.1*window.time
+        world["neptune_to_centre"]["rotation"][1] = 0.07*window.time
 
         world.update()
         cam.update()
