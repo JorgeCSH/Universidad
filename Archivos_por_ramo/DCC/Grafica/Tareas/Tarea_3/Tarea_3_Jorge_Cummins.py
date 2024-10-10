@@ -124,7 +124,7 @@ def create_sphere(definition):
 
     # Generar índices de triángulos
     idx = 0
-    for i in range(definition):
+    for i in range(definition-1):
         for j in range(definition):
 
             # Triángulos que forman la malla
@@ -186,6 +186,7 @@ void main() {
     world = SceneGraph(cam)
     sphere = create_sphere(36) # Si es que parece un pacman es porque no tuve tiempo de arreglarla
     sphere.init_gpu_data(pipeline)
+    
 
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
@@ -198,6 +199,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    position=[0,0,0],
+                   rotation=[np.pi/2, 0, 0],
                    texture=Texture("assets/sun.jpg"))
 
     # Mercurio
@@ -208,7 +210,9 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.1, .1, .1],
-                   position=[5,0,0])
+                   position=[5,0,0],
+                   rotation=[np.pi/2, 0, 0],
+                   texture=Texture("assets/mercury.jpg"))
 
     # Venus
     world.add_node("venus_to_sun",
@@ -218,7 +222,9 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.4, .4, .4],
-                   position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)])
+                   position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)],
+                   rotation=[np.pi/2, 0, 0],
+                   texture=Texture("assets/venus.jpg"))
 
     # Tierra
     world.add_node("earth_to_sun",
@@ -228,7 +234,9 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.43, .43, .43],
-                   position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)])
+                   position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)],
+                   rotation=[np.pi/2, 0, 0],
+                   texture=Texture("assets/earth.jpg"))
     
     # Marte
     world.add_node("mars_to_sun",
@@ -238,7 +246,9 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
-                   position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)])
+                   position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)],
+                   rotation=[np.pi/2, 0, 0],
+                   texture=Texture("assets/mars.jpg"))
 
     # Jupiter
     world.add_node("jupiter_to_sun",
@@ -248,7 +258,9 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.95, 0.95, 0.95],
-                   position=[20.03*np.cos(4*omega), 0, 20.03*np.sin(4*omega)])
+                   position=[20.03*np.cos(4*omega), 0, 20.03*np.sin(4*omega)],
+                   rotation=[np.pi/2, 0, 0],
+                   texture=Texture("assets/jupiter.jpg"))
 
     # Saturno -> Anillo
     world.add_node("saturn_to_sun",
@@ -258,13 +270,16 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.8, .8, .8],
-                   position=[24.78*np.cos(5*omega),0, 24.78*np.sin(5*omega)])
+                   position=[24.78*np.cos(5*omega),0, 24.78*np.sin(5*omega)],
+                   rotation=[np.pi/2, 0, 0],
+                   texture=Texture("assets/saturn.jpg"))
     world.add_node("saturn_ring",
                    attach_to="saturn_base",
                    mesh=ring,
                    pipeline=pipeline,
                    scale=[2, 2, 2],
-                   rotation=[np.pi/2, 0, 0], cull_face=False)
+                   rotation=[0, 0, 0], cull_face=False,
+                   texture=Texture("assets/saturn_ring.png"))
 
     # Centro del centro de rotacion binario.
     world.add_node("Liu_Cixin",
@@ -281,7 +296,9 @@ void main() {
                    mesh = sphere,
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65],
-                   position=[3.17*np.cos(7*omega), 0, 3.17*np.sin(7*omega)])
+                   position=[3.17*np.cos(7*omega), 0, 3.17*np.sin(7*omega)],
+                   rotation=[np.pi/2, 0, 0],
+                   texture=Texture("assets/uranus.jpg"))
     # Neptune
     world.add_node("neptune_to_centre",
                    attach_to = "Liu_Cixin_base")
@@ -290,7 +307,9 @@ void main() {
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   position = [5.62*np.cos(8*omega), 0, 5.62*np.sin(8*omega)])
+                   position = [5.62*np.cos(8*omega), 0, 5.62*np.sin(8*omega)],
+                   rotation=[np.pi/2, 0, 0],
+                   texture = Texture("assets/neptune.jpg"))
 
 
     # Dibujamos
@@ -324,15 +343,15 @@ void main() {
     def update(dt):
         dif = window.time
         world["sun_base"]["scale"][0:3] = [2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif)]
-        world["mercury_to_sun"]["rotation"][1] = window.time
-        world["venus_to_sun"]["rotation"][1] = -0.73*window.time
-        world["earth_to_sun"]["rotation"][1] = 0.62*window.time
-        world["mars_to_sun"]["rotation"][1] = 0.502*window.time
-        world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
-        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
-        world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
-        world["uranus_to_centre"]["rotation"][1] = 0.22*window.time
-        world["neptune_to_centre"]["rotation"][1] = -0.20*window.time
+        world["mercury_to_sun"]["rotation"][1] = 0*window.time
+        world["venus_to_sun"]["rotation"][1] = 0*-0.73*window.time
+        world["earth_to_sun"]["rotation"][1] = 0*0.62*window.time
+        world["mars_to_sun"]["rotation"][1] = 0*0.502*window.time
+        world["jupiter_to_sun"]["rotation"][1] = 0*0.27*window.time
+        world["saturn_to_sun"]["rotation"][1] = 0*0.2*window.time
+        world["Liu_Cixin"]["rotation"][1] = 0*0.12*window.time
+        world["uranus_to_centre"]["rotation"][1] = 0*0.22*window.time
+        world["neptune_to_centre"]["rotation"][1] = 0*-0.20*window.time
 
         world.update()
         cam.update()
