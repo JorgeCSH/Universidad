@@ -236,6 +236,18 @@ void main() {
                    mesh=ring, pipeline=pipeline,
                    scale=[2, 2, 2], rotation=[np.pi/2, 0, 0], cull_face=False)
 
+    # Centro del centro de rotacion binario.
+    world.add_node("Liu_Cixin", attach_to="sun_to_root")
+    world.add_node("liu_base", attach_to="Liu_Cixin",
+                     position=[32.295*np.cos(5*omega), 0, 32.295*np.sin(5*omega)])
+
+    # Urano
+    world.add_node("uranus_to_centre", attach_to="Liu_Cixin")
+    world.add_node("uranus_base", attach_to="uranus_to_centre",
+                   mesh = sphere, pipeline=pipeline,
+                   scale=[0.65, 0.65, 0.65], position = [16/(5+3*np.cos(0))*np.cos(0), 0, 16/(5+3*np.cos(0))*np.sin(0)])
+
+
 
     @window.event
     def on_draw():
