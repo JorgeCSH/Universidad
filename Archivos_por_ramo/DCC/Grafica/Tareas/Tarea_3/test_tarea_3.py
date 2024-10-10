@@ -6,8 +6,7 @@ import numpy as np
 from grafica.scene_graph import SceneGraph
 from grafica.camera import OrbitCamera
 from grafica.helpers import mesh_from_files
-from grafica.drawables import Model()
-
+from grafica.drawables import Model
 
 
 # Corresponde al archivo donde voy testeando custiones

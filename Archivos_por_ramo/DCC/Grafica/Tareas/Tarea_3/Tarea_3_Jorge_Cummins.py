@@ -40,22 +40,10 @@ class Controller(pyglet.window.Window):
 
 # Seccion 3: definimos las clases y funciones que se usaran ###############################################################
 ###########################################################################################################################
-''' Funcion real_rgb()
-
-Funcion para insertar los colores en vez de normalizarlos.
-El objetivo de esta funcion es tomar los valores de RGB originales [0, 255] y normalizarlos a [0, 1].
-Fue para insertar los colores sin tener la necesidad de normalizarlos en cada instante.
-
-int int int -> float float float
-'''
-def real_rgb(r, g, b):
-    return r/255, g/255, b/255
-
-
-
 ''' Funcion generate_ring()
-
-Funcion para generar anillos de un astro. Esta funcion venia con el template original.
+Funcion para generar anillos de un astro. Esta funcion venia con el template original. 
+Entrega la geometria de la esfera tanto para la malla como para las texturas, donde uv = (u, v) corresponden a las
+texturas.
 '''
 def generate_ring(definition):
     # coordenadas de posición
@@ -136,8 +124,8 @@ def create_sphere(definition):
 
     # Generar índices de triángulos
     idx = 0
-    for i in range(definition ):
-        for j in range(definition ):
+    for i in range(definition):
+        for j in range(definition):
 
             # Triángulos que forman la malla
             indices[idx:idx+3] = [i * definition + j,
@@ -152,7 +140,7 @@ def create_sphere(definition):
 
 
 # Seccion 4: Configuracion de la escena ###############################################################################
-###########################################################################################################################
+#######################################################################################################################
 '''
 Configuracion de los Shaders
 '''
@@ -202,33 +190,51 @@ void main() {
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
 
+    omega = 2*np.pi/8
+
     world.add_node("sun_to_root")
-    world.add_node("sun_base", attach_to="sun_to_root", mesh=sphere, pipeline=pipeline, scale=[2.0, 2.0, 2.0])
+    world.add_node("sun_base", attach_to="sun_to_root",
+                   mesh=sphere, pipeline=pipeline,
+                   scale=[2.0, 2.0, 2.0])
 
     # Mercurio
     world.add_node("mercury_to_sun", attach_to="sun_to_root")
-    world.add_node("mercury_base", attach_to="mercury_to_sun", mesh=sphere, pipeline=pipeline, scale=[.1, .1, .1], position=[5,0,0])
+    world.add_node("mercury_base", attach_to="mercury_to_sun",
+                   mesh=sphere, pipeline=pipeline,
+                   scale=[.1, .1, .1], position=[5,0,0])
 
     # Venus
     world.add_node("venus_to_sun", attach_to="sun_to_root")
-    world.add_node("venus_base", attach_to="venus_to_sun", mesh=sphere, pipeline=pipeline, scale=[.4, .4, .4], position=[8,0,0])
+    world.add_node("venus_base", attach_to="venus_to_sun",
+                   mesh=sphere, pipeline=pipeline,
+                   scale=[.4, .4, .4], position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)])
 
     # Tierra
     world.add_node("earth_to_sun", attach_to="sun_to_root")
-    world.add_node("earth_base", attach_to="earth_to_sun", mesh=sphere, pipeline=pipeline, scale=[.43, .43, .43], position=[9,0,0])
+    world.add_node("earth_base", attach_to="earth_to_sun",
+                   mesh=sphere, pipeline=pipeline,
+                   scale=[.43, .43, .43], position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)])
     
     # Marte
     world.add_node("mars_to_sun", attach_to="sun_to_root")
-    world.add_node("mars_base", attach_to="mars_to_sun", mesh=sphere, pipeline=pipeline, scale=[.25, .25, .25], position=[12,0,0])
+    world.add_node("mars_base", attach_to="mars_to_sun",
+                   mesh=sphere, pipeline=pipeline,
+                   scale=[.25, .25, .25], position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)])
 
     # Jupiter
     world.add_node("jupiter_to_sun", attach_to="sun_to_root")
-    world.add_node("jupiter_base", attach_to="jupiter_to_sun", mesh=sphere, pipeline=pipeline, scale=[.9, 0.9, 0.9], position=[15,0,0])
+    world.add_node("jupiter_base", attach_to="jupiter_to_sun",
+                   mesh=sphere, pipeline=pipeline,
+                   scale=[.95, 0.95, 0.95], position=[18.03*np.cos(4*omega), 0, 18.03*np.sin(4*omega)])
 
     # Saturno -> Anillo
     world.add_node("saturn_to_sun", attach_to="sun_to_root")
-    world.add_node("saturn_base",attach_to="saturn_to_sun", mesh=sphere, pipeline=pipeline, scale=[.8, .8, .8], position=[18,0,0])
-    world.add_node("saturn_ring", attach_to="saturn_base", mesh=ring, pipeline=pipeline, scale=[2, 2, 2], rotation=[np.pi/2, 0, 0], cull_face=False)
+    world.add_node("saturn_base",attach_to="saturn_to_sun",
+                   mesh=sphere, pipeline=pipeline,
+                   scale=[.8, .8, .8], position=[21.78,0,0])
+    world.add_node("saturn_ring", attach_to="saturn_base",
+                   mesh=ring, pipeline=pipeline,
+                   scale=[2, 2, 2], rotation=[np.pi/2, 0, 0], cull_face=False)
 
 
     @window.event
@@ -239,8 +245,8 @@ void main() {
         # 3D
         glEnable(GL_DEPTH_TEST)
         # Transparencia
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable( GL_BLEND );
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+        glEnable( GL_BLEND )
         with pipeline:
             world.draw()
         glDisable(GL_DEPTH_TEST)
@@ -256,12 +262,14 @@ void main() {
         pass
 
     def update(dt):
-        world["saturn_to_sun"]["rotation"][1] = window.time
-        world["earth_to_sun"]["rotation"][1] = window.time
-        world["mars_to_sun"]["rotation"][1] = window.time
-        world["jupiter_to_sun"]["rotation"][1] = window.time
-        world["venus_to_sun"]["rotation"][1] = -window.time
+        world["sun_to_root"]["rotation"][1] = window.time*0
+        world["saturn_to_sun"]["rotation"][1] = 0*window.time
         world["mercury_to_sun"]["rotation"][1] = window.time
+        world["venus_to_sun"]["rotation"][1] = -0.73*window.time
+        world["earth_to_sun"]["rotation"][1] = 0.62*window.time
+        world["mars_to_sun"]["rotation"][1] = 0.502*window.time
+        world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
+        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
 
         world.update()
         cam.update()
