@@ -282,6 +282,14 @@ void main() {
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65])
 
+    # Neptuno
+    world.add_node("neptune_to_centre",
+                   attach_to="Liu_Cixin")
+    world.add_node("neptune_to_base",
+                   attach_to="neptune_to_centre",
+                   mesh = sphere,
+                   pipeline=pipeline,
+                   scale=[0.63, 0.63, 0.63])
 
     @window.event
     def on_draw():
@@ -318,6 +326,7 @@ void main() {
         world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
         world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
         world["uranus_to_centre"]["position"][0:3] = [16/(5+3*np.cos(domega))*np.cos(domega), 0, 16/(5+3*np.cos(domega))*np.sin(domega)]
+        world["neptune_to_centre"]["position"][0:3] = [16/(5-3*np.cos(domega))*np.cos(domega), 0, 16/(5-3*np.cos(domega))*np.sin(domega)]
 
         world.update()
         cam.update()
