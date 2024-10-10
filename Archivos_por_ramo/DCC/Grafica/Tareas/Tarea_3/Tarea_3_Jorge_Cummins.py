@@ -267,27 +267,29 @@ void main() {
 
     # Centro del centro de rotacion binario.
     world.add_node("Liu_Cixin",
-                   attach_to="sun_to_root",
-                   position=[34.295*np.cos(6*omega), 0, 34.295*np.sin(6*omega)])
+                   attach_to="sun_to_root")
+    world.add_node("Liu_Cixin_base",
+                   attach_to = "Liu_Cixin",
+                   position=[32*np.cos(6*omega), 0, 32*np.sin(6*omega)])
 
     # Urano
     world.add_node("uranus_to_centre",
-                   attach_to="Liu_Cixin")
+                   attach_to="Liu_Cixin_base")
     world.add_node("uranus_base",
                    attach_to="uranus_to_centre",
                    mesh = sphere,
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65],
-                   position=[7.17*np.cos(7*omega), 0, 7.17*np.sin(7*omega)])
+                   position=[3.17*np.cos(7*omega), 0, 3.17*np.sin(7*omega)])
     # Neptune
     world.add_node("neptune_to_centre",
-                   attach_to = "Liu_Cixin")
+                   attach_to = "Liu_Cixin_base")
     world.add_node("neptune_base",
-                   attach_to = "neptune_centre",
+                   attach_to = "neptune_to_centre",
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   position = [3.62*np.cos(8*omega), 0, 3.62*np.sin(8*omega)])
+                   position = [5.62*np.cos(8*omega), 0, 5.62*np.sin(8*omega)])
 
 
     # Dibujamos
@@ -328,8 +330,8 @@ void main() {
         world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
         world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
         world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
-        world["uranus_to_centre"]["rotation"][1] = 0.1*window.time
-        world["neptune_to_centre"]["rotation"][1] = 0.07*window.time
+        world["uranus_to_centre"]["rotation"][1] = 0.22*window.time
+        world["neptune_to_centre"]["rotation"][1] = -0.20*window.time
 
         world.update()
         cam.update()
