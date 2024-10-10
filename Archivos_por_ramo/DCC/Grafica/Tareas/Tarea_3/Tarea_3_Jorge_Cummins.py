@@ -108,7 +108,7 @@ def create_sphere(definition):
     dtheta = 2 * np.pi / definition  # Resolución azimutal
     dphi = np.pi / (definition - 1)  # Resolución polar
 
-    r = 1.0  # Radio de la esfera
+    r = -1.0  # Radio de la esfera
 
     # Generar posiciones de vértices y coordenadas de texturas (UV)
     for i in range(definition):
@@ -120,7 +120,7 @@ def create_sphere(definition):
             phi = i * dphi      # Ángulo polar
 
             positions[idx:idx+3] = [r * np.sin(phi) * np.cos(theta), r * np.sin(phi) * np.sin(theta),r * np.cos(phi)]
-            uv[tidx:tidx+2] = [j / (definition - 1), i / (definition - 1)]
+            uv[tidx:tidx+2] = [j / (definition -1), i / (definition -1)]
 
     # Generar índices de triángulos
     idx = 0
@@ -135,8 +135,17 @@ def create_sphere(definition):
                                     i * definition + j+definition+1,
                                     i * definition + j+definition]
             idx += 6
+    
+    # Para las normales
+    normals = np.zeros((definition * definition) * 3, dtype=np.float32)
+    for i in range(definition):
+        for j in range(definition):
+            idx = 3 * (i * definition + j)
+            theta = j * dtheta
+            phi = i * dphi
+            normals[idx:idx+3] = [np.sin(phi) * np.cos(theta), np.sin(phi) * np.sin(theta), np.cos(phi)]
 
-    return Model(positions, uv, None, indices)
+    return Model(positions, uv, normals, indices)
 
 
 # Seccion 4: Configuracion de la escena ###############################################################################
@@ -150,15 +159,15 @@ if __name__ == "__main__":
 in vec3 position;
 in vec2 texCoord;
 
-uniform mat4 u_model = mat4(1.0);
+uniform mat4 u_model;
 uniform mat4 u_view = mat4(1.0);
 uniform mat4 u_projection = mat4(1.0);
 
 out vec2 fragTexCoord;
 
 void main() { 
-    fragTexCoord = texCoord;    
     gl_Position = u_projection * u_view * u_model * vec4(position, 1.0f);
+    fragTexCoord = texCoord;    
 }
     """
     frag_source = """
@@ -186,7 +195,9 @@ void main() {
     world = SceneGraph(cam)
     sphere = create_sphere(36) # Si es que parece un pacman es porque no tuve tiempo de arreglarla
     sphere.init_gpu_data(pipeline)
-    
+   
+    #epic_sphere = mesh_from_file("assets/world.obj")
+    #epic_sphere.init_gpu_data(pipeline)
 
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
@@ -200,6 +211,7 @@ void main() {
                    pipeline=pipeline,
                    position=[0,0,0],
                    rotation=[np.pi/2, 0, 0],
+                   scale=[2.5, 2.5, 2.5],
                    texture=Texture("assets/sun.jpg"))
 
     # Mercurio
@@ -342,16 +354,16 @@ void main() {
     # Update de la escena 
     def update(dt):
         dif = window.time
-        world["sun_base"]["scale"][0:3] = [2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif)]
-        world["mercury_to_sun"]["rotation"][1] = 0*window.time
-        world["venus_to_sun"]["rotation"][1] = 0*-0.73*window.time
-        world["earth_to_sun"]["rotation"][1] = 0*0.62*window.time
-        world["mars_to_sun"]["rotation"][1] = 0*0.502*window.time
-        world["jupiter_to_sun"]["rotation"][1] = 0*0.27*window.time
-        world["saturn_to_sun"]["rotation"][1] = 0*0.2*window.time
-        world["Liu_Cixin"]["rotation"][1] = 0*0.12*window.time
-        world["uranus_to_centre"]["rotation"][1] = 0*0.22*window.time
-        world["neptune_to_centre"]["rotation"][1] = 0*-0.20*window.time
+#        world["sun_base"]["scale"][0:3] = [2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif)]
+        world["mercury_to_sun"]["rotation"][1] = window.time
+        world["venus_to_sun"]["rotation"][1] = -0.73*window.time
+        world["earth_to_sun"]["rotation"][1] = 0.62*window.time
+        world["mars_to_sun"]["rotation"][1] = 0.502*window.time
+        world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
+        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
+        world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
+        world["uranus_to_centre"]["rotation"][1] = 0.22*window.time
+        world["neptune_to_centre"]["rotation"][1] = -0.20*window.time
 
         world.update()
         cam.update()
