@@ -197,7 +197,6 @@ void main() {
                    attach_to="sun_to_root",
                    mesh=sphere,
                    pipeline=pipeline,
-                   scale=[2.0, 2.0, 2.0],
                    position=[0,0,0])
 
     # Mercurio
@@ -248,7 +247,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.95, 0.95, 0.95],
-                   position=[18.03*np.cos(4*omega), 0, 18.03*np.sin(4*omega)])
+                   position=[20.03*np.cos(4*omega), 0, 20.03*np.sin(4*omega)])
 
     # Saturno -> Anillo
     world.add_node("saturn_to_sun",
@@ -258,7 +257,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.8, .8, .8],
-                   position=[21.78,0,0])
+                   position=[24.78*np.cos(5*omega),0, 24.78*np.sin(5*omega)])
     world.add_node("saturn_ring",
                    attach_to="saturn_base",
                    mesh=ring,
@@ -269,7 +268,7 @@ void main() {
     # Centro del centro de rotacion binario.
     world.add_node("Liu_Cixin",
                    attach_to="sun_to_root",
-                   position=[32.295*np.cos(5*omega), 0, 32.295*np.sin(5*omega)])
+                   position=[34.295*np.cos(6*omega), 0, 34.295*np.sin(6*omega)])
 
     # Urano
     world.add_node("uranus_to_centre",
@@ -279,7 +278,7 @@ void main() {
                    mesh = sphere,
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65],
-                   position=[7.17*np.cos(6*omega), 0, 7.17*np.sin(6*omega)])
+                   position=[7.17*np.cos(7*omega), 0, 7.17*np.sin(7*omega)])
     # Neptune
     world.add_node("neptune_to_centre",
                    attach_to = "Liu_Cixin")
@@ -288,7 +287,7 @@ void main() {
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   position = [3.62*np.cos(7*omega), 0, 3.62*np.sin(7*omega)])
+                   position = [3.62*np.cos(8*omega), 0, 3.62*np.sin(8*omega)])
 
 
     # Dibujamos
@@ -320,7 +319,8 @@ void main() {
 
     # Update de la escena 
     def update(dt):
-        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
+        dif = window.time
+        world["sun_base"]["scale"][0:3] = [2.5+0.1*np.cos(dif), 2.5+0.1*np.cos(dif), 2.5+0.1*np.cos(dif)]
         world["mercury_to_sun"]["rotation"][1] = window.time
         world["venus_to_sun"]["rotation"][1] = -0.73*window.time
         world["earth_to_sun"]["rotation"][1] = 0.62*window.time
