@@ -105,8 +105,8 @@ def create_sphere(definition):
     # Índices para formar los triángulos
     indices = np.zeros((6 * (definition ) * (definition)), dtype=np.int32)
 
-    dtheta = 2 * np.pi / (definition-1)  # Resolución azimutal
-    dphi = np.pi / (definition-1)  # Resolución polar
+    dphi = 2 * np.pi / (definition-1)  # Definimos Phi theta (entre el plano OXY y OZ)
+    dtheta = np.pi / (definition-1)  # Definimos angulo Phi (entre r y OZ)
 
     r = -1.0  # Radio de la esfera
 
@@ -116,10 +116,10 @@ def create_sphere(definition):
             idx = 3 * (i * definition + j)
             tidx = 2 * (i * definition + j)
 
-            theta = j * dtheta  # Ángulo azimutal
-            phi = i * dphi      # Ángulo polar
+            theta = i * dtheta  # Ángulo azimutal
+            phi = j * dphi      # Ángulo polar
 
-            positions[idx:idx+3] = [r * np.sin(phi) * np.cos(theta), r * np.sin(phi) * np.sin(theta),r * np.cos(phi)]
+            positions[idx:idx+3] = [r * np.sin(theta) * np.cos(phi), r * np.sin(theta) * np.sin(phi),r * np.cos(theta)]
             uv[tidx:tidx+2] = [j / (definition), i / (definition )]
 
     # Generar índices de triángulos
@@ -198,7 +198,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    position=[0,0,0],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    scale=[2.5, 2.5, 2.5],
                    texture=Texture("assets/sun.jpg"))
 
@@ -211,7 +211,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.1, .1, .1],
                    position=[5,0,0],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mercury.jpg"))
 
     # Venus
@@ -223,7 +223,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.4, .4, .4],
                    position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/venus.jpg"))
 
     # Tierra
@@ -235,7 +235,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.43, .43, .43],
                    position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/earth.jpg"))
     
     # Marte
@@ -247,7 +247,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
                    position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mars.jpg"))
 
     # Jupiter
@@ -259,7 +259,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.95, 0.95, 0.95],
                    position=[20.03*np.cos(4*omega), 0, 20.03*np.sin(4*omega)],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/jupiter.jpg"))
 
     # Saturno -> Anillo
@@ -271,7 +271,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.8, .8, .8],
                    position=[24.78*np.cos(5*omega),0, 24.78*np.sin(5*omega)],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/saturn.jpg"))
     world.add_node("saturn_ring",
                    attach_to="saturn_base",
@@ -297,7 +297,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65],
                    position=[3.17*np.cos(7*omega), 0, 3.17*np.sin(7*omega)],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[0, 0, 0],
                    texture=Texture("assets/uranus.jpg"))
     # Neptune
     world.add_node("neptune_to_centre",
@@ -308,7 +308,7 @@ void main() {
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
                    position = [5.62*np.cos(8*omega), 0, 5.62*np.sin(8*omega)],
-                   rotation=[np.pi/2, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture = Texture("assets/neptune.jpg"))
 
 
