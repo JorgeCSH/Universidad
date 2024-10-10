@@ -342,13 +342,14 @@ void main() {
     def update(dt):
         domega = window.time/2
         domega_ax = window.time
-        world["sun_base"]["scale"][0:3] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
+        world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
         
         world["mercury_to_sun"]["rotation"][1] = window.time
         world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
         
         world["venus_to_sun"]["rotation"][1] = -0.73*window.time
         world["venus_base"]["rotation"][1] = (1/8)*domega_ax
+        world["venus_to_sun"]["position"] += [0.7*np.sin(domega), 0, 0.7*np.sin(domega)]
 
         world["earth_to_sun"]["rotation"][1] = 0.62*window.time
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
