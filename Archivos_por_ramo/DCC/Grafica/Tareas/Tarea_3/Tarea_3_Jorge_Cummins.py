@@ -25,7 +25,7 @@ import numpy as np
 from grafica.scene_graph import SceneGraph
 from grafica.camera import OrbitCamera
 from grafica.helpers import mesh_from_file
-from grafica.drawables import Model
+from grafica.drawables import Model, Texture
 
 
 # Seccion 2: configuracion ################################################################################################
@@ -45,7 +45,7 @@ Funcion para generar anillos de un astro. Esta funcion venia con el template ori
 Entrega la geometria de la esfera tanto para la malla como para las texturas, donde uv = (u, v) corresponden a las
 texturas.
 '''
-def generate_ring(definition):
+def generate_ring(definition, texture_file=None):
     # coordenadas de posición
     positions = np.zeros((definition)*3*2, dtype=np.float32) 
     # coordenadas de texturas
@@ -148,29 +148,29 @@ if __name__ == "__main__":
     vert_source = """
 #version 330
 in vec3 position;
-in vec2 texCoords;
+in vec2 texCoord;
 
-uniform mat4 u_model;
+uniform mat4 u_model = mat4(1.0);
 uniform mat4 u_view = mat4(1.0);
 uniform mat4 u_projection = mat4(1.0);
 
-out vec2 fragTexCoords;
+out vec2 fragTexCoord;
 
-void main() {
+void main() { 
+    fragTexCoord = texCoord;    
     gl_Position = u_projection * u_view * u_model * vec4(position, 1.0f);
-    fragTexCoords = texCoords;    
 }
     """
     frag_source = """
 #version 330
-in vec2 fragTexCoords;
+in vec2 fragTexCoord;
 
 out vec4 outColor;
 
 uniform sampler2D u_texture;
 
 void main() {
-    outColor = texture(u_texture, fragTexCoords);
+    outColor = texture(u_texture, fragTexCoord);
 }
     """
 
@@ -197,7 +197,8 @@ void main() {
                    attach_to="sun_to_root",
                    mesh=sphere,
                    pipeline=pipeline,
-                   position=[0,0,0])
+                   position=[0,0,0],
+                   texture=Texture("assets/sun.jpg"))
 
     # Mercurio
     world.add_node("mercury_to_sun",
@@ -322,7 +323,7 @@ void main() {
     # Update de la escena 
     def update(dt):
         dif = window.time
-        world["sun_base"]["scale"][0:3] = [2.5+0.1*np.cos(dif), 2.5+0.1*np.cos(dif), 2.5+0.1*np.cos(dif)]
+        world["sun_base"]["scale"][0:3] = [2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif), 2.5+0*0.1*np.cos(dif)]
         world["mercury_to_sun"]["rotation"][1] = window.time
         world["venus_to_sun"]["rotation"][1] = -0.73*window.time
         world["earth_to_sun"]["rotation"][1] = 0.62*window.time
