@@ -193,60 +193,94 @@ void main() {
     omega = 2*np.pi/8
 
     world.add_node("sun_to_root")
-    world.add_node("sun_base", attach_to="sun_to_root",
-                   mesh=sphere, pipeline=pipeline,
-                   scale=[2.0, 2.0, 2.0])
+    world.add_node("sun_base",
+                   attach_to="sun_to_root",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   scale=[2.0, 2.0, 2.0],
+                   position=[0,0,0])
 
     # Mercurio
-    world.add_node("mercury_to_sun", attach_to="sun_to_root")
-    world.add_node("mercury_base", attach_to="mercury_to_sun",
-                   mesh=sphere, pipeline=pipeline,
-                   scale=[.1, .1, .1], position=[5,0,0])
+    world.add_node("mercury_to_sun",
+                   attach_to="sun_to_root")
+    world.add_node("mercury_base",
+                   attach_to="mercury_to_sun",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   scale=[.1, .1, .1],
+                   position=[5,0,0])
 
     # Venus
-    world.add_node("venus_to_sun", attach_to="sun_to_root")
-    world.add_node("venus_base", attach_to="venus_to_sun",
-                   mesh=sphere, pipeline=pipeline,
-                   scale=[.4, .4, .4], position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)])
+    world.add_node("venus_to_sun",
+                   attach_to="sun_to_root")
+    world.add_node("venus_base",
+                   attach_to="venus_to_sun",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   scale=[.4, .4, .4],
+                   position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)])
 
     # Tierra
-    world.add_node("earth_to_sun", attach_to="sun_to_root")
-    world.add_node("earth_base", attach_to="earth_to_sun",
-                   mesh=sphere, pipeline=pipeline,
-                   scale=[.43, .43, .43], position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)])
+    world.add_node("earth_to_sun",
+                   attach_to="sun_to_root")
+    world.add_node("earth_base",
+                   attach_to="earth_to_sun",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   scale=[.43, .43, .43],
+                   position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)])
     
     # Marte
-    world.add_node("mars_to_sun", attach_to="sun_to_root")
-    world.add_node("mars_base", attach_to="mars_to_sun",
-                   mesh=sphere, pipeline=pipeline,
-                   scale=[.25, .25, .25], position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)])
+    world.add_node("mars_to_sun",
+                   attach_to="sun_to_root")
+    world.add_node("mars_base",
+                   attach_to="mars_to_sun",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   scale=[.25, .25, .25],
+                   position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)])
 
     # Jupiter
-    world.add_node("jupiter_to_sun", attach_to="sun_to_root")
-    world.add_node("jupiter_base", attach_to="jupiter_to_sun",
-                   mesh=sphere, pipeline=pipeline,
-                   scale=[.95, 0.95, 0.95], position=[18.03*np.cos(4*omega), 0, 18.03*np.sin(4*omega)])
+    world.add_node("jupiter_to_sun",
+                   attach_to="sun_to_root")
+    world.add_node("jupiter_base",
+                   attach_to="jupiter_to_sun",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   scale=[.95, 0.95, 0.95],
+                   position=[18.03*np.cos(4*omega), 0, 18.03*np.sin(4*omega)])
 
     # Saturno -> Anillo
-    world.add_node("saturn_to_sun", attach_to="sun_to_root")
-    world.add_node("saturn_base",attach_to="saturn_to_sun",
-                   mesh=sphere, pipeline=pipeline,
-                   scale=[.8, .8, .8], position=[21.78,0,0])
-    world.add_node("saturn_ring", attach_to="saturn_base",
-                   mesh=ring, pipeline=pipeline,
-                   scale=[2, 2, 2], rotation=[np.pi/2, 0, 0], cull_face=False)
+    world.add_node("saturn_to_sun",
+                   attach_to="sun_to_root")
+    world.add_node("saturn_base",
+                   attach_to="saturn_to_sun",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   scale=[.8, .8, .8],
+                   position=[21.78,0,0])
+    world.add_node("saturn_ring",
+                   attach_to="saturn_base",
+                   mesh=ring,
+                   pipeline=pipeline,
+                   scale=[2, 2, 2],
+                   rotation=[np.pi/2, 0, 0], cull_face=False)
 
     # Centro del centro de rotacion binario.
-    world.add_node("Liu_Cixin", attach_to="sun_to_root")
-    world.add_node("liu_base", attach_to="Liu_Cixin",
-                     position=[32.295*np.cos(5*omega), 0, 32.295*np.sin(5*omega)])
+    world.add_node("Liu_Cixin",
+                   attach_to="sun_to_root")
+    world.add_node("liu_base",
+                   attach_to="Liu_Cixin",
+                   position=[32.295*np.cos(5*omega), 0, 32.295*np.sin(5*omega)])
 
     # Urano
-    world.add_node("uranus_to_centre", attach_to="Liu_Cixin")
-    world.add_node("uranus_base", attach_to="uranus_to_centre",
-                   mesh = sphere, pipeline=pipeline,
-                   scale=[0.65, 0.65, 0.65], position = [16/(5+3*np.cos(0))*np.cos(0), 0, 16/(5+3*np.cos(0))*np.sin(0)])
-
+    world.add_node("uranus_to_centre",
+                   attach_to="Liu_Cixin")
+    world.add_node("uranus_base",
+                   attach_to="uranus_to_centre",
+                   mesh = sphere,
+                   pipeline=pipeline,
+                   scale=[0.65, 0.65, 0.65])
 
 
     @window.event
@@ -274,14 +308,16 @@ void main() {
         pass
 
     def update(dt):
-        world["sun_to_root"]["rotation"][1] = window.time*0
-        world["saturn_to_sun"]["rotation"][1] = 0*window.time
+        domega = window.time
+        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
         world["mercury_to_sun"]["rotation"][1] = window.time
         world["venus_to_sun"]["rotation"][1] = -0.73*window.time
         world["earth_to_sun"]["rotation"][1] = 0.62*window.time
         world["mars_to_sun"]["rotation"][1] = 0.502*window.time
         world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
         world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
+        world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
+        world["uranus_to_centre"]["position"][0:3] = [16/(5+3*np.cos(domega))*np.cos(domega), 0, 16/(5+3*np.cos(domega))*np.sin(domega)]
 
         world.update()
         cam.update()
