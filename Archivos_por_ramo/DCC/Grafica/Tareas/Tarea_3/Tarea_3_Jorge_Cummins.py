@@ -401,5 +401,5 @@ void main() {
         cam.update()
         window.time+=dt
 
-    pyglet.clock.schedule_interval(update, 1/165)
+    pyglet.clock.schedule_interval(update, 1/60)
     pyglet.app.run()
