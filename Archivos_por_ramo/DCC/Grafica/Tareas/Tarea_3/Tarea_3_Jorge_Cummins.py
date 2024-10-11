@@ -360,36 +360,77 @@ void main() {
     def update(dt):
         domega = window.time/2
         domega_ax = window.time
-        world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
-        
-        world["mercury_to_sun"]["rotation"][1] = window.time
-        world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
-        
-        world["venus_to_sun"]["rotation"][1] = -0.73*window.time
-        world["venus_base"]["rotation"][1] = (1/8)*domega_ax
-        #world["venus_to_sun"]["position"] += [0.7*np.sin(domega)*0, 0, 0.7*np.sin(domega)*0]
 
+        # Estado de los cuerpos.
+        # Pulsaciones del sol.
+        world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
+
+        # Mercurio.
+        # Rotacion en torno a el sol.
+        world["mercury_to_sun"]["rotation"][1] = window.time
+        # Rotacion en torno a su eje.
+        world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
+
+        # Pulsacion de orbita.
+
+
+        # Venus.
+        # Rotacion en torno a el sol.
+        world["venus_to_sun"]["rotation"][1] = -0.73*window.time
+        # Rotacion en torno a su eje.
+        world["venus_base"]["rotation"][1] = (1/8)*domega_ax
+
+        # Pulsacion de orbita.
+        world["venus_to_sun"]["position"] += [0.7*np.sin(domega)*0, 0, 0.7*np.sin(domega)*0]
+
+
+        # Tierra.
+        # Rotacion en torno a el sol.
         world["earth_to_sun"]["rotation"][1] = 0.62*window.time
+        # Rotacion en torno a su eje.
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
+
+        # Luna.
+        # Rotacion en torno a la tiera.
         world["moon_to_earth"]["rotation"][2] =  window.time
+        # Rotacion en torno a su eje.
         world["moon_base"]["rotation"][0] = (1/16)*domega_ax
 
 
+        # Marte.
+        # Rotacion en torno a el sol.
         world["mars_to_sun"]["rotation"][1] = 0.502*window.time
+        # Rotacion en torno a su eje.
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
 
+
+        # Jupiter.
+        # Rotacion en torno a el sol.
         world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
+        # Rotacion en torno a su eje.
         world["jupiter_base"]["rotation"][1] = domega_ax
 
+
+        # Saturno.
+        # Rotacion en torno a el sol.
         world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
+        # Rotacion en torno a su eje.
         world["saturn_base"]["rotation"][1] = (7/8)*window.time
 
+
+        # Rotacion del centro comun de rotacion binaria en torno al sol.
         world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
-        
+
+        # Urano.
+        # Rotacion en torno a el centro binario.
         world["uranus_to_centre"]["rotation"][1] = 0.22*window.time
+        # Rotacion en torno a su eje, ESTE ROTA EN OTRO EJE SIGUIENDO EL EJE DE ROTACION DE URANO.
         world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax
 
+        # Neptuno
+        # Rotacion en torno a el centro binario.
         world["neptune_to_centre"]["rotation"][1] = -0.20*window.time
+        # Rotacion en torno a su eje.
         world["neptune_base"]["rotation"][1] = (5/8)*domega_ax
 
         world.update()
