@@ -400,6 +400,7 @@ void main() {
                    scale=[50, 50, 50],
                    cull_face=False)
 
+
     # Dibujamos
     @window.event
     def on_draw():
@@ -438,41 +439,57 @@ void main() {
         cam5.phi += dx * 0.001
         cam5.theta += dy * 0.001
 
-
-    # Teclado
+    # Configuramos las teclas para cambiar de camara.
     @window.event
     def on_key_press(symbol, modifiers):
         # Si se presiona espacio, la camara se centra en el sol con una proyeccion ortografica y orbitandolo
         if symbol == key.SPACE:
+            # Se iguala la camara de la escena a la camara 1.
             world.camera = cam1
         
         # Si se presiona T, la camara con una proyeccion de perspectiva que esta orbitando centrada en la tierra
         if symbol == key.T:
+            # Se iguala la camara de la escena a la camara 2.
             world.camera = cam2
         
         # Caso analogo para saturno pero con tecla S
         if symbol == key.S:
+            # Se iguala la camara de la escena a la camara 3.
             world.camera = cam3
         
         # Caso analogo para el el centro de orbita entre neptuno y urano al presionar U
         if symbol == key.U:
+            # Se iguala la camara de la escena a la camara 4.
             world.camera  = cam4
 
-        # Caso analogo (por ahora) para la nave de marte
+        # Caso analogo para la nave de marte
         if symbol == key.M:
+            # Se iguala la camara de la escena a la camara 5.
             world.camera = cam5
 
-    # Update de la escena
+
+    '''
+    Aca refrezcamos la escena. De manera general se siguio el siguiente orden:
+    
+    -> Actualizar rotacion respecto a su propio eje.
+    -> Actualizar posicion orbita.
+    
+    Si se agrego algun extra, entonces se hara nota, pero el orden anterior se mantiene en caso de colocarse
+    los dos movimientos.
+    '''
     def update(dt):
         domega = window.time/2
         domega_ax = window.time
 
 
-        # Sol.
+        # Sol, orbita y rotacion en eje respectivamente
+        # Tamaño pulsante del sol.
         world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
+        # Rotacion del sol en torno a su eje.
         world["sun_base"]["rotation"][1] = -(1/8)*domega_ax
-        cam1.focus = world["sun_base"]["position"]
-        cam1.position = world["sun_base"]["position"]+np.array([1, 1, 1])
+        # Camara inicial y al presionar espacio
+        cam1.focus = world["sun_base"]["position"]                          # Enfocamos la camara en el sol.
+        cam1.position = world["sun_base"]["position"]+np.array([1, 1, 1])   # Seguinmos la posicion con un ligero desplazamiento.
 
         # Mercurio.
         world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
@@ -485,6 +502,7 @@ void main() {
         # Tierra.
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
         world["earth_base"]["position"] = [16.19*np.cos(0.62*window.time), 0,  16.19*np.sin(0.62*window.time)]
+        # Camara 2.
         cam2.focus = world["earth_base"]["position"]
         cam2.position = world["earth_base"]["position"]+np.array([1, 1, 1])
 
@@ -496,12 +514,12 @@ void main() {
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
         world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time), 0, 19.44 * np.sin(0.502*window.time)]
 
-        cam5.focus = world["mars_base"]["position"]
-        cam5.position = world["mars_base"]["position"]+np.array([0.3, 0.3, 0.3])
-
         # Nave.
         world["nave_base"]["rotation"][1] = (1/8)*domega_ax
         world["nave_base"]["position"] = [1.8 * np.cos(0.502*window.time), 1.8*np.cos(window.time)*np.sin(window.time), 1.8 * np.sin(0.502*window.time)]
+        # Camara 5.
+        cam5.focus = world["mars_base"]["position"]
+        cam5.position = world["mars_base"]["position"]+np.array([0.3, 0.3, 0.3])
 
         # Jupiter.
         world["jupiter_base"]["rotation"][1] = domega_ax
@@ -510,12 +528,15 @@ void main() {
         # Saturno.
         world["saturn_base"]["rotation"][1] = (7/8)*domega_ax
         world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time), 0, 32.09*np.sin(0.2*window.time)]
+        # Rotacion de los anillos de Saturno en torno a su eje.
         world["saturn_ring"]["rotation"][2] = (7/8)*domega_ax
+        # Camara 3.
         cam3.focus = world["saturn_base"]["position"]
         cam3.position = world["saturn_base"]["position"]+np.array([2, 2, 2])
 
         # Rotacion del centro comun de rotacion binaria en torno al sol.
         world["Liu_Cixin_base"]["position"] = [36.74*np.cos(0.12*window.time), 0, 36.74*np.sin(0.12*window.time)]
+        # Camara 4.
         cam4.focus = world["Liu_Cixin_base"]["position"]
         cam4.position = world["Liu_Cixin_base"]["position"]+np.array([6, 6, 1])
 
@@ -538,3 +559,19 @@ void main() {
 
     pyglet.clock.schedule_interval(update, 1/165)
     pyglet.app.run()
+
+"""
+=======================================================================================================================
+Links de donde se sacaron los modelos:
+
+
+Como ejecutar (o ejecute) la tarea:
+La tarea fue ejecutada en dos condiciones que para tener referencia fueron:
+- Windows 11, python3.12, IDLE: Pycharm y ejecutado con la opción de ejecutar del IDLE.
+- Arch Linux con entorno KDE-Plasma, python, Neovim, se hizo un entorno virtual segun las indicaciones en el 
+  repositorio con las librerias respectivas, esto es, antes de ejecutar la tarea se ejecuto el comando:
+  source ~/python-cg/bin/activate.
+
+
+=======================================================================================================================
+"""
