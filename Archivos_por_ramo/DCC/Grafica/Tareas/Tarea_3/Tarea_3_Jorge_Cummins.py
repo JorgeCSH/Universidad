@@ -198,7 +198,9 @@ void main() {
     # Anillo
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
-
+    # Nave
+    no_i_am_your_father = mesh_from_file("assets/death_star.obj")[0]["mesh"]
+    no_i_am_your_father.init_gpu_data(pipeline)
 
     '''
     Iniciamos el grafo
@@ -259,7 +261,7 @@ void main() {
                    attach_to= "moon_to_earth",
                    mesh = sphere,
                    pipeline = pipeline,
-                   scale = [0.11, 0.11, 0.11],
+                   scale = [0.2, 0.2, 0.2],
                    rotation = [np.pi*3/2, -np.pi/2, np.pi],
                    texture = Texture("assets/moon.jpg"))
 
@@ -274,6 +276,17 @@ void main() {
                    scale=[.25, .25, .25],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mars.jpg"))
+
+    # Nave
+    world.add_node("nave_to_mars",
+                   attach_to="mars_base")
+    
+    world.add_node("nave_base",
+                   attach_to="nave_to_mars",
+                   mesh=no_i_am_your_father,
+                   pipeline=pipeline,
+                   scale=[0.7, 0.7, 0.7],
+                   texture = Texture("assets/deathstar_(1).jpg"))
 
     # Jupiter
     world.add_node("jupiter_to_sun",
@@ -433,6 +446,10 @@ void main() {
         # Marte.
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
         world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time), 0, 19.44 * np.sin(0.502*window.time)]
+        
+        # Nave.
+        world["nave_base"]["rotation"][1] = (1/8)*domega_ax
+        world["nave_base"]["position"] = [1.8 * np.cos(0.502*window.time), 1.8*np.cos(window.time)*np.sin(window.time), 1.8 * np.sin(0.502*window.time)]
 
         # Jupiter.
         world["jupiter_base"]["rotation"][1] = domega_ax
@@ -454,7 +471,7 @@ void main() {
         world["neptune_base"]["position"] = [5.62*np.cos(-0.20*window.time), 0, 5.62*np.sin(-0.20*window.time)]
 
         world.update()
-        cam.update(d)
+        cam.update()
         window.time+=dt
 
     pyglet.clock.schedule_interval(update, 1/60)
