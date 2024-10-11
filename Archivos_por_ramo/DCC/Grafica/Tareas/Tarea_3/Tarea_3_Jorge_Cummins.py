@@ -153,20 +153,18 @@ def create_sphere(definition):
             uv[tex:tex+2] = [j / (definition), i / (definition )]
 
     # De manera similar a la posicion y textura, iteramos para obtener los indices del triangulo.
-    idx = 0
+    ind = 0
     for i in range(definition-1):
         for j in range(definition):
-
-            # Triángulos que forman la malla
-            indices[idx:idx+3] = [i * definition + j,
+            # Indices de los triangulos
+            indices[ind:ind+3] = [i * definition + j,
                                   i * definition + j+1,
                                   i * definition + j+definition]
-            indices[idx+3:idx+6] = [i * definition + j+1,
+            indices[ind+3:ind+6] = [i * definition + j+1,
                                     i * definition + j+definition+1,
                                     i * definition + j+definition]
-            idx += 6
-
-
+            ind += 6
+    # Retornamos un modelo, este es realizado de manera analoga a la funcion create_ring.
     return Model(positions, uv, None, indices)
 
 
