@@ -349,7 +349,6 @@ void main() {
     def on_draw():
         window.clear()
         glClearColor(.1,.1,.1,1)
-
         # 3D
         glEnable(GL_DEPTH_TEST)
         # Transparencia
@@ -366,29 +365,37 @@ void main() {
         cam.phi += dx * 0.001
         cam.theta += dy * 0.001
 
+
     # Teclado
     @window.event
     def on_key_press(symbol, modifiers):
         # Si se presiona espacio, la camara se centra en el sol con una proyeccion ortografica y orbitandolo
         if symbol == key.SPACE:
-            cam.focus = "sun_base"
-            cam.projection = "orthographic"
-            cam.orbit = True
+            cam.focus = world["sun_base"]["position"]
+            cam.distance = 10
+            cam.type = "orthographic"
+            cam.update()
         # Si se presiona T, la camara con una proyeccion de perspectiva que esta orbitando centrada en la tierra
         if symbol == key.T:
-            cam.focus = "earth_base"
-            cam.projection = "perspective"
-            cam.orbit = True
+            cam.focus = world["earth_base"]["position"]
+            cam.distance = 10
+            cam.type = "perspective"
+            cam.update()
+
         # Caso analogo para saturno pero con tecla S
         if symbol == key.S:
-            cam.focus = "saturn_base"
-            cam.projection = "perspective"
-            cam.orbit = True
+            cam.focus = world["saturn_base"]["position"]
+            cam.distance = 10
+            cam.type = "perspective"
+            cam.update()
+
         # Caso analogo para el el centro de orbita entre neptuno y urano al presionar U
         if symbol == key.U:
-            cam.focus = "Liu_Cixin_base"
-            cam.projection = "perspective"
-            cam.orbit = True
+            cam.focus = world["Liu_Cixin_base"]["position"]
+            cam.distance = 10
+            cam.type = "perspective"
+            cam.update()
+
 
 
 
