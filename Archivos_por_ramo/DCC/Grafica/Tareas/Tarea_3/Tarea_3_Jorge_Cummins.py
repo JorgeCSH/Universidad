@@ -232,7 +232,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.43, .43, .43],
-                   position=[5 + 0*11.93*np.cos(2*omega), 0,  5+0*11.93*np.sin(2*omega)],
+                   position=[16.19*np.cos(0*2*omega), 0,  16.19*np.sin(2*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/earth.jpg"))
     world.add_node("moon_to_earth",
@@ -242,7 +242,7 @@ void main() {
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.11, 0.11, 0.11],
-                   position = [1.8*np.cos(omega), 1.8*np.sin(omega),0],
+                   position = [1.8*np.cos(omega*0), 1.8*np.sin(omega*0),0],
                    rotation = [np.pi*3/2, -np.pi/2, np.pi],
                    texture = Texture("assets/moon.jpg"))
     
@@ -254,7 +254,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
-                   position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)],
+                   position=[19.44*np.cos(3*omega*0), 0, 19.44*np.sin(3*omega*0)],
                    rotation=[0, 0, 0],
                    texture=Texture("assets/mars.jpg"))
 
@@ -266,7 +266,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.95, 0.95, 0.95],
-                   position=[20.03*np.cos(4*omega), 0, 20.03*np.sin(4*omega)],
+                   position=[20.03*np.cos(4*omega*0), 0, 20.03*np.sin(4*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/jupiter.jpg"))
 
@@ -278,7 +278,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.8, .8, .8],
-                   position=[24.78*np.cos(5*omega),0, 24.78*np.sin(5*omega)],
+                   position=[24.78*np.cos(5*omega*0),0, 24.78*np.sin(5*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/saturn.jpg"))
     world.add_node("saturn_ring",
@@ -294,7 +294,7 @@ void main() {
                    attach_to="sun_to_root")
     world.add_node("Liu_Cixin_base",
                    attach_to = "Liu_Cixin",
-                   position=[32*np.cos(6*omega), 0, 32*np.sin(6*omega)])
+                   position=[32*np.cos(6*omega*0), 0, 32*np.sin(6*omega*0)])
 
     # Urano
     world.add_node("uranus_to_centre",
@@ -304,7 +304,7 @@ void main() {
                    mesh = sphere,
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65],
-                   position=[3.17*np.cos(7*omega), 0, 3.17*np.sin(7*omega)],
+                   position=[3.17*np.cos(7*omega*0), 0, 3.17*np.sin(7*omega*0)],
                    rotation=[0, 0, 0],
                    texture=Texture("assets/uranus.jpg"))
     # Neptune
@@ -315,7 +315,7 @@ void main() {
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   position = [5.62*np.cos(8*omega), 0, 5.62*np.sin(8*omega)],
+                   position = [5.62*np.cos(8*omega*0), 0, 5.62*np.sin(8*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture = Texture("assets/neptune.jpg"))
 
@@ -370,7 +370,7 @@ void main() {
         world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
 
         # Pulsacion de orbita.
-        world["mercury_to_sun"]["position"] = [(5+2*np.sin(np.pi/2-domega))*np.cos(domega_ax), 0, (5+2*np.sin(np.pi/2-domega))*np.sin(domega_ax)]
+        world["mercury_to_sun"]["position"] = [(6.24+0.5*np.cos(domega))*np.cos(domega_ax), 0, (6.24+0.5*np.cos(domega))*np.sin(domega_ax)]
 
 
         # Venus.
@@ -380,7 +380,7 @@ void main() {
         world["venus_base"]["rotation"][1] = (1/8)*domega_ax
 
         # Pulsacion de orbita.
-        world["venus_to_sun"]["position"] = [(8.5+5*np.sin(domega))*np.cos(domega_ax), 0, (8.5+5*np.sin(domega))*np.sin(domega_ax)]
+        world["venus_to_sun"]["position"] = [(10.38+0.5*np.sin(domega))*np.cos(domega_ax), 0, (10.38+0.5*np.sin(domega))*np.sin(domega_ax)]
 
 
         # Tierra.
@@ -434,7 +434,7 @@ void main() {
 
         world.update()
         cam.update()
-        window.time+=dt
+        window.time*=dt
 
     pyglet.clock.schedule_interval(update, 1/165)
     pyglet.app.run()
