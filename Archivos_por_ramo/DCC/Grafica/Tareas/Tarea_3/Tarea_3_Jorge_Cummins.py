@@ -171,7 +171,7 @@ def create_sphere(definition):
 # Seccion 4: Configuracion de la escena ###############################################################################
 #######################################################################################################################
 '''
-Configuracion de los Shaders
+Configuracion de los Shaders. Inspirado en lo realizado en clase auxiliar.
 '''
 if __name__ == "__main__":
     vert_source = """
@@ -203,57 +203,61 @@ void main() {
 }
     """
 
-    pipeline = ShaderProgram(Shader(
-        vert_source, "vertex"),
-        Shader(frag_source, "fragment"))
+    # Creamos el pipeline
+    pipeline = ShaderProgram(Shader(vert_source, "vertex"), Shader(frag_source, "fragment"))
 
-    # Camara
+    '''
+    Configuracion de las camaras, en este caso se crean 5 para las 5 vistas solicitadas en la tarea, de esta forma
+    se utiliza la que sea necesaria/solicitada.   
+    '''
+    # Camara respecto al sol.
     cam1 = OrbitCamera(10)
     cam1.width = 800
     cam1.height = 800
-    
+
+    # Camara respecto a la tierra.
     cam2 = OrbitCamera(5)
     cam2.width = 800
     cam2.height = 800
 
+    # Camara respect a saturno.
     cam3 = OrbitCamera(5)
     cam3.width = 800
     cam3.height = 800
-    
+
+    # Camara respecto al centro de orbita binario entre urano y neptuno.
     cam4 = OrbitCamera(5)
     cam4.width = 800
     cam4.height = 800
-    
+
+    # Camara respecto a la nave de marte.
     cam5 = OrbitCamera(5)
     cam5.width = 800
     cam5.height = 800
 
-
+    # Seleccionamos la camara inicial, la camara que se iguale a "cam" sera la activa. En este caso, en torno a el sol.
     cam = cam1
 
-    # Ventana/control
-    window = Controller(cam.width, cam.height, "Tarea 3")
+    # Configuramos la ventana.
+    window = Controller(cam.width, cam.height, "Tarea_3_Jorge_Cummins")
     window.set_exclusive_mouse(True)
 
 
-    # Creamos los objetos sin textura
-    # Esfera
+    # Creamos los objetos sin textura.
+    # Esfera.
     sphere = create_sphere(36)
     sphere.init_gpu_data(pipeline)
     # Anillo
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
-    # Nave, Si, es la estrella de la muerte y el mejor modelo con una textura que pudiera implementar, creditos
-    # respectivos al final del documento
+    # Cargamos el objeto de la nave. Para evitar monotonia, se implemento un objeto externo con textura.
     no_i_am_your_father = mesh_from_file("assets/death_star.obj")[0]["mesh"]
     no_i_am_your_father.init_gpu_data(pipeline)
 
-    '''
-    Iniciamos el grafo
-    '''
+    # Creamos el grafo de escena.
     world = SceneGraph(cam)
 
-    # Sol
+    # Agregamos al sol.
     world.add_node("sun_to_root")
 
     world.add_node("sun_base",
@@ -264,10 +268,9 @@ void main() {
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/sun.jpg"))
 
-    # Mercurio
+    # Mercurio.
     world.add_node("mercury_to_sun",
                    attach_to="sun_to_root")
-
     world.add_node("mercury_base",
                    attach_to="mercury_to_sun",
                    mesh=sphere,
@@ -276,10 +279,9 @@ void main() {
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mercury.jpg"))
 
-    # Venus
+    # Venus.
     world.add_node("venus_to_sun",
                    attach_to="sun_to_root")
-
     world.add_node("venus_base",
                    attach_to="venus_to_sun",
                    mesh=sphere,
@@ -288,10 +290,9 @@ void main() {
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/venus.jpg"))
 
-    # Tierra
+    # Tierra.
     world.add_node("earth_to_sun",
                    attach_to="sun_to_root")
-
     world.add_node("earth_base",
                    attach_to="earth_to_sun",
                    mesh=sphere,
@@ -299,10 +300,9 @@ void main() {
                    scale=[.43, .43, .43],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/earth.jpg"))
-
+    # Agregamos la luna.
     world.add_node("moon_to_earth",
                    attach_to = "earth_base")
-
     world.add_node("moon_base",
                    attach_to= "moon_to_earth",
                    mesh = sphere,
@@ -314,7 +314,6 @@ void main() {
     # Marte
     world.add_node("mars_to_sun",
                    attach_to="sun_to_root")
-
     world.add_node("mars_base",
                    attach_to="mars_to_sun",
                    mesh=sphere,
@@ -322,11 +321,9 @@ void main() {
                    scale=[.25, .25, .25],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mars.jpg"))
-
-    # Nave
+    # Agregamos la nave.
     world.add_node("nave_to_mars",
                    attach_to="mars_base")
-    
     world.add_node("nave_base",
                    attach_to="nave_to_mars",
                    mesh=no_i_am_your_father,
@@ -337,7 +334,6 @@ void main() {
     # Jupiter
     world.add_node("jupiter_to_sun",
                    attach_to="sun_to_root")
-
     world.add_node("jupiter_base",
                    attach_to="jupiter_to_sun",
                    mesh=sphere,
@@ -346,10 +342,9 @@ void main() {
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/jupiter.jpg"))
 
-    # Saturno -> Anillo
+    # Saturno
     world.add_node("saturn_to_sun",
                    attach_to="sun_to_root")
-
     world.add_node("saturn_base",
                    attach_to="saturn_to_sun",
                    mesh=sphere,
@@ -357,7 +352,7 @@ void main() {
                    scale=[.8, .8, .8],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/saturn.jpg"))
-
+    # Anillos de saturno
     world.add_node("saturn_ring",
                    attach_to="saturn_base")
     world.add_node("ring_base",
@@ -372,14 +367,12 @@ void main() {
     # Centro del centro de rotacion binario.
     world.add_node("Liu_Cixin",
                    attach_to="sun_to_root")
-
     world.add_node("Liu_Cixin_base",
                    attach_to = "Liu_Cixin")
 
     # Urano
     world.add_node("uranus_to_centre",
                    attach_to="Liu_Cixin_base")
-
     world.add_node("uranus_base",
                    attach_to="uranus_to_centre",
                    mesh = sphere,
@@ -387,10 +380,10 @@ void main() {
                    scale=[0.65, 0.65, 0.65],
                    rotation=[0, 0, 0],
                    texture=Texture("assets/uranus.jpg"))
-    # Neptune
+
+    # Neptuno
     world.add_node("neptune_to_centre",
                    attach_to = "Liu_Cixin_base")
-
     world.add_node("neptune_base",
                    attach_to = "neptune_to_centre",
                    mesh = sphere,
@@ -421,20 +414,27 @@ void main() {
             world.draw()
         glDisable(GL_DEPTH_TEST)
 
-    # Mouse
+    # Configuracion del movimiento del mouse, aca cada camara tiene su propio valor para phi y theta.
     @window.event
     def on_mouse_motion(x, y, dx, dy):
         # Modificamos la camara segun el movimento del mouse
+        # General.
         cam.phi += dx * 0.001
         cam.theta += dy * 0.001
-        cam1.phi = cam.phi
-        cam1.theta = cam.theta
+
+        # Camara 1.
+        cam1.phi = cam.phi          # -|--> Puesto a que es el de partida, se igualan.
+        cam1.theta = cam.theta      # -|
+        # Camra 2.
         cam2.phi += dx*0.001
         cam2.theta += dy*0.001
+        # Camara 3.
         cam3.phi += dx*0.001
         cam3.theta += dy*0.001
+        # Camara 4.
         cam4.phi += dx*0.001
         cam4.theta += dy*0.001
+        # Camara 5.
         cam5.phi += dx * 0.001
         cam5.theta += dy * 0.001
 
