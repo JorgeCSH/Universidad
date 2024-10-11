@@ -198,7 +198,8 @@ void main() {
     # Anillo
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
-    # Nave
+    # Nave, Si, es la estrella de la muerte y el mejor modelo con una textura que pudiera implementar, creditos
+    # respectivos al final del documento.
     no_i_am_your_father = mesh_from_file("assets/death_star.obj")[0]["mesh"]
     no_i_am_your_father.init_gpu_data(pipeline)
 
