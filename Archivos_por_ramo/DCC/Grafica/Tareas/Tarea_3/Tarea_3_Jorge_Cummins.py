@@ -17,6 +17,7 @@
 ########################################################################################################################### 
 # Librerias utilizadas
 import pyglet
+from networkx.lazy_imports import attach
 from pyglet.gl import *
 from pyglet.graphics.shader import Shader, ShaderProgram
 import numpy as np
@@ -208,7 +209,7 @@ void main() {
                    attach_to="mercury_to_sun",
                    mesh=sphere,
                    pipeline=pipeline,
-                   scale=[.1, .1, .1],
+                   scale=[.14, .14, .14],
                    position=[5,0,0],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mercury.jpg"))
@@ -233,9 +234,19 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.43, .43, .43],
-                   position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)],
+                   position=[5 + 0*11.93*np.cos(2*omega), 0,  5+0*11.93*np.sin(2*omega)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/earth.jpg"))
+    world.add_node("moon_to_earth",
+                   attach_to = "earth_base")
+    world.add_node("moon_base",
+                   attach_to= "moon_to_earth",
+                   mesh = sphere,
+                   pipeline = pipeline,
+                   scale = [0.11, 0.11, 0.11],
+                   position = [1.8*np.cos(omega), 1.8*np.sin(omega),0],
+                   rotation = [np.pi*3/2, -np.pi/2, np.pi],
+                   texture = Texture("assets/moon.jpg"))
     
     # Marte
     world.add_node("mars_to_sun",
@@ -246,7 +257,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
                    position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)],
-                   rotation=[-np.pi/2, 0, 0],
+                   rotation=[0, 0, 0],
                    texture=Texture("assets/mars.jpg"))
 
     # Jupiter
@@ -310,6 +321,13 @@ void main() {
                    rotation=[-np.pi/2, 0, 0],
                    texture = Texture("assets/neptune.jpg"))
 
+    # agregar fondo estrellado con textura stars.jpg. QUITAR, es porque se ve cool.
+    world.add_node("stars",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   texture=Texture("assets/stars.jpg"),
+                   scale=[100, 100, 100],
+                   cull_face=False)
 
     # Dibujamos
     @window.event
@@ -349,11 +367,14 @@ void main() {
         
         world["venus_to_sun"]["rotation"][1] = -0.73*window.time
         world["venus_base"]["rotation"][1] = (1/8)*domega_ax
-        world["venus_to_sun"]["position"] += [0.7*np.sin(domega), 0, 0.7*np.sin(domega)]
+        #world["venus_to_sun"]["position"] += [0.7*np.sin(domega)*0, 0, 0.7*np.sin(domega)*0]
 
         world["earth_to_sun"]["rotation"][1] = 0.62*window.time
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
-        
+        world["moon_to_earth"]["rotation"][2] =  window.time
+        world["moon_base"]["rotation"][0] = (1/16)*domega_ax
+
+
         world["mars_to_sun"]["rotation"][1] = 0.502*window.time
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
 
@@ -375,5 +396,5 @@ void main() {
         cam.update()
         window.time+=dt
 
-    pyglet.clock.schedule_interval(update, 1/60)
+    pyglet.clock.schedule_interval(update, 1/165)
     pyglet.app.run()
