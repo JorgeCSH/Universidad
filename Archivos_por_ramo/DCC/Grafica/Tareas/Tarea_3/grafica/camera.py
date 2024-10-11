@@ -4,14 +4,14 @@ import grafica.transformations as tr
 WIDTH = 640
 HEIGHT = 640
 
-
 class Camera():
-    def __init__(self, camera_type="perspective", width=WIDTH, height=HEIGHT):
+    def __init__(self, camera_type = "perspective", width = WIDTH, height = HEIGHT):
         self.position = np.array([1, 0, 0], dtype=np.float32)
         self.focus = np.array([0, 0, 0], dtype=np.float32)
         self.type = camera_type
         self.width = width
         self.height = height
+
 
     def update(self):
         pass
@@ -27,17 +27,15 @@ class Camera():
         elif self.type == "orthographic":
             depth = self.position - self.focus
             depth = np.linalg.norm(depth)
-            perspective_matrix = tr.ortho(-(self.width / self.height) * depth, (self.width / self.height) * depth,
-                                          -1 * depth, 1 * depth, 0.001, 1000)
+            perspective_matrix = tr.ortho(-(self.width/self.height) * depth, (self.width/self.height) * depth, -1 * depth, 1 * depth, 0.001, 1000)
         return np.reshape(perspective_matrix, (16, 1), order="F")
 
     def resize(self, width, height):
         self.width = width
         self.height = height
 
-
 class OrbitCamera(Camera):
-    def __init__(self, distance, camera_type="perspective"):
+    def __init__(self, distance, camera_type = "perspective"):
         super().__init__(camera_type)
         self.distance = distance
         self.phi = 0
@@ -54,9 +52,19 @@ class OrbitCamera(Camera):
         self.position[1] = self.distance * np.cos(self.theta) + self.focus[1]
         self.position[2] = self.distance * np.sin(self.theta) * np.cos(self.phi) + self.focus[2]
 
+    def rotate(self, dtheta, dphi):
+        self.theta += dtheta
+        self.phi += dphi
+        self.update()
+
+    def zoom(self, dz):
+        self.distance += dz
+        self.update()
+
+
 
 class FreeCamera(Camera):
-    def __init__(self, position=[0, 0, 0], camera_type="perspective"):
+    def __init__(self, position = [0, 0, 0], camera_type = "perspective"):
         super().__init__(camera_type)
         self.position = np.array(position, dtype=np.float32)
         self.pitch = 0

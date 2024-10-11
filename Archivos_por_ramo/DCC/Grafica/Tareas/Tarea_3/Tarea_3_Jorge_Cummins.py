@@ -137,6 +137,8 @@ def create_sphere(definition):
                                     i * definition + j+definition]
             idx += 6
 
+    # Generar normales
+
     return Model(positions, uv, None, indices)
 
 
@@ -187,8 +189,7 @@ void main() {
     # Ventana/control
     window = Controller(cam.width, cam.height, "Tarea 3")
     window.set_exclusive_mouse(True)
-    keys = pyglet.window.key.KeyStateHandler()
-    window.push_handlers(keys)
+
 
     # Creamos los objetos sin textura
     # Esfera
@@ -352,8 +353,8 @@ void main() {
         # 3D
         glEnable(GL_DEPTH_TEST)
         # Transparencia
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        glEnable( GL_BLEND )
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glEnable( GL_BLEND );
         with pipeline:
             world.draw()
         glDisable(GL_DEPTH_TEST)
@@ -371,36 +372,38 @@ void main() {
     def on_key_press(symbol, modifiers):
         # Si se presiona espacio, la camara se centra en el sol con una proyeccion ortografica y orbitandolo
         if symbol == key.SPACE:
-            cam.focus = world["sun_base"]["position"]
             cam.distance = 10
             cam.type = "orthographic"
-            cam.update()
+            cam.focus = world["sun_base"]["position"]
+            cam.rotate = world["sun_base"]["rotation"]
+
         # Si se presiona T, la camara con una proyeccion de perspectiva que esta orbitando centrada en la tierra
         if symbol == key.T:
             cam.focus = world["earth_base"]["position"]
-            cam.distance = 10
+            cam.distance = 5
             cam.type = "perspective"
+            cam.rotate = world["earth_base"]["rotation"]
             cam.update()
 
         # Caso analogo para saturno pero con tecla S
         if symbol == key.S:
+            world.focus = "saturn_base"
             cam.focus = world["saturn_base"]["position"]
-            cam.distance = 10
+            cam.distance = 5
             cam.type = "perspective"
+            cam.rotate = world["saturn_base"]["rotation"]
             cam.update()
 
         # Caso analogo para el el centro de orbita entre neptuno y urano al presionar U
         if symbol == key.U:
             cam.focus = world["Liu_Cixin_base"]["position"]
-            cam.distance = 10
+            cam.distance = 5
             cam.type = "perspective"
+            cam.rotate = world["Liu_Cixin_base"]["rotation"]
             cam.update()
 
-
-
-
-
-
+        if symbol == key.TAB:
+            window.time = 0   # Nota, este keybind para reiniciar el tiempo lo use yo para hacer la tarea, si es que este mensaje esta aqui, es porque no lo borre.
 
 
     # Update de la escena
@@ -451,7 +454,7 @@ void main() {
         world["neptune_base"]["position"] = [5.62*np.cos(-0.20*window.time), 0, 5.62*np.sin(-0.20*window.time)]
 
         world.update()
-        cam.update()
+        cam.update(d)
         window.time+=dt
 
     pyglet.clock.schedule_interval(update, 1/60)
