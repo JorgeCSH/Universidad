@@ -8,23 +8,23 @@
     Fecha Limite de Entrega: 04 de Octubre de 2024
     Fecha en que se Entrego:
 ------------------------------------------------------------------------------------------------------------------------
-    Palabras Previas:
-    Este archivo contiene el desarrollo realizado para la tarea 3 de la asignatura Modelacion y Computacion Grafica para
-    Ingenieros (CC3501-1). Al igual que en entregas posteriores, la tarea fue subdividia en secciones para intentar
-    facilitar la comprension tanto por quien revise como por quien realiza la tarea (es dcir, yo).
+Palabras Previas:
+Este archivo contiene el desarrollo realizado para la tarea 3 de la asignatura Modelación y Computación Gráfica para
+Ingenieros (CC3501-1). Al igual que en entregas posteriores, la tarea fue subdividía en secciones para intentar
+facilitar la comprensión tanto por quien revise como por quien realiza la tarea (es decir, yo).
 
-    Fue de gran relevancia para la realizacion las clases auxiliares y catedras para cumplir (o intentar) los
-    requisitos. Ademas, en una copia del template otorgado por el cuerpo docente (este archivo) fue realizado evitando
-    alterar lo que ya se incorporaba, donde ademas se adjunto el template original.
+Fue de gran relevancia para la realización las clases auxiliares y cátedras para cumplir (o intentar) los
+requisitos. Además, en una copia del templarte otorgado por el cuerpo docente (este archivo) fue realizado evitando
+alterar lo que ya se incorporaba, donde además se adjuntó el template original.
 
-    Para realizar esta tarea se utilizo un objeto externo que presentara su respectiva referencia al final del
-    documento. Para el momento en que fue entregada, ningun documento aparte se tiene registro de haber sido modificado,
-    el unico cambio transcendental fue extraer archivos de sus carpetas/directorios originales para evitar problemas
-    con las rutas de los archivos.
+Para realizar esta tarea se utilizó un objeto externo que presentara su respectiva referencia al final del
+documento. Para el momento en que fue entregada, ningún documento aparte se tiene registro de haber sido modificado,
+el único cambio transcendental fue extraer archivos de sus carpetas/directorios originales para evitar problemas
+con las rutas de los archivos.
 =========================================================================================================================
 """
-# Seccion 1: importamos librerias ########################################################################################
-###########################################################################################################################
+# Seccion 1: importamos librerias #####################################################################################
+#######################################################################################################################
 # Librerias utilizadas
 import pyglet
 from networkx.lazy_imports import attach
@@ -39,8 +39,9 @@ from grafica.helpers import mesh_from_file
 from grafica.drawables import Model, Texture
 from pyglet.window import Window, key
 
-# Seccion 2: configuracion ################################################################################################
-###########################################################################################################################
+
+# Seccion 2: configuracion ############################################################################################
+#######################################################################################################################
 class Controller(Window):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -49,11 +50,11 @@ class Controller(Window):
         self.sensitivity = 0.1
 
 
-# Seccion 3: definimos las clases y funciones que se usaran ###############################################################
-###########################################################################################################################
-''' Funcion generate_ring()
-Funcion para generar anillos de un astro. Esta funcion venia con el template original. 
-Entrega la geometria de la esfera tanto para la malla como para las texturas, donde uv = (u, v) corresponden a las
+# Seccion 3: definimos las clases y funciones que se usaran ###########################################################
+#######################################################################################################################
+''' Función generate_ring()
+Función para generar anillos de un astro. Esta función venía con el template original. 
+Entrega la geometría de la esfera tanto para la malla como para las texturas, donde uv = (u, v) corresponden a las
 texturas.
 '''
 def generate_ring(definition, texture_file=None):
@@ -103,37 +104,55 @@ def generate_ring(definition, texture_file=None):
 
 
 ''' Funcion create_sphere()
-Funcion que, inspirada en la funcion create_ring, crea una
-esfera discretizando en coordenadas esfericas phi y theta.
+Función que, inspirada en la función create_ring Y la funcion "crear_planeta" de la primera tarea. Crea una esfera 
+discreteando en coordenadas esféricas phi y theta.
 
-Recibe "definition" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera.
+Recibe "definición" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera con los datos 
+construidos. En esta funcion se itera especto a cada i-esimo indice cada j-esimo indice del arreglo de posiciones y 
+texturas para generar y guardar cada coordenada en su forma esferica. Para esto ademas se uso la definicion original 
+de coordenadas esfericas, es decir:
+    
+    x = r * sin(theta) * cos(phi)
+    y = r * sin(theta) * sin(phi)
+    z = r * cos(theta)
+
+Los angulos theta y phi se consideraron cada uno segun como era visto en los cursos fisicos de plan comun, es decir,
+theta para el angulo entre r y OZ, phi para el angulo entre el plano OXY y OZ. 
 '''
 def create_sphere(definition):
-    # Coordenadas de posición (posiciones) para una esfera
+    # Definimos el arreglo donde estaran las coordenadas de la posicion.
     positions = np.zeros((definition * definition) * 3, dtype=np.float32)
-    # Coordenadas de texturas (uv)
+
+    # Definimos el arreglo donde estaran las coordenadas de la textura en el plano UV.
     uv = np.zeros((definition * definition) * 2, dtype=np.float32)
-    # Índices para formar los triángulos
+
+    # Definimos el arreglo donde estaran los indices de los triangulos.
     indices = np.zeros((6 * (definition ) * (definition)), dtype=np.int32)
 
+    # Ya que nos inspiraremos en coordenadas esfericas, definimos los angulos de phi y theta discretizados.
     dphi = 2 * np.pi / (definition-1)  # Definimos Phi theta (entre el plano OXY y OZ)
     dtheta = np.pi / (definition-1)  # Definimos angulo Phi (entre r y OZ)
 
-    r = 1.0  # Radio de la esfera
+    # Radio de la esfera
+    r = 1.0
 
-    # Generar posiciones de vértices y coordenadas de texturas (UV)
-    for i in range(definition):
-        for j in range(definition):
-            idx = 3 * (i * definition + j)
-            tidx = 2 * (i * definition + j)
+    # Iteramos para obtener posiciones de cada punto en la esfera y los del mapa de textura UV.
+    for i in range(definition):                 # Iteramos en la i-esima coordenada                 -|--> Nota: recien estoy dando algoritmos, perdon
+        for j in range(definition):             # Para cada i-esimo, iteramos el j-esimo            -|          si tal vez es ineficiente.
+            # Posicion y textura
+            pos = 3 * (i * definition + j)      # Indice de la posicion
+            tex = 2 * (i * definition + j)      #
 
-            theta = i * dtheta  # Ángulo azimutal
-            phi = j * dphi      # Ángulo polar
+            # Angulos
+            theta = i * dtheta  # Angulo theta
+            phi = j * dphi      # Angulo phi
 
-            positions[idx:idx+3] = [-r * np.sin(theta) * np.cos(phi), -r * np.sin(theta) * np.sin(phi),-r * np.cos(theta)]
-            uv[tidx:tidx+2] = [j / (definition), i / (definition )]
+            # Arreglo con coordenadas de posicion.
+            positions[pos:pos+3] = [-r * np.sin(theta) * np.cos(phi), -r * np.sin(theta) * np.sin(phi),-r * np.cos(theta)]
+            # Arreglo con coordenadas de textura.
+            uv[tex:tex+2] = [j / (definition), i / (definition )]
 
-    # Generar índices de triángulos
+    # De manera similar a la posicion y textura, iteramos para obtener los indices del triangulo.
     idx = 0
     for i in range(definition-1):
         for j in range(definition):
