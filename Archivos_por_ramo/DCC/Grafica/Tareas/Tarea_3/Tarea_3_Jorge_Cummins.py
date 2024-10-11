@@ -210,7 +210,6 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.14, .14, .14],
-                   position=[5,0,0],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mercury.jpg"))
 
@@ -222,7 +221,6 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.4, .4, .4],
-                   position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/venus.jpg"))
 
@@ -372,6 +370,7 @@ void main() {
         world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
 
         # Pulsacion de orbita.
+        world["mercury_to_sun"]["position"] = [(5+2*np.sin(np.pi/2-domega))*np.cos(domega_ax), 0, (5+2*np.sin(np.pi/2-domega))*np.sin(domega_ax)]
 
 
         # Venus.
@@ -381,7 +380,7 @@ void main() {
         world["venus_base"]["rotation"][1] = (1/8)*domega_ax
 
         # Pulsacion de orbita.
-        world["venus_to_sun"]["position"] += [0.7*np.sin(domega)*0, 0, 0.7*np.sin(domega)*0]
+        world["venus_to_sun"]["position"] = [(8.5+5*np.sin(domega))*np.cos(domega_ax), 0, (8.5+5*np.sin(domega))*np.sin(domega_ax)]
 
 
         # Tierra.
