@@ -9,8 +9,18 @@
     Fecha en que se Entrego:
 ------------------------------------------------------------------------------------------------------------------------
     Palabras Previas:
+    Este archivo contiene el desarrollo realizado para la tarea 3 de la asignatura Modelacion y Computacion Grafica para
+    Ingenieros (CC3501-1). Al igual que en entregas posteriores, la tarea fue subdividia en secciones para intentar
+    facilitar la comprension tanto por quien revise como por quien realiza la tarea (es dcir, yo).
 
+    Fue de gran relevancia para la realizacion las clases auxiliares y catedras para cumplir (o intentar) los
+    requisitos. Ademas, en una copia del template otorgado por el cuerpo docente (este archivo) fue realizado evitando
+    alterar lo que ya se incorporaba, donde ademas se adjunto el template original.
 
+    Para realizar esta tarea se utilizo un objeto externo que presentara su respectiva referencia al final del
+    documento. Para el momento en que fue entregada, ningun documento aparte se tiene registro de haber sido modificado,
+    el unico cambio transcendental fue extraer archivos de sus carpetas/directorios originales para evitar problemas
+    con las rutas de los archivos.
 =========================================================================================================================
 """
 # Seccion 1: importamos librerias ########################################################################################
@@ -109,7 +119,7 @@ def create_sphere(definition):
     dphi = 2 * np.pi / (definition-1)  # Definimos Phi theta (entre el plano OXY y OZ)
     dtheta = np.pi / (definition-1)  # Definimos angulo Phi (entre r y OZ)
 
-    r = -1.0  # Radio de la esfera
+    r = 1.0  # Radio de la esfera
 
     # Generar posiciones de vértices y coordenadas de texturas (UV)
     for i in range(definition):
@@ -120,7 +130,7 @@ def create_sphere(definition):
             theta = i * dtheta  # Ángulo azimutal
             phi = j * dphi      # Ángulo polar
 
-            positions[idx:idx+3] = [r * np.sin(theta) * np.cos(phi), r * np.sin(theta) * np.sin(phi),r * np.cos(theta)]
+            positions[idx:idx+3] = [-r * np.sin(theta) * np.cos(phi), -r * np.sin(theta) * np.sin(phi),-r * np.cos(theta)]
             uv[tidx:tidx+2] = [j / (definition), i / (definition )]
 
     # Generar índices de triángulos
@@ -137,7 +147,6 @@ def create_sphere(definition):
                                     i * definition + j+definition]
             idx += 6
 
-    # Generar normales
 
     return Model(positions, uv, None, indices)
 
@@ -333,11 +342,14 @@ void main() {
                    texture=Texture("assets/saturn.jpg"))
 
     world.add_node("saturn_ring",
-                   attach_to="saturn_base",
+                   attach_to="saturn_base")
+    world.add_node("ring_base",
+                   attach_to="saturn_ring",
                    mesh=ring,
                    pipeline=pipeline,
                    scale=[2, 2, 2],
-                   rotation=[0, 0, 0], cull_face=False,
+                   rotation=[0, 0, 0],
+                   cull_face=False,
                    texture=Texture("assets/saturn_ring.png"))
 
     # Centro del centro de rotacion binario.
@@ -367,7 +379,7 @@ void main() {
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   rotation=[-np.pi/2, 0, 0],
+                   rotation=[0, 0, 0],
                    texture = Texture("assets/neptune.jpg"))
 
     # agregar fondo estrellado con textura stars.jpg. QUITAR, es porque se ve cool.
@@ -402,8 +414,14 @@ void main() {
         cam1.theta = cam.theta
         cam2.phi += dx*0.001
         cam2.theta += dy*0.001
+        cam3.phi += dx*0.001
+        cam3.theta += dy*0.001
+        cam4.phi += dx*0.001
+        cam4.theta += dy*0.001
+        cam5.phi += dx * 0.001
+        cam5.theta += dy * 0.001
 
-        
+
     # Teclado
     @window.event
     def on_key_press(symbol, modifiers):
@@ -435,6 +453,7 @@ void main() {
 
         # Sol.
         world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
+        world["sun_base"]["rotation"][1] = -(1/8)*domega_ax
         cam1.focus = world["sun_base"]["position"]
         cam1.position = world["sun_base"]["position"]+np.array([1, 1, 1])
 
@@ -443,7 +462,7 @@ void main() {
         world["mercury_base"]["position"] = [(6.24+0.5*np.cos(domega))*np.cos(domega_ax), 0, (6.24+0.5*np.cos(domega))*np.sin(domega_ax)]
 
         # Venus.
-        world["venus_base"]["rotation"][1] = (1/8)*domega_ax
+        world["venus_base"]["rotation"][1] = -(1/8)*domega_ax
         world["venus_base"]["position"] = [(10.38+0.5*np.sin(domega))*np.cos(-0.73*window.time), 0, (10.38+0.5*np.sin(domega))*np.sin(-0.73*window.time)]
 
         # Tierra.
@@ -459,12 +478,13 @@ void main() {
         # Marte.
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
         world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time), 0, 19.44 * np.sin(0.502*window.time)]
-        
+
+        cam5.focus = world["mars_base"]["position"]
+        cam5.position = world["mars_base"]["position"]+np.array([0.3, 0.3, 0.3])
+
         # Nave.
         world["nave_base"]["rotation"][1] = (1/8)*domega_ax
         world["nave_base"]["position"] = [1.8 * np.cos(0.502*window.time), 1.8*np.cos(window.time)*np.sin(window.time), 1.8 * np.sin(0.502*window.time)]
-        cam5.focus = world["nave_base"]["position"]
-        cam5.position = world["nave_base"]["position"]+np.array([1, 1, 1])
 
         # Jupiter.
         world["jupiter_base"]["rotation"][1] = domega_ax
@@ -473,6 +493,7 @@ void main() {
         # Saturno.
         world["saturn_base"]["rotation"][1] = (7/8)*domega_ax
         world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time), 0, 32.09*np.sin(0.2*window.time)]
+        world["saturn_ring"]["rotation"][2] = (7/8)*domega_ax
         cam3.focus = world["saturn_base"]["position"]
         cam3.position = world["saturn_base"]["position"]+np.array([2, 2, 2])
 
@@ -498,5 +519,5 @@ void main() {
         cam5.update()
         window.time+=dt
 
-    pyglet.clock.schedule_interval(update, 1/60)
+    pyglet.clock.schedule_interval(update, 1/165)
     pyglet.app.run()
