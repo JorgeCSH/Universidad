@@ -186,18 +186,23 @@ void main() {
     cam1.width = 800
     cam1.height = 800
     
-    cam2 = OrbitCamera(10)
+    cam2 = OrbitCamera(5)
     cam2.width = 800
     cam2.height = 800
 
-    cam3 = OrbitCamera(10)
+    cam3 = OrbitCamera(5)
     cam3.width = 800
     cam3.height = 800
     
-    cam4 = OrbitCamera(10)
+    cam4 = OrbitCamera(5)
     cam4.width = 800
     cam4.height = 800
     
+    cam5 = OrbitCamera(5)
+    cam5.width = 800
+    cam5.height = 800
+
+
     cam = cam1
 
     # Ventana/control
@@ -393,23 +398,34 @@ void main() {
         # Modificamos la camara segun el movimento del mouse
         cam.phi += dx * 0.001
         cam.theta += dy * 0.001
+        cam1.phi = cam.phi
+        cam1.theta = cam.theta
+        cam2.phi += dx*0.001
+        cam2.theta += dy*0.001
 
-
+        
     # Teclado
     @window.event
     def on_key_press(symbol, modifiers):
         # Si se presiona espacio, la camara se centra en el sol con una proyeccion ortografica y orbitandolo
         if symbol == key.SPACE:
             world.camera = cam1
+        
         # Si se presiona T, la camara con una proyeccion de perspectiva que esta orbitando centrada en la tierra
         if symbol == key.T:
             world.camera = cam2
+        
         # Caso analogo para saturno pero con tecla S
         if symbol == key.S:
             world.camera = cam3
+        
         # Caso analogo para el el centro de orbita entre neptuno y urano al presionar U
         if symbol == key.U:
             world.camera  = cam4
+
+        # Caso analogo (por ahora) para la nave de marte
+        if symbol == key.M:
+            world.camera = cam5
 
     # Update de la escena
     def update(dt):
@@ -419,7 +435,8 @@ void main() {
 
         # Sol.
         world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
-        cam1.position = world["sun_base"]["position"]+np.array([0, 0, 10])
+        cam1.focus = world["sun_base"]["position"]
+        cam1.position = world["sun_base"]["position"]+np.array([1, 1, 1])
 
         # Mercurio.
         world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
@@ -433,7 +450,7 @@ void main() {
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
         world["earth_base"]["position"] = [16.19*np.cos(0.62*window.time), 0,  16.19*np.sin(0.62*window.time)]
         cam2.focus = world["earth_base"]["position"]
-        cam2.position = world["earth_base"]["position"]+np.array([2, 2, 2])
+        cam2.position = world["earth_base"]["position"]+np.array([1, 1, 1])
 
         # Luna.
         world["moon_base"]["rotation"][0] = (1/16)*domega_ax
@@ -446,6 +463,8 @@ void main() {
         # Nave.
         world["nave_base"]["rotation"][1] = (1/8)*domega_ax
         world["nave_base"]["position"] = [1.8 * np.cos(0.502*window.time), 1.8*np.cos(window.time)*np.sin(window.time), 1.8 * np.sin(0.502*window.time)]
+        cam5.focus = world["nave_base"]["position"]
+        cam5.position = world["nave_base"]["position"]+np.array([1, 1, 1])
 
         # Jupiter.
         world["jupiter_base"]["rotation"][1] = domega_ax
@@ -454,15 +473,17 @@ void main() {
         # Saturno.
         world["saturn_base"]["rotation"][1] = (7/8)*domega_ax
         world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time), 0, 32.09*np.sin(0.2*window.time)]
-        cam3.focus = world["saturn_base"]["position"]+np.array([0.1, 0.1, 0.1])
+        cam3.focus = world["saturn_base"]["position"]
+        cam3.position = world["saturn_base"]["position"]+np.array([2, 2, 2])
 
         # Rotacion del centro comun de rotacion binaria en torno al sol.
         world["Liu_Cixin_base"]["position"] = [36.74*np.cos(0.12*window.time), 0, 36.74*np.sin(0.12*window.time)]
-        cam4.focus = world["Liu_Cixin_base"]["position"]+np.array([0.1, 0.1, 0.1])
+        cam4.focus = world["Liu_Cixin_base"]["position"]
+        cam4.position = world["Liu_Cixin_base"]["position"]+np.array([6, 6, 1])
 
         # Urano.
         world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax
-        world["uranus_base"]["position"] = [3.17*np.cos(0.22*window.time), 0, 3.17*np.sin(0.22*window.time)]
+        world["uranus_base"]["position"] = [3.17*np.cos(0.22*window.time+np.pi), 0, 3.17*np.sin(0.22*window.time+np.pi)]
 
         # Neptuno
         world["neptune_base"]["rotation"][1] = (5/8)*domega_ax
@@ -471,6 +492,10 @@ void main() {
         world.update()
         cam.update()
         cam1.update()
+        cam2.update()
+        cam3.update()
+        cam4.update()
+        cam5.update()
         window.time+=dt
 
     pyglet.clock.schedule_interval(update, 1/60)
