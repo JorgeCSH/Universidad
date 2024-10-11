@@ -27,11 +27,11 @@ from grafica.scene_graph import SceneGraph
 from grafica.camera import OrbitCamera
 from grafica.helpers import mesh_from_file
 from grafica.drawables import Model, Texture
-
+from pyglet.window import Window, key
 
 # Seccion 2: configuracion ################################################################################################
 ###########################################################################################################################
-class Controller(pyglet.window.Window):
+class Controller(Window):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.time = 0
@@ -175,25 +175,38 @@ void main() {
 }
     """
 
-    pipeline = ShaderProgram(Shader(vert_source, "vertex"), Shader(frag_source, "fragment"))
+    pipeline = ShaderProgram(Shader(
+        vert_source, "vertex"),
+        Shader(frag_source, "fragment"))
 
     # Camara
     cam = OrbitCamera(10)
     cam.width = 800
     cam.height = 800
+
+    # Ventana/control
     window = Controller(cam.width, cam.height, "Tarea 3")
     window.set_exclusive_mouse(True)
+    keys = pyglet.window.key.KeyStateHandler()
+    window.push_handlers(keys)
 
-    world = SceneGraph(cam)
-    sphere = create_sphere(36) # Si es que parece un pacman es porque no tuve tiempo de arreglarla
+    # Creamos los objetos sin textura
+    # Esfera
+    sphere = create_sphere(36)
     sphere.init_gpu_data(pipeline)
-
+    # Anillo
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
 
-    omega = 2*np.pi/8
 
+    '''
+    Iniciamos el grafo
+    '''
+    world = SceneGraph(cam)
+
+    # Sol
     world.add_node("sun_to_root")
+
     world.add_node("sun_base",
                    attach_to="sun_to_root",
                    mesh=sphere,
@@ -205,6 +218,7 @@ void main() {
     # Mercurio
     world.add_node("mercury_to_sun",
                    attach_to="sun_to_root")
+
     world.add_node("mercury_base",
                    attach_to="mercury_to_sun",
                    mesh=sphere,
@@ -216,6 +230,7 @@ void main() {
     # Venus
     world.add_node("venus_to_sun",
                    attach_to="sun_to_root")
+
     world.add_node("venus_base",
                    attach_to="venus_to_sun",
                    mesh=sphere,
@@ -227,6 +242,7 @@ void main() {
     # Tierra
     world.add_node("earth_to_sun",
                    attach_to="sun_to_root")
+
     world.add_node("earth_base",
                    attach_to="earth_to_sun",
                    mesh=sphere,
@@ -234,8 +250,10 @@ void main() {
                    scale=[.43, .43, .43],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/earth.jpg"))
+
     world.add_node("moon_to_earth",
                    attach_to = "earth_base")
+
     world.add_node("moon_base",
                    attach_to= "moon_to_earth",
                    mesh = sphere,
@@ -247,18 +265,19 @@ void main() {
     # Marte
     world.add_node("mars_to_sun",
                    attach_to="sun_to_root")
+
     world.add_node("mars_base",
                    attach_to="mars_to_sun",
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
-
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mars.jpg"))
 
     # Jupiter
     world.add_node("jupiter_to_sun",
                    attach_to="sun_to_root")
+
     world.add_node("jupiter_base",
                    attach_to="jupiter_to_sun",
                    mesh=sphere,
@@ -270,6 +289,7 @@ void main() {
     # Saturno -> Anillo
     world.add_node("saturn_to_sun",
                    attach_to="sun_to_root")
+
     world.add_node("saturn_base",
                    attach_to="saturn_to_sun",
                    mesh=sphere,
@@ -277,6 +297,7 @@ void main() {
                    scale=[.8, .8, .8],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/saturn.jpg"))
+
     world.add_node("saturn_ring",
                    attach_to="saturn_base",
                    mesh=ring,
@@ -288,30 +309,30 @@ void main() {
     # Centro del centro de rotacion binario.
     world.add_node("Liu_Cixin",
                    attach_to="sun_to_root")
+
     world.add_node("Liu_Cixin_base",
-                   attach_to = "Liu_Cixin",
-                   position=[36.74*np.cos(6*omega*0), 0, 36.74*np.sin(6*omega)])
+                   attach_to = "Liu_Cixin")
 
     # Urano
     world.add_node("uranus_to_centre",
                    attach_to="Liu_Cixin_base")
+
     world.add_node("uranus_base",
                    attach_to="uranus_to_centre",
                    mesh = sphere,
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65],
-                   position=[3.17*np.cos(7*omega), 0, 3.17*np.sin(7*omega)],
                    rotation=[0, 0, 0],
                    texture=Texture("assets/uranus.jpg"))
     # Neptune
     world.add_node("neptune_to_centre",
                    attach_to = "Liu_Cixin_base")
+
     world.add_node("neptune_base",
                    attach_to = "neptune_to_centre",
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   position = [5.62*np.cos(8*omega), 0, 5.62*np.sin(8*omega)],
                    rotation=[-np.pi/2, 0, 0],
                    texture = Texture("assets/neptune.jpg"))
 
@@ -348,7 +369,32 @@ void main() {
     # Teclado
     @window.event
     def on_key_press(symbol, modifiers):
-        pass
+        # Si se presiona espacio, la camara se centra en el sol con una proyeccion ortografica y orbitandolo
+        if symbol == key.SPACE:
+            cam.focus = "sun_base"
+            cam.projection = "orthographic"
+            cam.orbit = True
+        # Si se presiona T, la camara con una proyeccion de perspectiva que esta orbitando centrada en la tierra
+        if symbol == key.T:
+            cam.focus = "earth_base"
+            cam.projection = "perspective"
+            cam.orbit = True
+        # Caso analogo para saturno pero con tecla S
+        if symbol == key.S:
+            cam.focus = "saturn_base"
+            cam.projection = "perspective"
+            cam.orbit = True
+        # Caso analogo para el el centro de orbita entre neptuno y urano al presionar U
+        if symbol == key.U:
+            cam.focus = "Liu_Cixin_base"
+            cam.projection = "perspective"
+            cam.orbit = True
+
+
+
+
+
+
 
     # Update de la escena
     def update(dt):
