@@ -12,6 +12,7 @@ class Camera():
         self.width = width
         self.height = height
 
+
     def update(self):
         pass
 
@@ -50,6 +51,17 @@ class OrbitCamera(Camera):
         self.position[0] = self.distance * np.sin(self.theta) * np.sin(self.phi) + self.focus[0]
         self.position[1] = self.distance * np.cos(self.theta) + self.focus[1]
         self.position[2] = self.distance * np.sin(self.theta) * np.cos(self.phi) + self.focus[2]
+
+    def rotate(self, dtheta, dphi):
+        self.theta += dtheta
+        self.phi += dphi
+        self.update()
+
+    def zoom(self, dz):
+        self.distance += dz
+        self.update()
+
+
 
 class FreeCamera(Camera):
     def __init__(self, position = [0, 0, 0], camera_type = "perspective"):

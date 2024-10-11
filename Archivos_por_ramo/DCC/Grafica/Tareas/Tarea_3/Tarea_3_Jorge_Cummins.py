@@ -6,7 +6,7 @@
     Rut: 21.353.175-1
     Fecha de Redaccion: 06 de Octubre de 2024
     Fecha Limite de Entrega: 04 de Octubre de 2024
-    Fecha en que se Entrego: 
+    Fecha en que se Entrego:
 ------------------------------------------------------------------------------------------------------------------------
     Palabras Previas:
 
@@ -14,7 +14,7 @@
 =========================================================================================================================
 """
 # Seccion 1: importamos librerias ########################################################################################
-########################################################################################################################### 
+###########################################################################################################################
 # Librerias utilizadas
 import pyglet
 from networkx.lazy_imports import attach
@@ -48,7 +48,7 @@ texturas.
 '''
 def generate_ring(definition, texture_file=None):
     # coordenadas de posición
-    positions = np.zeros((definition)*3*2, dtype=np.float32) 
+    positions = np.zeros((definition)*3*2, dtype=np.float32)
     # coordenadas de texturas
     uv = np.zeros((definition)*2*2, dtype=np.float32)
     dtheta = 2*np.pi / definition
@@ -82,7 +82,7 @@ def generate_ring(definition, texture_file=None):
         indices[idx:idx+3] = [i, i+1, i+definition]
         # t1
         indices[idx+3:idx+6] = [i+1, i+definition+1, i+definition]
-   
+
     #Completamos el anillo
     # indices[3*definition:] = [definition, definition - 1, 0]
     idx = 6*(definition-1)
@@ -136,7 +136,7 @@ def create_sphere(definition):
                                     i * definition + j+definition+1,
                                     i * definition + j+definition]
             idx += 6
-    
+
     return Model(positions, uv, None, indices)
 
 
@@ -187,7 +187,7 @@ void main() {
     world = SceneGraph(cam)
     sphere = create_sphere(36) # Si es que parece un pacman es porque no tuve tiempo de arreglarla
     sphere.init_gpu_data(pipeline)
-   
+
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
 
@@ -232,7 +232,6 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.43, .43, .43],
-                   position=[16.19*np.cos(0*2*omega), 0,  16.19*np.sin(2*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/earth.jpg"))
     world.add_node("moon_to_earth",
@@ -242,10 +241,9 @@ void main() {
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.11, 0.11, 0.11],
-                   position = [1.8*np.cos(omega*0), 1.8*np.sin(omega*0),0],
                    rotation = [np.pi*3/2, -np.pi/2, np.pi],
                    texture = Texture("assets/moon.jpg"))
-    
+
     # Marte
     world.add_node("mars_to_sun",
                    attach_to="sun_to_root")
@@ -254,7 +252,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
-                   position=[19.44*np.cos(3*omega*0), 0, 19.44*np.sin(3*omega*0)],
+
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mars.jpg"))
 
@@ -266,7 +264,6 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.95, 0.95, 0.95],
-                   position=[25.14*np.cos(4*omega*0), 0, 25.14*np.sin(4*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/jupiter.jpg"))
 
@@ -278,7 +275,6 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.8, .8, .8],
-                   position=[32.09*np.cos(5*omega*0),0, 32.09*np.sin(5*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/saturn.jpg"))
     world.add_node("saturn_ring",
@@ -294,7 +290,7 @@ void main() {
                    attach_to="sun_to_root")
     world.add_node("Liu_Cixin_base",
                    attach_to = "Liu_Cixin",
-                   position=[36.74*np.cos(6*omega*0), 0, 36.74*np.sin(6*omega*0)])
+                   position=[36.74*np.cos(6*omega*0), 0, 36.74*np.sin(6*omega)])
 
     # Urano
     world.add_node("uranus_to_centre",
@@ -304,7 +300,7 @@ void main() {
                    mesh = sphere,
                    pipeline=pipeline,
                    scale=[0.65, 0.65, 0.65],
-                   position=[3.17*np.cos(7*omega*0), 0, 3.17*np.sin(7*omega*0)],
+                   position=[3.17*np.cos(7*omega), 0, 3.17*np.sin(7*omega)],
                    rotation=[0, 0, 0],
                    texture=Texture("assets/uranus.jpg"))
     # Neptune
@@ -315,7 +311,7 @@ void main() {
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   position = [5.62*np.cos(8*omega*0), 0, 5.62*np.sin(8*omega*0)],
+                   position = [5.62*np.cos(8*omega), 0, 5.62*np.sin(8*omega)],
                    rotation=[-np.pi/2, 0, 0],
                    texture = Texture("assets/neptune.jpg"))
 
@@ -324,7 +320,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    texture=Texture("assets/stars.jpg"),
-                   scale=[100, 100, 100],
+                   scale=[50, 50, 50],
                    cull_face=False)
 
     # Dibujamos
@@ -348,93 +344,62 @@ void main() {
         # Modificamos la camara segun el movimento del mouse
         cam.phi += dx * 0.001
         cam.theta += dy * 0.001
-    
+
     # Teclado
     @window.event
     def on_key_press(symbol, modifiers):
         pass
 
-    # Update de la escena 
+    # Update de la escena
     def update(dt):
         domega = window.time/2
         domega_ax = window.time
 
-        # Estado de los cuerpos.
-        # Pulsaciones del sol.
+        # Sol.
         world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
 
         # Mercurio.
-        # Rotacion en torno a el sol.
-        world["mercury_to_sun"]["rotation"][1] = window.time
-        # Rotacion en torno a su eje.
         world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
-
-        # Pulsacion de orbita.
-        world["mercury_to_sun"]["position"] = [(6.24+0.5*np.cos(domega))*np.cos(domega_ax), 0, (6.24+0.5*np.cos(domega))*np.sin(domega_ax)]
-
+        world["mercury_base"]["position"] = [(6.24+0.5*np.cos(domega))*np.cos(domega_ax), 0, (6.24+0.5*np.cos(domega))*np.sin(domega_ax)]
 
         # Venus.
-        # Rotacion en torno a el sol.
-        world["venus_to_sun"]["rotation"][1] = -0.73*window.time
-        # Rotacion en torno a su eje.
         world["venus_base"]["rotation"][1] = (1/8)*domega_ax
-
-        # Pulsacion de orbita.
-        world["venus_to_sun"]["position"] = [(10.38+0.5*np.sin(domega))*np.cos(domega_ax), 0, (10.38+0.5*np.sin(domega))*np.sin(domega_ax)]
-
+        world["venus_base"]["position"] = [(10.38+0.5*np.sin(domega))*np.cos(-0.73*window.time), 0, (10.38+0.5*np.sin(domega))*np.sin(-0.73*window.time)]
 
         # Tierra.
-        # Rotacion en torno a el sol.
-        world["earth_to_sun"]["rotation"][1] = 0.62*window.time
-        # Rotacion en torno a su eje.
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
+        world["earth_base"]["position"] = [16.19*np.cos(0.62*window.time), 0,  16.19*np.sin(0.62*window.time)]
 
         # Luna.
-        # Rotacion en torno a la tiera.
-        world["moon_to_earth"]["rotation"][2] =  window.time
-        # Rotacion en torno a su eje.
         world["moon_base"]["rotation"][0] = (1/16)*domega_ax
-
+        world["moon_base"]["position"] = [1.8*np.cos(window.time), 1.8*np.sin(window.time),0]
 
         # Marte.
-        # Rotacion en torno a el sol.
-        world["mars_to_sun"]["rotation"][1] = 0.502*window.time
-        # Rotacion en torno a su eje.
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
-
+        world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time), 0, 19.44 * np.sin(0.502*window.time)]
 
         # Jupiter.
-        # Rotacion en torno a el sol.
-        world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
-        # Rotacion en torno a su eje.
         world["jupiter_base"]["rotation"][1] = domega_ax
-
+        world["jupiter_base"]["position"] = [25.14*np.cos(0.27*window.time), 0, 25.14*np.sin(0.27*window.time)]
 
         # Saturno.
-        # Rotacion en torno a el sol.
-        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
-        # Rotacion en torno a su eje.
-        world["saturn_base"]["rotation"][1] = (7/8)*window.time
-
+        world["saturn_base"]["rotation"][1] = (7/8)*domega_ax
+        world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time), 0, 32.09*np.sin(0.2*window.time)]
 
         # Rotacion del centro comun de rotacion binaria en torno al sol.
-        world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
+        world["Liu_Cixin_base"]["position"] = [36.74*np.cos(0.12*window.time), 0, 36.74*np.sin(0.12*window.time)]
 
         # Urano.
-        # Rotacion en torno a el centro binario.
-        world["uranus_to_centre"]["rotation"][1] = 0.22*window.time
-        # Rotacion en torno a su eje, ESTE ROTA EN OTRO EJE SIGUIENDO EL EJE DE ROTACION DE URANO.
         world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax
+        world["uranus_base"]["position"] = [3.17*np.cos(0.22*window.time), 0, 3.17*np.sin(0.22*window.time)]
 
         # Neptuno
-        # Rotacion en torno a el centro binario.
-        world["neptune_to_centre"]["rotation"][1] = -0.20*window.time
-        # Rotacion en torno a su eje.
         world["neptune_base"]["rotation"][1] = (5/8)*domega_ax
+        world["neptune_base"]["position"] = [5.62*np.cos(-0.20*window.time), 0, 5.62*np.sin(-0.20*window.time)]
 
         world.update()
         cam.update()
-        window.time*=dt
+        window.time+=dt
 
     pyglet.clock.schedule_interval(update, 1/165)
     pyglet.app.run()
