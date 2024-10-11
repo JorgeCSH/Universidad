@@ -182,9 +182,23 @@ void main() {
         Shader(frag_source, "fragment"))
 
     # Camara
-    cam = OrbitCamera(10)
-    cam.width = 800
-    cam.height = 800
+    cam1 = OrbitCamera(10)
+    cam1.width = 800
+    cam1.height = 800
+    
+    cam2 = OrbitCamera(10)
+    cam2.width = 800
+    cam2.height = 800
+
+    cam3 = OrbitCamera(10)
+    cam3.width = 800
+    cam3.height = 800
+    
+    cam4 = OrbitCamera(10)
+    cam4.width = 800
+    cam4.height = 800
+    
+    cam = cam1
 
     # Ventana/control
     window = Controller(cam.width, cam.height, "Tarea 3")
@@ -199,7 +213,7 @@ void main() {
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
     # Nave, Si, es la estrella de la muerte y el mejor modelo con una textura que pudiera implementar, creditos
-    # respectivos al final del documento.
+    # respectivos al final del documento
     no_i_am_your_father = mesh_from_file("assets/death_star.obj")[0]["mesh"]
     no_i_am_your_father.init_gpu_data(pipeline)
 
@@ -386,47 +400,26 @@ void main() {
     def on_key_press(symbol, modifiers):
         # Si se presiona espacio, la camara se centra en el sol con una proyeccion ortografica y orbitandolo
         if symbol == key.SPACE:
-            cam.distance = 10
-            cam.type = "orthographic"
-            cam.focus = world["sun_base"]["position"]
-            cam.rotate = world["sun_base"]["rotation"]
-
+            world.camera = cam1
         # Si se presiona T, la camara con una proyeccion de perspectiva que esta orbitando centrada en la tierra
         if symbol == key.T:
-            cam.focus = world["earth_base"]["position"]
-            cam.distance = 5
-            cam.type = "perspective"
-            cam.rotate = world["earth_base"]["rotation"]
-            cam.update()
-
+            world.camera = cam2
         # Caso analogo para saturno pero con tecla S
         if symbol == key.S:
-            world.focus = "saturn_base"
-            cam.focus = world["saturn_base"]["position"]
-            cam.distance = 5
-            cam.type = "perspective"
-            cam.rotate = world["saturn_base"]["rotation"]
-            cam.update()
-
+            world.camera = cam3
         # Caso analogo para el el centro de orbita entre neptuno y urano al presionar U
         if symbol == key.U:
-            cam.focus = world["Liu_Cixin_base"]["position"]
-            cam.distance = 5
-            cam.type = "perspective"
-            cam.rotate = world["Liu_Cixin_base"]["rotation"]
-            cam.update()
-
-        if symbol == key.TAB:
-            window.time = 0   # Nota, este keybind para reiniciar el tiempo lo use yo para hacer la tarea, si es que este mensaje esta aqui, es porque no lo borre.
-
+            world.camera  = cam4
 
     # Update de la escena
     def update(dt):
         domega = window.time/2
         domega_ax = window.time
 
+
         # Sol.
         world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
+        cam1.position = world["sun_base"]["position"]+np.array([0, 0, 10])
 
         # Mercurio.
         world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
@@ -439,6 +432,8 @@ void main() {
         # Tierra.
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
         world["earth_base"]["position"] = [16.19*np.cos(0.62*window.time), 0,  16.19*np.sin(0.62*window.time)]
+        cam2.focus = world["earth_base"]["position"]
+        cam2.position = world["earth_base"]["position"]+np.array([2, 2, 2])
 
         # Luna.
         world["moon_base"]["rotation"][0] = (1/16)*domega_ax
@@ -459,9 +454,11 @@ void main() {
         # Saturno.
         world["saturn_base"]["rotation"][1] = (7/8)*domega_ax
         world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time), 0, 32.09*np.sin(0.2*window.time)]
+        cam3.focus = world["saturn_base"]["position"]+np.array([0.1, 0.1, 0.1])
 
         # Rotacion del centro comun de rotacion binaria en torno al sol.
         world["Liu_Cixin_base"]["position"] = [36.74*np.cos(0.12*window.time), 0, 36.74*np.sin(0.12*window.time)]
+        cam4.focus = world["Liu_Cixin_base"]["position"]+np.array([0.1, 0.1, 0.1])
 
         # Urano.
         world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax
@@ -473,6 +470,7 @@ void main() {
 
         world.update()
         cam.update()
+        cam1.update()
         window.time+=dt
 
     pyglet.clock.schedule_interval(update, 1/60)
