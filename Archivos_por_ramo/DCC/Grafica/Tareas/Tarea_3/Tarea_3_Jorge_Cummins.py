@@ -255,7 +255,7 @@ void main() {
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
                    position=[19.44*np.cos(3*omega*0), 0, 19.44*np.sin(3*omega*0)],
-                   rotation=[0, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/mars.jpg"))
 
     # Jupiter
@@ -266,7 +266,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.95, 0.95, 0.95],
-                   position=[20.03*np.cos(4*omega*0), 0, 20.03*np.sin(4*omega*0)],
+                   position=[25.14*np.cos(4*omega*0), 0, 25.14*np.sin(4*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/jupiter.jpg"))
 
@@ -278,7 +278,7 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.8, .8, .8],
-                   position=[24.78*np.cos(5*omega*0),0, 24.78*np.sin(5*omega*0)],
+                   position=[32.09*np.cos(5*omega*0),0, 32.09*np.sin(5*omega*0)],
                    rotation=[-np.pi/2, 0, 0],
                    texture=Texture("assets/saturn.jpg"))
     world.add_node("saturn_ring",
@@ -294,7 +294,7 @@ void main() {
                    attach_to="sun_to_root")
     world.add_node("Liu_Cixin_base",
                    attach_to = "Liu_Cixin",
-                   position=[32*np.cos(6*omega*0), 0, 32*np.sin(6*omega*0)])
+                   position=[36.74*np.cos(6*omega*0), 0, 36.74*np.sin(6*omega*0)])
 
     # Urano
     world.add_node("uranus_to_centre",
