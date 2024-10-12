@@ -213,21 +213,25 @@ void main() {
     '''
     # Camara respecto al sol.
     cam1 = OrbitCamera(10)
+    cam1.camera_type = "orthographic"
     cam1.width = 800
     cam1.height = 800
 
     # Camara respecto a la tierra.
     cam2 = OrbitCamera(5)
+    cam2.camera_type = "perspective"
     cam2.width = 800
     cam2.height = 800
 
     # Camara respect a saturno.
     cam3 = OrbitCamera(5)
+    cam3.camera_type = "perspective"
     cam3.width = 800
     cam3.height = 800
 
     # Camara respecto al centro de orbita binario entre urano y neptuno.
     cam4 = OrbitCamera(5)
+    cam4.camera_type = "perspective"
     cam4.width = 800
     cam4.height = 800
 
