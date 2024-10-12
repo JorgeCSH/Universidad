@@ -32,6 +32,7 @@ from pyglet.gl import *
 from pyglet.graphics.shader import Shader, ShaderProgram
 import numpy as np
 
+from Archivos_por_ramo.DCC.Grafica.Tareas.Tarea_3.grafica.camera import FreeCamera
 # Librerias del cuerpo docente
 from grafica.scene_graph import SceneGraph
 from grafica.camera import OrbitCamera
@@ -231,7 +232,7 @@ void main() {
     cam4.height = 800
 
     # Camara respecto a la nave de marte.
-    cam5 = OrbitCamera(5)
+    cam5 = FreeCamera()
     cam5.width = 800
     cam5.height = 800
 
@@ -251,8 +252,8 @@ void main() {
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
     # Cargamos el objeto de la nave. Para evitar monotonia, se implemento un objeto externo con textura.
-    no_i_am_your_father = mesh_from_file("assets/death_star.obj")[0]["mesh"]
-    no_i_am_your_father.init_gpu_data(pipeline)
+    spaceship = mesh_from_file("assets/death_star.obj")[0]["mesh"]
+    spaceship.init_gpu_data(pipeline)
 
     # Creamos el grafo de escena.
     world = SceneGraph(cam)
@@ -319,16 +320,18 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
-                   rotation=[-np.pi/2, 0, 0],
+                   rotation=[0, -np.pi / 2, 0],
                    texture=Texture("assets/mars.jpg"))
     # Agregamos la nave.
     world.add_node("nave_to_mars",
                    attach_to="mars_base")
     world.add_node("nave_base",
                    attach_to="nave_to_mars",
-                   mesh=no_i_am_your_father,
+                   mesh=spaceship,
                    pipeline=pipeline,
                    scale=[0.7, 0.7, 0.7],
+                   position=[1.8, 0, 0],
+                   rotation=[0*-np.pi / 2, 0, 0],
                    texture = Texture("assets/deathstar_(1).jpg"))
 
     # Jupiter
@@ -436,8 +439,8 @@ void main() {
         cam4.phi += dx*0.001
         cam4.theta += dy*0.001
         # Camara 5.
-        cam5.phi += dx * 0.001
-        cam5.theta += dy * 0.001
+        cam5.yaw += dx * 0.001
+        cam5.pitch += dy * 0.001
 
     # Configuramos las teclas para cambiar de camara.
     @window.event
@@ -514,12 +517,12 @@ void main() {
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
         world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time), 0, 19.44 * np.sin(0.502*window.time)]
 
-        # Nave.
+        # Nave, se le agrego rotacion en todos los ejes para ser "erratico".
         world["nave_base"]["rotation"][1] = (1/8)*domega_ax
         world["nave_base"]["position"] = [1.8 * np.cos(0.502*window.time), 1.8*np.cos(window.time)*np.sin(window.time), 1.8 * np.sin(0.502*window.time)]
         # Camara 5.
-        cam5.focus = world["mars_base"]["position"]
-        cam5.position = world["mars_base"]["position"]+np.array([0.3, 0.3, 0.3])
+        if world.find_position("nave_base") is not None:
+            cam5.position = world.find_position("nave_base")+np.array([0, 0.1, 0])
 
         # Jupiter.
         world["jupiter_base"]["rotation"][1] = domega_ax
