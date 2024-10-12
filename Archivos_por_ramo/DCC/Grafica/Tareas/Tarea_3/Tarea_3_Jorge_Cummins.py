@@ -365,14 +365,14 @@ void main() {
                    texture=Texture("assets/saturn_ring.png"))
 
     # Centro del centro de rotacion binario.
-    world.add_node("Liu_Cixin",
+    world.add_node("centre",
                    attach_to="sun_to_root")
-    world.add_node("Liu_Cixin_base",
-                   attach_to = "Liu_Cixin")
+    world.add_node("centre_base",
+                   attach_to = "centre")
 
     # Urano
     world.add_node("uranus_to_centre",
-                   attach_to="Liu_Cixin_base")
+                   attach_to="centre_base")
     world.add_node("uranus_base",
                    attach_to="uranus_to_centre",
                    mesh = sphere,
@@ -383,13 +383,13 @@ void main() {
 
     # Neptuno
     world.add_node("neptune_to_centre",
-                   attach_to = "Liu_Cixin_base")
+                   attach_to = "centre_base")
     world.add_node("neptune_base",
                    attach_to = "neptune_to_centre",
                    mesh = sphere,
                    pipeline = pipeline,
                    scale = [0.62, 0.62, 0.62],
-                   rotation=[0, 0, 0],
+                   rotation=[-np.pi/2, 0, 0],
                    texture = Texture("assets/neptune.jpg"))
 
     # agregar fondo estrellado con textura stars.jpg. QUITAR, es porque se ve cool.
@@ -535,18 +535,18 @@ void main() {
         cam3.position = world["saturn_base"]["position"]+np.array([2, 2, 2])
 
         # Rotacion del centro comun de rotacion binaria en torno al sol.
-        world["Liu_Cixin_base"]["position"] = [36.74*np.cos(0.12*window.time), 0, 36.74*np.sin(0.12*window.time)]
+        world["centre_base"]["position"] = [36.74*np.cos(0.12*window.time), 0, 36.74*np.sin(0.12*window.time)]
         # Camara 4.
-        cam4.focus = world["Liu_Cixin_base"]["position"]
-        cam4.position = world["Liu_Cixin_base"]["position"]+np.array([6, 6, 1])
+        cam4.focus = world["centre_base"]["position"]
+        cam4.position = world["centre_base"]["position"]+np.array([6, 6, 1])
 
         # Urano.
-        world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax
+        world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax*9
         world["uranus_base"]["position"] = [3.17*np.cos(0.22*window.time+np.pi), 0, 3.17*np.sin(0.22*window.time+np.pi)]
 
         # Neptuno
         world["neptune_base"]["rotation"][1] = (5/8)*domega_ax
-        world["neptune_base"]["position"] = [5.62*np.cos(-0.20*window.time), 0, 5.62*np.sin(-0.20*window.time)]
+        world["neptune_base"]["position"] = [5.62*np.cos(0.20*window.time), 0, 5.62*np.sin(0.20*window.time)]
 
         world.update()
         cam.update()
@@ -557,13 +557,14 @@ void main() {
         cam5.update()
         window.time+=dt
 
-    pyglet.clock.schedule_interval(update, 1/165)
+    pyglet.clock.schedule_interval(update, 1/60)
     pyglet.app.run()
+
 
 """
 =======================================================================================================================
 Links de donde se sacaron los modelos:
-
+- Nave (si, use una estrella de la muerte): https://sketchfab.com/3d-models/death-star-5c3a7ce3215a482da0069f28b230bbd0
 
 Como ejecutar (o ejecute) la tarea:
 La tarea fue ejecutada en dos condiciones que para tener referencia fueron:
@@ -571,6 +572,33 @@ La tarea fue ejecutada en dos condiciones que para tener referencia fueron:
 - Arch Linux con entorno KDE-Plasma, python, Neovim, se hizo un entorno virtual segun las indicaciones en el 
   repositorio con las librerias respectivas, esto es, antes de ejecutar la tarea se ejecuto el comando:
   source ~/python-cg/bin/activate.
+  
+Palabras finales:
+La tarea busco seguir todo lo planteado, algunas aclaraciones que pueden ser relevantes son:
+ - Las velocidades de rotacion y traslacion fueron, en su gran mayoria ajustadas a lo que se encuentra en la realidad, 
+   esto es, todas las "rapideces" son proporcionales, pero el la magnitud en que una es mayor que otra es respecto a 
+   su rapidez en el top real.
+ 
+ - Se agrego el fondo estrellado que venia incluido. No estaba incluido en la lista de cosas a hacer pero si en las
+   imagenes referenciales.
+   
+ - La nave de marte es un objeto descargado con su respectiva textura. Esta textura hace que se demore en ejecutar
+   el programa (creo).
+ 
+ - La orbita entre neptuno y urano se baso en una de las opciones que puede ocurrrir para planetas de masa ligeramente
+   diferente segun la referencia otorgada. Inicialmente se incorpooro la misma rotacion que la imagen otorgada de dos 
+   formas diferentes, una con una parametrizacion que se realizo manualmente (la cual no se esta seguro si esta 
+   correcta, pero funcionaba) y la otra con dos nodos que salian del nodo central para que los dos planetas rotaran 
+   en dos elipses diferentes. Sin embargo, se opto por la opcion que finalmente se dejo en el codigo.
+   
+ - Urano, al igual que en el caso real, rota en torno al ecuador, por eso esta rotado
+ 
+Me gustaria terminar con unas palabras finales respecto al desarrollo. Esta, si bien realizada en el tiempo determinado,
+fue alterada sucesivamente para buscar el mejor resultado. Dado a esto a ultimo minuto se comento el desarrollo y pueden
+existir algunos errores de los cuales me hago responsable como creador. Algunos que pudieron haberse pasado por alto:
+- Nombres de variables que parecieran no tener sentido y que se olvido cambiar.
+- Comentarios que no se eliminaron.
+- Errores ortograficos.
 
 
 =======================================================================================================================
