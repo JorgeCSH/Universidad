@@ -12,6 +12,7 @@ class Camera():
         self.width = width
         self.height = height
 
+
     def update(self):
         pass
 
@@ -28,7 +29,7 @@ class Camera():
             depth = np.linalg.norm(depth)
             perspective_matrix = tr.ortho(-(self.width/self.height) * depth, (self.width/self.height) * depth, -1 * depth, 1 * depth, 0.001, 1000)
         return np.reshape(perspective_matrix, (16, 1), order="F")
-    
+
     def resize(self, width, height):
         self.width = width
         self.height = height
@@ -51,6 +52,17 @@ class OrbitCamera(Camera):
         self.position[1] = self.distance * np.cos(self.theta) + self.focus[1]
         self.position[2] = self.distance * np.sin(self.theta) * np.cos(self.phi) + self.focus[2]
 
+    def rotate(self, dtheta, dphi):
+        self.theta += dtheta
+        self.phi += dphi
+        self.update()
+
+    def zoom(self, dz):
+        self.distance += dz
+        self.update()
+
+
+
 class FreeCamera(Camera):
     def __init__(self, position = [0, 0, 0], camera_type = "perspective"):
         super().__init__(camera_type)
@@ -61,7 +73,7 @@ class FreeCamera(Camera):
         self.right = np.array([1, 0, 0], dtype=np.float32)
         self.up = np.array([0, 1, 0], dtype=np.float32)
         self.update()
-    
+
     def update(self):
         self.forward[0] = np.cos(self.yaw) * np.cos(self.pitch)
         self.forward[1] = np.sin(self.pitch)

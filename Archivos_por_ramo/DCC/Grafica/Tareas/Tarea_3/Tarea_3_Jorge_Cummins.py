@@ -6,31 +6,44 @@
     Rut: 21.353.175-1
     Fecha de Redaccion: 06 de Octubre de 2024
     Fecha Limite de Entrega: 04 de Octubre de 2024
-    Fecha en que se Entrego: 
+    Fecha en que se Entrego:
 ------------------------------------------------------------------------------------------------------------------------
-    Palabras Previas:
+Palabras Previas:
+Este archivo contiene el desarrollo realizado para la tarea 3 de la asignatura Modelación y Computación Gráfica para
+Ingenieros (CC3501-1). Al igual que en entregas posteriores, la tarea fue subdividía en secciones para intentar
+facilitar la comprensión tanto por quien revise como por quien realiza la tarea (es decir, yo).
 
+Fue de gran relevancia para la realización las clases auxiliares y cátedras para cumplir (o intentar) los
+requisitos. Además, en una copia del templarte otorgado por el cuerpo docente (este archivo) fue realizado evitando
+alterar lo que ya se incorporaba, donde además se adjuntó el template original.
 
+Para realizar esta tarea se utilizó un objeto externo que presentara su respectiva referencia al final del
+documento. Para el momento en que fue entregada, ningún documento aparte se tiene registro de haber sido modificado,
+el único cambio transcendental fue extraer archivos de sus carpetas/directorios originales para evitar problemas
+con las rutas de los archivos.
 =========================================================================================================================
 """
-# Seccion 1: importamos librerias ########################################################################################
-########################################################################################################################### 
+# Seccion 1: importamos librerias #####################################################################################
+#######################################################################################################################
 # Librerias utilizadas
 import pyglet
+from networkx.lazy_imports import attach
 from pyglet.gl import *
 from pyglet.graphics.shader import Shader, ShaderProgram
 import numpy as np
 
+from Archivos_por_ramo.DCC.Grafica.Tareas.Tarea_3.grafica.camera import FreeCamera
 # Librerias del cuerpo docente
 from grafica.scene_graph import SceneGraph
 from grafica.camera import OrbitCamera
 from grafica.helpers import mesh_from_file
-from grafica.drawables import Model
+from grafica.drawables import Model, Texture
+from pyglet.window import Window, key
 
 
-# Seccion 2: configuracion ################################################################################################
-###########################################################################################################################
-class Controller(pyglet.window.Window):
+# Seccion 2: configuracion ############################################################################################
+#######################################################################################################################
+class Controller(Window):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.time = 0
@@ -38,16 +51,16 @@ class Controller(pyglet.window.Window):
         self.sensitivity = 0.1
 
 
-# Seccion 3: definimos las clases y funciones que se usaran ###############################################################
-###########################################################################################################################
-''' Funcion generate_ring()
-Funcion para generar anillos de un astro. Esta funcion venia con el template original. 
-Entrega la geometria de la esfera tanto para la malla como para las texturas, donde uv = (u, v) corresponden a las
+# Seccion 3: definimos las clases y funciones que se usaran ###########################################################
+#######################################################################################################################
+''' Función generate_ring()
+Función para generar anillos de un astro. Esta función venía con el template original. 
+Entrega la geometría de la esfera tanto para la malla como para las texturas, donde uv = (u, v) corresponden a las
 texturas.
 '''
-def generate_ring(definition):
+def generate_ring(definition, texture_file=None):
     # coordenadas de posición
-    positions = np.zeros((definition)*3*2, dtype=np.float32) 
+    positions = np.zeros((definition)*3*2, dtype=np.float32)
     # coordenadas de texturas
     uv = np.zeros((definition)*2*2, dtype=np.float32)
     dtheta = 2*np.pi / definition
@@ -81,7 +94,7 @@ def generate_ring(definition):
         indices[idx:idx+3] = [i, i+1, i+definition]
         # t1
         indices[idx+3:idx+6] = [i+1, i+definition+1, i+definition]
-   
+
     #Completamos el anillo
     # indices[3*definition:] = [definition, definition - 1, 0]
     idx = 6*(definition-1)
@@ -92,125 +105,182 @@ def generate_ring(definition):
 
 
 ''' Funcion create_sphere()
-Funcion que, inspirada en la funcion create_ring, crea una
-esfera discretizando en coordenadas esfericas phi y theta.
+Función que, inspirada en la función create_ring Y la funcion "crear_planeta" de la primera tarea. Crea una esfera 
+discreteando en coordenadas esféricas phi y theta.
 
-Recibe "definition" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera.
+Recibe "definición" que corresponde a la cantidad de divisiones y devuelve Model para crear la esfera con los datos 
+construidos. En esta funcion se itera especto a cada i-esimo indice cada j-esimo indice del arreglo de posiciones y 
+texturas para generar y guardar cada coordenada en su forma esferica. Para esto ademas se uso la definicion original 
+de coordenadas esfericas, es decir:
+    
+    x = r * sin(theta) * cos(phi)
+    y = r * sin(theta) * sin(phi)
+    z = r * cos(theta)
+
+Los angulos theta y phi se consideraron cada uno segun como era visto en los cursos fisicos de plan comun, es decir,
+theta para el angulo entre r y OZ, phi para el angulo entre el plano OXY y OZ. 
 '''
 def create_sphere(definition):
-    # Coordenadas de posición (posiciones) para una esfera
+    # Definimos el arreglo donde estaran las coordenadas de la posicion.
     positions = np.zeros((definition * definition) * 3, dtype=np.float32)
-    # Coordenadas de texturas (uv)
+
+    # Definimos el arreglo donde estaran las coordenadas de la textura en el plano UV.
     uv = np.zeros((definition * definition) * 2, dtype=np.float32)
-    # Índices para formar los triángulos
+
+    # Definimos el arreglo donde estaran los indices de los triangulos.
     indices = np.zeros((6 * (definition ) * (definition)), dtype=np.int32)
 
-    dtheta = 2 * np.pi / definition  # Resolución azimutal
-    dphi = np.pi / (definition - 1)  # Resolución polar
+    # Ya que nos inspiraremos en coordenadas esfericas, definimos los angulos de phi y theta discretizados.
+    dphi = 2 * np.pi / (definition-1)  # Definimos Phi theta (entre el plano OXY y OZ)
+    dtheta = np.pi / (definition-1)  # Definimos angulo Phi (entre r y OZ)
 
-    r = 1.0  # Radio de la esfera
+    # Radio de la esfera
+    r = 1.0
 
-    # Generar posiciones de vértices y coordenadas de texturas (UV)
-    for i in range(definition):
+    # Iteramos para obtener posiciones de cada punto en la esfera y los del mapa de textura UV.
+    for i in range(definition):                 # Iteramos en la i-esima coordenada                 -|--> Nota: recien estoy dando algoritmos, perdon
+        for j in range(definition):             # Para cada i-esimo, iteramos el j-esimo            -|          si tal vez es ineficiente.
+            # Posicion y textura
+            pos = 3 * (i * definition + j)      # Indice de la posicion
+            tex = 2 * (i * definition + j)      #
+
+            # Angulos
+            theta = i * dtheta  # Angulo theta
+            phi = j * dphi      # Angulo phi
+
+            # Arreglo con coordenadas de posicion.
+            positions[pos:pos+3] = [-r * np.sin(theta) * np.cos(phi), -r * np.sin(theta) * np.sin(phi),-r * np.cos(theta)]
+            # Arreglo con coordenadas de textura.
+            uv[tex:tex+2] = [j / (definition), i / (definition )]
+
+    # De manera similar a la posicion y textura, iteramos para obtener los indices del triangulo.
+    ind = 0
+    for i in range(definition-1):
         for j in range(definition):
-            idx = 3 * (i * definition + j)
-            tidx = 2 * (i * definition + j)
-
-            theta = j * dtheta  # Ángulo azimutal
-            phi = i * dphi      # Ángulo polar
-
-            positions[idx:idx+3] = [r * np.sin(phi) * np.cos(theta), r * np.sin(phi) * np.sin(theta),r * np.cos(phi)]
-            uv[tidx:tidx+2] = [j / (definition - 1), i / (definition - 1)]
-
-    # Generar índices de triángulos
-    idx = 0
-    for i in range(definition):
-        for j in range(definition):
-
-            # Triángulos que forman la malla
-            indices[idx:idx+3] = [i * definition + j,
+            # Indices de los triangulos
+            indices[ind:ind+3] = [i * definition + j,
                                   i * definition + j+1,
                                   i * definition + j+definition]
-            indices[idx+3:idx+6] = [i * definition + j+1,
+            indices[ind+3:ind+6] = [i * definition + j+1,
                                     i * definition + j+definition+1,
                                     i * definition + j+definition]
-            idx += 6
-
+            ind += 6
+    # Retornamos un modelo, este es realizado de manera analoga a la funcion create_ring.
     return Model(positions, uv, None, indices)
 
 
 # Seccion 4: Configuracion de la escena ###############################################################################
 #######################################################################################################################
 '''
-Configuracion de los Shaders
+Configuracion de los Shaders. Inspirado en lo realizado en clase auxiliar.
 '''
 if __name__ == "__main__":
     vert_source = """
 #version 330
 in vec3 position;
-in vec2 texCoords;
+in vec2 texCoord;
 
 uniform mat4 u_model;
 uniform mat4 u_view = mat4(1.0);
 uniform mat4 u_projection = mat4(1.0);
 
-out vec2 fragTexCoords;
+out vec2 fragTexCoord;
 
-void main() {
+void main() { 
     gl_Position = u_projection * u_view * u_model * vec4(position, 1.0f);
-    fragTexCoords = texCoords;    
+    fragTexCoord = texCoord;    
 }
     """
     frag_source = """
 #version 330
-in vec2 fragTexCoords;
+in vec2 fragTexCoord;
 
 out vec4 outColor;
 
 uniform sampler2D u_texture;
 
 void main() {
-    outColor = texture(u_texture, fragTexCoords);
+    outColor = texture(u_texture, fragTexCoord);
 }
     """
 
+    # Creamos el pipeline
     pipeline = ShaderProgram(Shader(vert_source, "vertex"), Shader(frag_source, "fragment"))
 
-    # Camara
-    cam = OrbitCamera(10)
-    cam.width = 800
-    cam.height = 800
-    window = Controller(cam.width, cam.height, "Tarea 3")
+    '''
+    Configuracion de las camaras, en este caso se crean 5 para las 5 vistas solicitadas en la tarea, de esta forma
+    se utiliza la que sea necesaria/solicitada.   
+    '''
+    # Camara respecto al sol.
+    cam1 = OrbitCamera(10)
+    cam1.width = 800
+    cam1.height = 800
+
+    # Camara respecto a la tierra.
+    cam2 = OrbitCamera(5)
+    cam2.width = 800
+    cam2.height = 800
+
+    # Camara respect a saturno.
+    cam3 = OrbitCamera(5)
+    cam3.width = 800
+    cam3.height = 800
+
+    # Camara respecto al centro de orbita binario entre urano y neptuno.
+    cam4 = OrbitCamera(5)
+    cam4.width = 800
+    cam4.height = 800
+
+    # Camara respecto a la nave de marte.
+    cam5 = FreeCamera()
+    cam5.width = 800
+    cam5.height = 800
+
+    # Seleccionamos la camara inicial, la camara que se iguale a "cam" sera la activa. En este caso, en torno a el sol.
+    cam = cam1
+
+    # Configuramos la ventana.
+    window = Controller(cam.width, cam.height, "Tarea_3_Jorge_Cummins")
     window.set_exclusive_mouse(True)
 
-    world = SceneGraph(cam)
-    sphere = create_sphere(36) # Si es que parece un pacman es porque no tuve tiempo de arreglarla
-    sphere.init_gpu_data(pipeline)
 
+    # Creamos los objetos sin textura.
+    # Esfera.
+    sphere = create_sphere(36)
+    sphere.init_gpu_data(pipeline)
+    # Anillo
     ring = generate_ring(36)
     ring.init_gpu_data(pipeline)
+    # Cargamos el objeto de la nave. Para evitar monotonia, se implemento un objeto externo con textura.
+    spaceship = mesh_from_file("assets/death_star.obj")[0]["mesh"]
+    spaceship.init_gpu_data(pipeline)
 
-    omega = 2*np.pi/8
+    # Creamos el grafo de escena.
+    world = SceneGraph(cam)
 
+    # Agregamos al sol.
     world.add_node("sun_to_root")
+
     world.add_node("sun_base",
                    attach_to="sun_to_root",
                    mesh=sphere,
                    pipeline=pipeline,
-                   scale=[2.0, 2.0, 2.0],
-                   position=[0,0,0])
+                   position=[0,0,0],
+                   rotation=[-np.pi/2, 0, 0],
+                   texture=Texture("assets/sun.jpg"))
 
-    # Mercurio
+    # Mercurio.
     world.add_node("mercury_to_sun",
                    attach_to="sun_to_root")
     world.add_node("mercury_base",
                    attach_to="mercury_to_sun",
                    mesh=sphere,
                    pipeline=pipeline,
-                   scale=[.1, .1, .1],
-                   position=[5,0,0])
+                   scale=[.14, .14, .14],
+                   rotation=[-np.pi/2, 0, 0],
+                   texture=Texture("assets/mercury.jpg"))
 
-    # Venus
+    # Venus.
     world.add_node("venus_to_sun",
                    attach_to="sun_to_root")
     world.add_node("venus_base",
@@ -218,9 +288,10 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.4, .4, .4],
-                   position=[8.5*np.cos(omega), 0, 8.5*np.sin(omega)])
+                   rotation=[-np.pi/2, 0, 0],
+                   texture=Texture("assets/venus.jpg"))
 
-    # Tierra
+    # Tierra.
     world.add_node("earth_to_sun",
                    attach_to="sun_to_root")
     world.add_node("earth_base",
@@ -228,8 +299,19 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.43, .43, .43],
-                   position=[11.93*np.cos(2*omega), 0,  11.93*np.sin(2*omega)])
-    
+                   rotation=[-np.pi/2, 0, 0],
+                   texture=Texture("assets/earth.jpg"))
+    # Agregamos la luna.
+    world.add_node("moon_to_earth",
+                   attach_to = "earth_base")
+    world.add_node("moon_base",
+                   attach_to= "moon_to_earth",
+                   mesh = sphere,
+                   pipeline = pipeline,
+                   scale = [0.2, 0.2, 0.2],
+                   rotation = [np.pi*3/2, -np.pi/2, np.pi],
+                   texture = Texture("assets/moon.jpg"))
+
     # Marte
     world.add_node("mars_to_sun",
                    attach_to="sun_to_root")
@@ -238,7 +320,19 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.25, .25, .25],
-                   position=[15.18*np.cos(3*omega), 0, 15.18*np.sin(3*omega)])
+                   rotation=[0, -np.pi / 2, 0],
+                   texture=Texture("assets/mars.jpg"))
+    # Agregamos la nave.
+    world.add_node("nave_to_mars",
+                   attach_to="mars_base")
+    world.add_node("nave_base",
+                   attach_to="nave_to_mars",
+                   mesh=spaceship,
+                   pipeline=pipeline,
+                   scale=[0.7, 0.7, 0.7],
+                   position=[1.8, 0, 0],
+                   rotation=[0*-np.pi / 2, 0, 0],
+                   texture = Texture("assets/deathstar_(1).jpg"))
 
     # Jupiter
     world.add_node("jupiter_to_sun",
@@ -248,9 +342,10 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.95, 0.95, 0.95],
-                   position=[18.03*np.cos(4*omega), 0, 18.03*np.sin(4*omega)])
+                   rotation=[-np.pi/2, 0, 0],
+                   texture=Texture("assets/jupiter.jpg"))
 
-    # Saturno -> Anillo
+    # Saturno
     world.add_node("saturn_to_sun",
                    attach_to="sun_to_root")
     world.add_node("saturn_base",
@@ -258,79 +353,258 @@ void main() {
                    mesh=sphere,
                    pipeline=pipeline,
                    scale=[.8, .8, .8],
-                   position=[21.78,0,0])
+                   rotation=[-np.pi/2, 0, 0],
+                   texture=Texture("assets/saturn.jpg"))
+    # Anillos de saturno
     world.add_node("saturn_ring",
-                   attach_to="saturn_base",
+                   attach_to="saturn_base")
+    world.add_node("ring_base",
+                   attach_to="saturn_ring",
                    mesh=ring,
                    pipeline=pipeline,
                    scale=[2, 2, 2],
-                   rotation=[np.pi/2, 0, 0], cull_face=False)
+                   rotation=[0, 0, 0],
+                   cull_face=False,
+                   texture=Texture("assets/saturn_ring.png"))
 
     # Centro del centro de rotacion binario.
-    world.add_node("Liu_Cixin",
+    world.add_node("centre",
                    attach_to="sun_to_root")
-    world.add_node("liu_base",
-                   attach_to="Liu_Cixin",
-                   position=[32.295*np.cos(5*omega), 0, 32.295*np.sin(5*omega)])
+    world.add_node("centre_base",
+                   attach_to = "centre")
 
     # Urano
     world.add_node("uranus_to_centre",
-                   attach_to="Liu_Cixin")
+                   attach_to="centre_base")
     world.add_node("uranus_base",
                    attach_to="uranus_to_centre",
                    mesh = sphere,
                    pipeline=pipeline,
-                   scale=[0.65, 0.65, 0.65])
+                   scale=[0.65, 0.65, 0.65],
+                   rotation=[0, 0, 0],
+                   texture=Texture("assets/uranus.jpg"))
 
     # Neptuno
     world.add_node("neptune_to_centre",
-                   attach_to="Liu_Cixin")
-    world.add_node("neptune_to_base",
-                   attach_to="neptune_to_centre",
+                   attach_to = "centre_base")
+    world.add_node("neptune_base",
+                   attach_to = "neptune_to_centre",
                    mesh = sphere,
-                   pipeline=pipeline,
-                   scale=[0.63, 0.63, 0.63])
+                   pipeline = pipeline,
+                   scale = [0.62, 0.62, 0.62],
+                   rotation=[-np.pi/2, 0, 0],
+                   texture = Texture("assets/neptune.jpg"))
 
+    # agregar fondo estrellado con textura stars.jpg. QUITAR, es porque se ve cool.
+    world.add_node("stars",
+                   mesh=sphere,
+                   pipeline=pipeline,
+                   texture=Texture("assets/stars.jpg"),
+                   scale=[50, 50, 50],
+                   cull_face=False)
+
+
+    # Dibujamos
     @window.event
     def on_draw():
         window.clear()
         glClearColor(.1,.1,.1,1)
-
         # 3D
         glEnable(GL_DEPTH_TEST)
         # Transparencia
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
-        glEnable( GL_BLEND )
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)#;
+        glEnable( GL_BLEND )#;
         with pipeline:
             world.draw()
         glDisable(GL_DEPTH_TEST)
 
+    # Configuracion del movimiento del mouse, aca cada camara tiene su propio valor para phi y theta.
     @window.event
     def on_mouse_motion(x, y, dx, dy):
         # Modificamos la camara segun el movimento del mouse
+        # General.
         cam.phi += dx * 0.001
         cam.theta += dy * 0.001
 
+        # Camara 1.
+        cam1.phi = cam.phi          # -|--> Puesto a que es el de partida, se igualan.
+        cam1.theta = cam.theta      # -|
+        # Camra 2.
+        cam2.phi += dx*0.001
+        cam2.theta += dy*0.001
+        # Camara 3.
+        cam3.phi += dx*0.001
+        cam3.theta += dy*0.001
+        # Camara 4.
+        cam4.phi += dx*0.001
+        cam4.theta += dy*0.001
+        # Camara 5.
+        cam5.yaw += dx * 0.001
+        cam5.pitch += dy * 0.001
+
+    # Configuramos las teclas para cambiar de camara.
     @window.event
     def on_key_press(symbol, modifiers):
-        pass
+        # Si se presiona espacio, la camara se centra en el sol con una proyeccion ortografica y orbitandolo
+        if symbol == key.SPACE:
+            # Se iguala la camara de la escena a la camara 1.
+            world.camera = cam1
+        
+        # Si se presiona T, la camara con una proyeccion de perspectiva que esta orbitando centrada en la tierra
+        if symbol == key.T:
+            # Se iguala la camara de la escena a la camara 2.
+            world.camera = cam2
+        
+        # Caso analogo para saturno pero con tecla S
+        if symbol == key.S:
+            # Se iguala la camara de la escena a la camara 3.
+            world.camera = cam3
+        
+        # Caso analogo para el el centro de orbita entre neptuno y urano al presionar U
+        if symbol == key.U:
+            # Se iguala la camara de la escena a la camara 4.
+            world.camera  = cam4
 
+        # Caso analogo para la nave de marte
+        if symbol == key.M:
+            # Se iguala la camara de la escena a la camara 5.
+            world.camera = cam5
+
+
+    '''
+    Aca refrezcamos la escena. De manera general se siguio el siguiente orden:
+    
+    -> Actualizar rotacion respecto a su propio eje.
+    -> Actualizar posicion orbita.
+    
+    Si se agrego algun extra, entonces se hara nota, pero el orden anterior se mantiene en caso de colocarse
+    los dos movimientos.
+    '''
     def update(dt):
-        domega = window.time
-        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
-        world["mercury_to_sun"]["rotation"][1] = window.time
-        world["venus_to_sun"]["rotation"][1] = -0.73*window.time
-        world["earth_to_sun"]["rotation"][1] = 0.62*window.time
-        world["mars_to_sun"]["rotation"][1] = 0.502*window.time
-        world["jupiter_to_sun"]["rotation"][1] = 0.27*window.time
-        world["saturn_to_sun"]["rotation"][1] = 0.2*window.time
-        world["Liu_Cixin"]["rotation"][1] = 0.12*window.time
-        world["uranus_to_centre"]["position"][0:3] = [16/(5+3*np.cos(domega))*np.cos(domega), 0, 16/(5+3*np.cos(domega))*np.sin(domega)]
-        world["neptune_to_centre"]["position"][0:3] = [16/(5-3*np.cos(domega))*np.cos(domega), 0, 16/(5-3*np.cos(domega))*np.sin(domega)]
+        domega = window.time/2
+        domega_ax = window.time
+        desp = 2*np.pi/6
+
+        # Sol, orbita y rotacion en eje respectivamente
+        # Tamaño pulsante del sol.
+        world["sun_base"]["scale"] = [2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega), 2.5+0.1*np.cos(domega)]
+        # Rotacion del sol en torno a su eje.
+        world["sun_base"]["rotation"][1] = -(1/8)*domega_ax
+        # Camara inicial y al presionar espacio
+        cam1.focus = world["sun_base"]["position"]                          # Enfocamos la camara en el sol.
+        cam1.position = world["sun_base"]["position"]+np.array([1, 1, 1])   # Seguinmos la posicion con un ligero desplazamiento.
+
+        # Mercurio.
+        world["mercury_base"]["rotation"][1] = (2/8)*domega_ax
+        world["mercury_base"]["position"] = [(6.24+0.5*np.cos(domega))*np.cos(domega_ax), 0, (6.24+0.5*np.cos(domega))*np.sin(domega_ax)]
+
+        # Venus.
+        world["venus_base"]["rotation"][1] = -(1/8)*domega_ax
+        world["venus_base"]["position"] = [(10.38+0.5*np.sin(domega))*np.cos(0.73*window.time+desp), 0, (10.38+0.5*np.sin(domega))*np.sin(0.73*window.time+desp)]
+
+        # Tierra.
+        world["earth_base"]["rotation"][1] = (4/8)*domega_ax
+        world["earth_base"]["position"] = [16.19*np.cos(0.62*window.time+desp*2), 0,  16.19*np.sin(0.62*window.time+desp*2)]
+        # Camara 2.
+        cam2.focus = world["earth_base"]["position"]
+        cam2.position = world["earth_base"]["position"]+np.array([0.1, 0.1, 0.1])
+
+        # Luna.
+        world["moon_base"]["rotation"][0] = (1/16)*domega_ax
+        world["moon_base"]["position"] = [1.8*np.cos(window.time), 1.8*np.sin(window.time),0]
+
+        # Marte.
+        world["mars_base"]["rotation"][1] = (3/8)*domega_ax
+        world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time+desp*3), 0, 19.44 * np.sin(0.502*window.time+desp*3)]
+
+        # Nave, se le agrego rotacion en todos los ejes para ser "erratico".
+        world["nave_base"]["rotation"][1] = (1/8)*domega_ax
+        world["nave_base"]["position"] = [1.8 * np.cos(0.502*window.time), 1.8*np.cos(window.time)*np.sin(window.time), 1.8 * np.sin(0.502*window.time)]
+        # Camara 5.
+        if world.find_position("nave_base") is not None:
+            cam5.position = world.find_position("nave_base")+np.array([0, 0.1, 0])
+
+        # Jupiter.
+        world["jupiter_base"]["rotation"][1] = domega_ax
+        world["jupiter_base"]["position"] = [25.14*np.cos(0.27*window.time+4*desp), 0, 25.14*np.sin(0.27*window.time+4*desp)]
+
+        # Saturno.
+        world["saturn_base"]["rotation"][1] = (7/8)*domega_ax
+        world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time+desp*5), 0, 32.09*np.sin(0.2*window.time+desp*5)]
+        # Rotacion de los anillos de Saturno en torno a su eje.
+        world["saturn_ring"]["rotation"][2] = (7/8)*domega_ax
+        # Camara 3.
+        cam3.focus = world["saturn_base"]["position"]
+        cam3.position = world["saturn_base"]["position"]+np.array([2, 2, 2])
+
+        # Rotacion del centro comun de rotacion binaria en torno al sol.
+        world["centre_base"]["position"] = [36.74*np.cos(0.12*window.time+6*desp), 0, 36.74*np.sin(0.12*window.time+6*desp)]
+        # Camara 4.
+        cam4.focus = world["centre_base"]["position"]
+        cam4.position = world["centre_base"]["position"]+np.array([0, 5,0 ])
+
+        # Urano.
+        world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax*9
+        world["uranus_base"]["position"] = [3.17*np.cos(0.22*window.time+np.pi), 0, 3.17*np.sin(0.22*window.time+np.pi)]
+
+        # Neptuno
+        world["neptune_base"]["rotation"][1] = (5/8)*domega_ax
+        world["neptune_base"]["position"] = [5.62*np.cos(0.20*window.time), 0, 5.62*np.sin(0.20*window.time)]
 
         world.update()
         cam.update()
+        cam1.update()
+        cam2.update()
+        cam3.update()
+        cam4.update()
+        cam5.update()
         window.time+=dt
 
     pyglet.clock.schedule_interval(update, 1/60)
     pyglet.app.run()
+
+
+"""
+=======================================================================================================================
+Links de donde se sacaron los modelos:
+- Nave (si, use una estrella de la muerte): https://sketchfab.com/3d-models/death-star-5c3a7ce3215a482da0069f28b230bbd0
+
+Como ejecutar (o ejecute) la tarea:
+La tarea fue ejecutada en dos condiciones que para tener referencia fueron:
+- Windows 11, python3.12, IDLE: Pycharm y ejecutado con la opción de ejecutar del IDLE.
+- Arch Linux con entorno KDE-Plasma, python, Neovim, se hizo un entorno virtual según las indicaciones en el 
+  repositorio con las librerías respectivas, esto es, antes de ejecutar la tarea se ejecutó el comando:
+  source ~/python-cg/bin/activate.
+  
+Palabras finales:
+La tarea buscó seguir todo lo planteado, algunas aclaraciones que pueden ser relevantes son:
+ - Las velocidades de rotación y traslación fueron, en su gran mayoría ajustadas a lo que se encuentra en la realidad, 
+   esto es, todas las "rapideces" son proporcionales, pero el la magnitud en que una es mayor que otra es respecto a 
+   su rapidez en el top real.
+ 
+ - Se agregó el fondo estrellado que venía incluida. No estaba incluido en la lista de cosas a hacer pero sí en las
+   imagenes referenciales.
+   
+ - La nave de marte es un objeto descargado con su respectiva textura. Esta textura hace que se demore en ejecutar
+   el programa (creo).
+ 
+ - La orbita entre Neptuno y Urano se basó en una de las opciones que puede ocurrir para planetas de masa ligeramente
+   diferente segun la referencia otorgada. Inicialmente, se incorporó la misma rotación que la imagen otorgada de dos 
+   formas diferentes, una con una parametrización que se realizó manualmente (la cual no se estoy seguro si esta 
+   correcta, pero funcionaba) y la otra con dos nodos que salían del nodo central para que los dos planetas rotaran 
+   en dos elipses diferentes. Sin embargo, se optó por la opción que finalmente se dejó en el código.
+   
+ - Urano, al igual que en el caso real, rota en torno al ecuador, por eso está rotado
+
+ - Cada planeta tiene un desplazamiento que sigue el mismo patrón que la rotación.
+ 
+Me gustaría terminar con unas palabras finales respecto al desarrollo. Está, si bien realizada en el tiempo determinado,
+fue alterada sucesivamente para buscar el mejor resultado. Dado a esto a último minuto se comentó el desarrollo y pueden
+existir algunos errores de los cuales me hago responsable como creador. Algunos que pudieron haberse pasado por alto:
+- Nombres de variables que parecieran no tener sentido y que se olvidó cambiar.
+- Comentarios que no se eliminaron.
+- Errores ortográficos.
+
+Esta tarea podría haberse realizado mejor (mi desarrollo), cualquier comentario es siempre bienvenido.
+=======================================================================================================================
+"""
