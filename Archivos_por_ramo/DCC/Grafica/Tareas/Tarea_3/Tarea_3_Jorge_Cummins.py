@@ -412,8 +412,8 @@ void main() {
         # 3D
         glEnable(GL_DEPTH_TEST)
         # Transparencia
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glEnable( GL_BLEND );
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)#;
+        glEnable( GL_BLEND )#;
         with pipeline:
             world.draw()
         glDisable(GL_DEPTH_TEST)
@@ -572,37 +572,39 @@ Links de donde se sacaron los modelos:
 Como ejecutar (o ejecute) la tarea:
 La tarea fue ejecutada en dos condiciones que para tener referencia fueron:
 - Windows 11, python3.12, IDLE: Pycharm y ejecutado con la opción de ejecutar del IDLE.
-- Arch Linux con entorno KDE-Plasma, python, Neovim, se hizo un entorno virtual segun las indicaciones en el 
-  repositorio con las librerias respectivas, esto es, antes de ejecutar la tarea se ejecuto el comando:
+- Arch Linux con entorno KDE-Plasma, python, Neovim, se hizo un entorno virtual según las indicaciones en el 
+  repositorio con las librerías respectivas, esto es, antes de ejecutar la tarea se ejecutó el comando:
   source ~/python-cg/bin/activate.
   
 Palabras finales:
-La tarea busco seguir todo lo planteado, algunas aclaraciones que pueden ser relevantes son:
- - Las velocidades de rotacion y traslacion fueron, en su gran mayoria ajustadas a lo que se encuentra en la realidad, 
+La tarea buscó seguir todo lo planteado, algunas aclaraciones que pueden ser relevantes son:
+ - Las velocidades de rotación y traslación fueron, en su gran mayoría ajustadas a lo que se encuentra en la realidad, 
    esto es, todas las "rapideces" son proporcionales, pero el la magnitud en que una es mayor que otra es respecto a 
    su rapidez en el top real.
  
- - Se agrego el fondo estrellado que venia incluido. No estaba incluido en la lista de cosas a hacer pero si en las
+ - Se agregó el fondo estrellado que venía incluida. No estaba incluido en la lista de cosas a hacer pero sí en las
    imagenes referenciales.
    
  - La nave de marte es un objeto descargado con su respectiva textura. Esta textura hace que se demore en ejecutar
    el programa (creo).
  
- - La orbita entre neptuno y urano se baso en una de las opciones que puede ocurrrir para planetas de masa ligeramente
-   diferente segun la referencia otorgada. Inicialmente se incorpooro la misma rotacion que la imagen otorgada de dos 
-   formas diferentes, una con una parametrizacion que se realizo manualmente (la cual no se esta seguro si esta 
-   correcta, pero funcionaba) y la otra con dos nodos que salian del nodo central para que los dos planetas rotaran 
-   en dos elipses diferentes. Sin embargo, se opto por la opcion que finalmente se dejo en el codigo.
+ - La orbita entre Neptuno y Urano se basó en una de las opciones que puede ocurrir para planetas de masa ligeramente
+   diferente segun la referencia otorgada. Inicialmente, se incorporó la misma rotación que la imagen otorgada de dos 
+   formas diferentes, una con una parametrización que se realizó manualmente (la cual no se estoy seguro si esta 
+   correcta, pero funcionaba) y la otra con dos nodos que salían del nodo central para que los dos planetas rotaran 
+   en dos elipses diferentes. Sin embargo, se optó por la opción que finalmente se dejó en el código.
    
- - Urano, al igual que en el caso real, rota en torno al ecuador, por eso esta rotado
+ - Urano, al igual que en el caso real, rota en torno al ecuador, por eso está rotado
+
+ - Cada planeta tiene un desplazamiento que sigue el mismo patrón que la rotación.
  
-Me gustaria terminar con unas palabras finales respecto al desarrollo. Esta, si bien realizada en el tiempo determinado,
-fue alterada sucesivamente para buscar el mejor resultado. Dado a esto a ultimo minuto se comento el desarrollo y pueden
+Me gustaría terminar con unas palabras finales respecto al desarrollo. Está, si bien realizada en el tiempo determinado,
+fue alterada sucesivamente para buscar el mejor resultado. Dado a esto a último minuto se comentó el desarrollo y pueden
 existir algunos errores de los cuales me hago responsable como creador. Algunos que pudieron haberse pasado por alto:
-- Nombres de variables que parecieran no tener sentido y que se olvido cambiar.
+- Nombres de variables que parecieran no tener sentido y que se olvidó cambiar.
 - Comentarios que no se eliminaron.
-- Errores ortograficos.
+- Errores ortográficos.
 
-
+Esta tarea podría haberse realizado mejor (mi desarrollo), cualquier comentario es siempre bienvenido.
 =======================================================================================================================
 """
