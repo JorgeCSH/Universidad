@@ -483,7 +483,7 @@ void main() {
     def update(dt):
         domega = window.time/2
         domega_ax = window.time
-
+        desp = 2*np.pi/6
 
         # Sol, orbita y rotacion en eje respectivamente
         # Tamaño pulsante del sol.
@@ -500,14 +500,14 @@ void main() {
 
         # Venus.
         world["venus_base"]["rotation"][1] = -(1/8)*domega_ax
-        world["venus_base"]["position"] = [(10.38+0.5*np.sin(domega))*np.cos(-0.73*window.time), 0, (10.38+0.5*np.sin(domega))*np.sin(-0.73*window.time)]
+        world["venus_base"]["position"] = [(10.38+0.5*np.sin(domega))*np.cos(0.73*window.time+desp), 0, (10.38+0.5*np.sin(domega))*np.sin(0.73*window.time+desp)]
 
         # Tierra.
         world["earth_base"]["rotation"][1] = (4/8)*domega_ax
-        world["earth_base"]["position"] = [16.19*np.cos(0.62*window.time), 0,  16.19*np.sin(0.62*window.time)]
+        world["earth_base"]["position"] = [16.19*np.cos(0.62*window.time+desp*2), 0,  16.19*np.sin(0.62*window.time+desp*2)]
         # Camara 2.
         cam2.focus = world["earth_base"]["position"]
-        cam2.position = world["earth_base"]["position"]+np.array([1, 1, 1])
+        cam2.position = world["earth_base"]["position"]+np.array([0.1, 0.1, 0.1])
 
         # Luna.
         world["moon_base"]["rotation"][0] = (1/16)*domega_ax
@@ -515,7 +515,7 @@ void main() {
 
         # Marte.
         world["mars_base"]["rotation"][1] = (3/8)*domega_ax
-        world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time), 0, 19.44 * np.sin(0.502*window.time)]
+        world["mars_base"]["position"] = [19.44 * np.cos(0.502*window.time+desp*3), 0, 19.44 * np.sin(0.502*window.time+desp*3)]
 
         # Nave, se le agrego rotacion en todos los ejes para ser "erratico".
         world["nave_base"]["rotation"][1] = (1/8)*domega_ax
@@ -526,11 +526,11 @@ void main() {
 
         # Jupiter.
         world["jupiter_base"]["rotation"][1] = domega_ax
-        world["jupiter_base"]["position"] = [25.14*np.cos(0.27*window.time), 0, 25.14*np.sin(0.27*window.time)]
+        world["jupiter_base"]["position"] = [25.14*np.cos(0.27*window.time+4*desp), 0, 25.14*np.sin(0.27*window.time+4*desp)]
 
         # Saturno.
         world["saturn_base"]["rotation"][1] = (7/8)*domega_ax
-        world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time), 0, 32.09*np.sin(0.2*window.time)]
+        world["saturn_base"]["position"] = [32.09*np.cos(0.2*window.time+desp*5), 0, 32.09*np.sin(0.2*window.time+desp*5)]
         # Rotacion de los anillos de Saturno en torno a su eje.
         world["saturn_ring"]["rotation"][2] = (7/8)*domega_ax
         # Camara 3.
@@ -538,10 +538,10 @@ void main() {
         cam3.position = world["saturn_base"]["position"]+np.array([2, 2, 2])
 
         # Rotacion del centro comun de rotacion binaria en torno al sol.
-        world["centre_base"]["position"] = [36.74*np.cos(0.12*window.time), 0, 36.74*np.sin(0.12*window.time)]
+        world["centre_base"]["position"] = [36.74*np.cos(0.12*window.time+6*desp), 0, 36.74*np.sin(0.12*window.time+6*desp)]
         # Camara 4.
         cam4.focus = world["centre_base"]["position"]
-        cam4.position = world["centre_base"]["position"]+np.array([6, 6, 1])
+        cam4.position = world["centre_base"]["position"]+np.array([0, 5,0 ])
 
         # Urano.
         world["uranus_base"]["rotation"][2] = -(6/8)*domega_ax*9
