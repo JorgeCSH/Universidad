@@ -32,10 +32,10 @@ from pyglet.gl import *
 from pyglet.graphics.shader import Shader, ShaderProgram
 import numpy as np
 
-from Archivos_por_ramo.DCC.Grafica.Tareas.Tarea_3.grafica.camera import FreeCamera
+
 # Librerias del cuerpo docente
 from grafica.scene_graph import SceneGraph
-from grafica.camera import OrbitCamera
+from grafica.camera import OrbitCamera, FreeCamera
 from grafica.helpers import mesh_from_file
 from grafica.drawables import Model, Texture
 from pyglet.window import Window, key
