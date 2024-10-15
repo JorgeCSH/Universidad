@@ -43,6 +43,10 @@ class Nodoi:
     def __str__(self):
         return "("+self.izq.__str__()+str(self.info)+self.der.__str__()+")"
 
+''' Clase Nodoe
+Se implemento el metodo, lo que realiza es en ciertos terminos lo mismo que los metodos altura y es_AVL
+original pero en una tupla, la cual es despues usada por Nodoi
+'''
 class Nodoe:
     def __init__(self):
         pass
@@ -52,9 +56,11 @@ class Nodoe:
 
     def es_AVL(self):
         return True
-
+    '''
+    Metodo implementado, tupla con los valores.
+    '''
     def altura_AVL(self):
-        return 0,True
+        return (0,True)
     
     def __str__(self):
         return"☐"
