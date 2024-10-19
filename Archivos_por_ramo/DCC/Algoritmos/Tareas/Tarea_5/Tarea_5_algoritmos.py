@@ -20,9 +20,6 @@ Esta tarea se puede resolver con recursividad o sin recursividad. Usted debe dec
 En el código que aparece a continuación usted debe agregar todo lo necesario para que la implementación esté completa.
 
 """
-
-
-
 # Imports
 import aed_utilities as aed
 import numpy as np
@@ -34,14 +31,48 @@ class Nodoi:
         self.izq=izq
         self.info=info
         self.der=der
+    
+    def search(self, x):
+        if x <= self.info:
+            return self.izq.search(x)
+        else:
+            return self.der.search(x)
+
+    def insert(self, x):
+        if x <= self.info:
+            return Nodoi(self.izq.insert(x), self.info, self.der)
+        else:
+            return Nodoi(self.izq, self.info, self.der.insert(x))
+
+
 
 class Nodoe:
     def __init__(self,info):
         self.info=info
+    
+    def search(self, x):
+        if x <= self.info:
+            return self
+        else:
+            return None
+    
+    def insert(self, x):
+        if x <= self.info:
+            return Nodoi(Nodoe(x), self.info, self)
+        else:
+            return Nodoi(Nodoe(self.info), x, self)
+
+    
 
 class Arbol:
     def __init__(self,raiz=Nodoe(np.inf)):
         self.raiz=raiz
+
+    def search(self, x):
+        return self.raiz.search(x)
+
+    def insert(self, x):
+        self.raiz=self.raiz.insert(x)
 
     def dibujar(self):
       btd = aed.BinaryTreeDrawer(fieldData="info", fieldLeft="izq", fieldRight="der", classNone=Nodoe)
