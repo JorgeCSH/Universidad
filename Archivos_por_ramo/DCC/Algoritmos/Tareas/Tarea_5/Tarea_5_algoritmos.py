@@ -45,24 +45,21 @@ class Nodoi:
             return Nodoi(self.izq, self.info, self.der.insert(x))
 
 
-
 class Nodoe:
     def __init__(self,info):
         self.info=info
     
     def search(self, x):
-        if x <= self.info:
+        if x == self.info:
             return self
         else:
             return None
     
     def insert(self, x):
         if x <= self.info:
-            return Nodoi(Nodoe(x), self.info, self)
+            return Nodoi(Nodoe(x), x, self)
         else:
-            return Nodoi(Nodoe(self.info), x, self)
-
-    
+            return Nodoi(Nodoe(x), self.info, self)
 
 class Arbol:
     def __init__(self,raiz=Nodoe(np.inf)):
@@ -77,7 +74,6 @@ class Arbol:
     def dibujar(self):
       btd = aed.BinaryTreeDrawer(fieldData="info", fieldLeft="izq", fieldRight="der", classNone=Nodoe)
       btd.draw_tree(self, "raiz")
-
 
 # Probar 
 def test(a,x):
