@@ -20,6 +20,12 @@ Esta tarea se puede resolver con recursividad o sin recursividad. Usted debe dec
 En el código que aparece a continuación usted debe agregar todo lo necesario para que la implementación esté completa.
 
 """
+'''
+RECORDAR: AGREGAR COMENTARIOS EN ENTREGA FINAL, ESTE ESTA CASI VACIO
+
+- Yo del futuro: ya los agregue (xd)
+
+'''
 # Imports
 import aed_utilities as aed
 import numpy as np
@@ -39,6 +45,7 @@ class Nodoi:
             return self.der.search(x)
 
     def insert(self, x):
+        assert x != self.info 
         if x <= self.info:
             return Nodoi(self.izq.insert(x), self.info, self.der)
         else:
