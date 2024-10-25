@@ -1,4 +1,4 @@
-'''
+"""
 ======================================================================
 Trabajo Grupal Matematicas Discretas para la Computacion (CC3101) 
 ----------------------------------------------------------------------
@@ -22,7 +22,7 @@ Palabras Previas:
     Este trabajo fue realizado en conjunto entre todos los integrantes
     del equipo.
 =======================================================================
-'''
+"""
 
 # Seccion 1: importamos las librerias utilizadas #####################
 ######################################################################
@@ -106,6 +106,11 @@ assert s2(1) == 1
 assert s2(2) == 3
 assert s2(3) == 11
 
+# Testeos para valores calculados manualmentes (2, 3).
+assert s(2) == 8
+assert s(3) == 34
+
+
 # Aca printeamos los valores obtenidos para un n-esimo
 #n_esimo = int(input("Inserte largo n "))
 n_esimo = 5
@@ -114,5 +119,6 @@ for i in range(0, n_esimo):
     print(f"s2({i}) = {s2(i)}")
     print(f"s({i}) = {s(i)}")
     print()
+
 
 
