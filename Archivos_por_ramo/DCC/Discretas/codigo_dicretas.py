@@ -85,12 +85,9 @@ def s(n):
     # Caso donde el ancho es 0, analogo a s1 y s2.
     if n == 0:
         return 0
-    # Caso donde el ancho es 1.
-    if n == 1:
-        return 1
     # Casos donde n>=2, este no es recursivo, s1 y s2 si lo son.
     else:
-        assert n>=2
+        assert n>=1
         return s1(n)+s2(n)
 
 
@@ -121,4 +118,53 @@ for i in range(0, n_esimo):
     print()
 
 
+'''
+Parte 2: en esta parte veremos una implementacion mas eficiente, donde definiremos una matriz para 
+resolver las recurrencias usando el metodo de exponenciacion.
+'''
+
+
+def matrix_exponentiation(A, exp):
+
+    result = np.eye(2, dtype=int)
+    k=exp
+    C=A
+
+    while k > 0:
+        while k % 2 == 0:
+            C = np.dot(C, C)
+            k //= 2
+        result = np.dot(result, C)
+        k-=1
+
+    return result
+
+def s_exponenciacion(n):
+    if n == 0:
+        return 0
+    if n == 1:
+        return 2
+
+    A = np.array([[2, 1],
+                  [1, 4]], dtype=int)
+
+    A_n_minus_1 = matrix_exponentiation(A, n - 1)
+
+    S1 = np.array([1, 1])
+
+    Sn = np.dot(A_n_minus_1, S1)
+
+    return Sn[0] + Sn[1]
+
+
+# Testeos de valores
+assert s_exponenciacion(0) == s(0)
+assert s_exponenciacion(1) == s(1)
+assert s_exponenciacion(2) == s(2)
+assert s_exponenciacion(3) == s(3)
+assert s_exponenciacion(4) == s(4)
+
+n_exponenciacion = 5
+for i in range(0, n_exponenciacion):
+    print(f"S({i}) = {s_exponenciacion(i)}")
 
