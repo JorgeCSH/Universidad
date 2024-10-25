@@ -125,7 +125,7 @@ resolver las recurrencias usando el metodo de exponenciacion.
 
 
 def exponencial(A, n):
-    # Dado a que se debe considerar para un n-1
+    # Se considera hasta el n-1 para el calculo normal
     n = n-1
     # Definimos el ve
     A_mat = np.eye(2, dtype=int)
@@ -140,26 +140,32 @@ def exponencial(A, n):
 
     return A_mat 
 
+
 def s_exponenciacion(n):
+    
     # Caso de alto 0, analogo al S1 y S2 que originalmente se consideraba
     if n == 0:
         return 0 
-    # Matriz A correspondiente a la encontrada en la pregunta 3
+    
+    # Matriz A correspondiente a la encontrada en la pregunta 3 con respecto a [[s2(n)], [s1(n)]]
     A = np.array([[2, 1], [1, 4]], dtype=int)
     
-    # Aca obtenemos la 
-    sAs_1 = exponencial(A, n)
+    # Aca obtenemos la matriz n-esima  
+    A_n_esima = exponencial(A, n)
     
-    #
-    s1 = np.array([1, 1])
-    sn = np.dot(sAs_1, s1)
-
-    s_exp = sn[0] + sn[1]
-
+    # Vector para casos bases de n=1 ([s2(1), s2(1)]), por eso np.ones
+    s_n_1 = np.ones((2, 1))
+    
+    # Multiplicacion matricial entre la matriz exponenciada y el arreglo s1(n-1) y s2(n-1)
+    sn = np.dot(A_n_esima, s_n_1)
+    
+    # Obtenemos el valor del arreglo
+    s_aux = int((sn[0] + sn[1])[0])
+    
     # Testeo para corroborar que el valor da lo que deberia dar segun la recurrencia original
-    assert s(n) == s_exp
+    assert s(n) == s_aux
     
-    return s_exp
+    return s_aux
 
 
 n_exponenciacion = 5
