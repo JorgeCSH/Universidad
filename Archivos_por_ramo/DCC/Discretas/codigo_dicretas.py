@@ -124,45 +124,43 @@ resolver las recurrencias usando el metodo de exponenciacion.
 '''
 
 
-def matrix_exponentiation(A, exp):
+def exponencial(A, n):
+    # Dado a que se debe considerar para un n-1
+    n = n-1
+    # Definimos el ve
+    A_mat = np.eye(2, dtype=int)
+    i = n
+    A_aux = A
+    while i > 0:
+        while i % 2 == 0:
+            A_aux = np.dot(A_aux, A_aux)
+            i //= 2
+        A_mat = np.dot(A_mat, A_aux)
+        i-=1
 
-    result = np.eye(2, dtype=int)
-    k=exp
-    C=A
-
-    while k > 0:
-        while k % 2 == 0:
-            C = np.dot(C, C)
-            k //= 2
-        result = np.dot(result, C)
-        k-=1
-
-    return result
+    return A_mat 
 
 def s_exponenciacion(n):
+    # Caso de alto 0, analogo al S1 y S2 que originalmente se consideraba
     if n == 0:
-        return 0
-    if n == 1:
-        return 2
+        return 0 
+    # Matriz A correspondiente a la encontrada en la pregunta 3
+    A = np.array([[2, 1], [1, 4]], dtype=int)
+    
+    # Aca obtenemos la 
+    sAs_1 = exponencial(A, n)
+    
+    #
+    s1 = np.array([1, 1])
+    sn = np.dot(sAs_1, s1)
 
-    A = np.array([[2, 1],
-                  [1, 4]], dtype=int)
+    s_exp = sn[0] + sn[1]
 
-    A_n_minus_1 = matrix_exponentiation(A, n - 1)
+    # Testeo para corroborar que el valor da lo que deberia dar segun la recurrencia original
+    assert s(n) == s_exp
+    
+    return s_exp
 
-    S1 = np.array([1, 1])
-
-    Sn = np.dot(A_n_minus_1, S1)
-
-    return Sn[0] + Sn[1]
-
-
-# Testeos de valores
-assert s_exponenciacion(0) == s(0)
-assert s_exponenciacion(1) == s(1)
-assert s_exponenciacion(2) == s(2)
-assert s_exponenciacion(3) == s(3)
-assert s_exponenciacion(4) == s(4)
 
 n_exponenciacion = 5
 for i in range(0, n_exponenciacion):
