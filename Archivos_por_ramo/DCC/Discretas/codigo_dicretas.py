@@ -56,14 +56,9 @@ def s1(n):
         return 1
     # Caso recursivo. 
     else:
+        assert n>=2
         return 4*s1(n-1) + s2(n-1)
     
-# Testeos de casos bases (0 y 1) y valores calculados manualmente (2, 3).
-assert s1(0) == 0
-assert s1(1) == 1
-assert s1(2) == 5
-assert s1(3) == 23
-
 
 ''' Funcion s2(n)
 Funcion que realiza la recurrencia cuando el ultimo rectangulo es de ancho 2.
@@ -77,7 +72,33 @@ def s2(n):
         return 1
     # Caso recursivo.
     else:
+        assert n>=2
         return s1(n-1) + 2*s2(n-1)
+
+
+''' Funcion s(n)
+Funcion que realiza el calculo de las formas diferentes solicitadas, esto 
+considerando s1(n) y s2(n).
+'''
+def s(n):
+    assert type(n) == int
+    # Caso donde el ancho es 0, analogo a s1 y s2.
+    if n == 0:
+        return 0
+    # Caso donde el ancho es 1.
+    if n == 1:
+        return 1
+    # Casos donde n>=2, este no es recursivo, s1 y s2 si lo son.
+    else:
+        assert n>=2
+        return s1(n)+s2(n)
+
+
+# Testeos de casos bases (0 y 1) y valores calculados manualmente (2, 3).
+assert s1(0) == 0
+assert s1(1) == 1
+assert s1(2) == 5
+assert s1(3) == 23
 
 # Testeos casos bases (0 y 1) y valores calculados manualmente (2, 3).
 assert s2(0) == 0
@@ -85,10 +106,13 @@ assert s2(1) == 1
 assert s2(2) == 3
 assert s2(3) == 11
 
-
-
-
-
-
+# Aca printeamos los valores obtenidos para un n-esimo
+#n_esimo = int(input("Inserte largo n "))
+n_esimo = 5
+for i in range(0, n_esimo):
+    print(f"s1({i}) = {s1(i)}")
+    print(f"s2({i}) = {s2(i)}")
+    print(f"s({i}) = {s(i)}")
+    print()
 
 
