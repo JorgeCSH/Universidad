@@ -31,7 +31,6 @@ import numpy as np
 
 # Seccion 2: Desarrollo ###############################################
 #######################################################################
-
 '''
 Parte 1: en esta parte desarrollamos un codigo asociado a la pregunta 1
 del desarrollo de la tarea grupal. En este caso correspondio a dos
@@ -109,13 +108,16 @@ assert s(3) == 34
 
 
 # Aca printeamos los valores obtenidos para un n-esimo
-#n_esimo = int(input("Inserte largo n "))
+print(f"Resultados para solucion recursiva.")
 n_esimo = 5
 for i in range(0, n_esimo):
+    print(f"Caso n = {i}")
     print(f"s1({i}) = {s1(i)}")
     print(f"s2({i}) = {s2(i)}")
     print(f"s({i}) = {s(i)}")
     print()
+print("\n")    
+
 
 
 '''
@@ -123,25 +125,28 @@ Parte 2: en esta parte veremos una implementacion mas eficiente, donde definirem
 resolver las recurrencias usando el metodo de exponenciacion.
 '''
 
-
+''' Funcion exponencial()
+Obtiene la potencia n-1 esima que sera usada para calcular la recursion.
+'''
 def exponencial(A, n):
-    # Se considera hasta el n-1 para el calculo normal
-    n = n-1
-    # Definimos el ve
-    A_mat = np.eye(2, dtype=int)
-    i = n
-    A_aux = A
-    while i > 0:
-        while i % 2 == 0:
-            A_aux = np.dot(A_aux, A_aux)
-            i //= 2
-        A_mat = np.dot(A_mat, A_aux)
-        i-=1
-
-    return A_mat 
+    # Definimos una matriz auxiliar que inicialmente es la identidad para contener la potencia.
+    A_aux = np.eye(2, dtype=int)
+    # Iteramos hasta tener la n-1 potencia
+    i=1                             # Desde i=1 pues no consideramos el n=0, ese es tratado aparte.
+    while i < n:
+        A_aux = np.dot(A_aux, A)
+        i+=1
+    return A_aux
 
 
-def s_exponenciacion(n):
+''' Funcion s_exp()
+La idea de esta funcion es realizar el calculo de multiplicar la matriz que fue "exponenciada"
+por los casos de s(n-1), esto para obtener el resultado de s(n).
+Si n = 0 se retorna 0 al no tener una altura, mientras que si n >= 1 se retorna el producto
+entre la matriz exponenciada y el caso base s1(1) y s2(1), obteniendo un arreglo para s(n) que
+contiene a s2(n) y s1(n).
+'''
+def s_exp(n):
     
     # Caso de alto 0, analogo al S1 y S2 que originalmente se consideraba
     if n == 0:
@@ -154,13 +159,15 @@ def s_exponenciacion(n):
     A_n_esima = exponencial(A, n)
     
     # Vector para casos bases de n=1 ([s2(1), s2(1)]), por eso np.ones
-    s_n_1 = np.ones((2, 1))
+    s_n_previo = np.ones((2, 1))
     
     # Multiplicacion matricial entre la matriz exponenciada y el arreglo s1(n-1) y s2(n-1)
-    sn = np.dot(A_n_esima, s_n_1)
+    sn = np.dot(A_n_esima, s_n_previo)
     
     # Obtenemos el valor del arreglo
-    s_aux = int((sn[0] + sn[1])[0])
+    s2_n = sn[0]                        # s2(n)
+    s1_n = sn[1]                        # s1(n)
+    s_aux = int((s2_n + s1_n)[0])
     
     # Testeo para corroborar que el valor da lo que deberia dar segun la recurrencia original
     assert s(n) == s_aux
@@ -168,7 +175,9 @@ def s_exponenciacion(n):
     return s_aux
 
 
+# Printeamos valores
+print(f"Restultados usando exponenciacion")
 n_exponenciacion = 5
 for i in range(0, n_exponenciacion):
-    print(f"S({i}) = {s_exponenciacion(i)}")
+    print(f"S({i}) = {s_exp(i)}")
 
