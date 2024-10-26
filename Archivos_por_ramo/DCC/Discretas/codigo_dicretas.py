@@ -130,12 +130,15 @@ Obtiene la potencia n-1 esima que sera usada para calcular la recursion.
 '''
 def exponencial(A, n):
     # Definimos una matriz auxiliar que inicialmente es la identidad para contener la potencia.
-    A_aux = np.eye(2, dtype=int)
-    # Iteramos hasta tener la n-1 potencia
-    i=1                             # Desde i=1 pues no consideramos el n=0, ese es tratado aparte.
-    while i < n:
-        A_aux = np.dot(A_aux, A)
-        i+=1
+    A_aux=np.eye(2, dtype=int) # matriz identidad
+    # Iteramos desde la n-1 (exponente de la matriz) potencia hasta 1. 
+    i=n-1
+    while i>0:
+        while i%2==0:
+            A=np.dot(A,A) # C=C**2
+            i//=2
+        A_aux=np.dot(A_aux,A) # B=C*C
+        i-=1
     return A_aux
 
 
