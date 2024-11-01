@@ -43,12 +43,12 @@ def models_from_file(path, pipeline):
             meshes.append(m)
     else:
         meshes = [geom]
-    # Nota para mi (si lees esto es porque no lo borre en la entrega final): los errores son marcados erroneamente por nvim, si tiene "#--" es porque tenia uno de esos errores.
+
     models = []
     for m in meshes:
-        m.apply_scale(2.0 / m.scale)    #--
-        m.apply_translation([-m.centroid[0], 0, -m.centroid[2]])    #--
-        vlist = tm.rendering.mesh_to_vertexlist(m) #--
+        m.apply_scale(2.0 / m.scale)
+        m.apply_translation([-m.centroid[0], 0, -m.centroid[2]])
+        vlist = tm.rendering.mesh_to_vertexlist(m)
         models.append(Model(vlist[4][1], vlist[3], pipeline))
 
     return models
