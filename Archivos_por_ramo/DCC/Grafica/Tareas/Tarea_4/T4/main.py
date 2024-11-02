@@ -90,11 +90,11 @@ if __name__ == "__main__":
     root = os.path.dirname(__file__)
 
     # Ejemplo de pipeline, con el clásico Phong shader visto en clases
-    phong_pipeline = init_pipeline(root + "/color_mesh_lit.vert", root + "/phong.frag")
+    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
 
 
     # Pipelines que voy creando, pro ahora comentados para que no me fundan la grafica
-    # color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
+    color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
     # flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
     # phong_pipeline = init_pipeline(root + "/color_mesh_lit.vert", root + "/phong.frag")
     # toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
@@ -105,15 +105,27 @@ if __name__ == "__main__":
     world = SceneGraph(cam)
     
     #luz de ejemplo
-    world.add_node("luz ejemplo", light=SpotLight(), pipeline=phong_pipeline, rotation=[np.pi/2, 0, 0], position=[0, -1, 0])
+    world.add_node("luz ejemplo",
+                   light=PointLight(),
+                   pipeline=phong_pipeline,
+                   rotation=[np.pi/2, 0, 0],
+                   position=[0, -1, 0])
 
     #Nave para navegar su escena
     #realmente es solo decorativa :D
     nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
-    world.add_node("nave", mesh=nave, pipeline=phong_pipeline, rotation=[0, np.pi/2, 0], material=Material())
+    world.add_node("nave", 
+                   mesh=nave,
+                   pipeline=phong_pipeline,
+                   rotation=[0, np.pi/2, 0],
+                   material=Material())
 
     planeta_provisional = mesh_from_file(root+ "/sphere.obj")[0]["mesh"]
-    world.add_node("planeta_provisional", mesh=planeta_provisional, pipeline=phong_pipeline, color=[1, 1, 0], material=Material())
+    world.add_node("planeta_provisional",
+                   mesh=planeta_provisional,
+                   pipeline=phong_pipeline,
+                   position=[0, 1, 0],
+                   material=Material([1, 1, 0.0]))
 
 
     @controller.event

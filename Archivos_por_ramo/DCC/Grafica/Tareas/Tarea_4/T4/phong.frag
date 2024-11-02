@@ -6,7 +6,7 @@ in vec2 fragTexCoord;
 
 out vec4 outColor;
 
-// Material
+//Material
 struct Material {
     vec3 diffuse;
     vec3 ambient;
