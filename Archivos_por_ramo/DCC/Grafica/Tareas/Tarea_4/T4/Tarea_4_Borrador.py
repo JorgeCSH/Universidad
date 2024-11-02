@@ -84,20 +84,21 @@ if __name__ == "__main__":
     
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
-    
+    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
+   
     #grafo para contener la escena    
     world = SceneGraph(cam)
 
     # Creamos los objetos/grafo de la escena
     world.add_node("42")
-    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
     
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=PointLight(ambient=[1.0, 0.0, 0.0],
-                                    diffuse=[1.0, 1.0, 1.0]),
-                   pipeline=phong_pipeline,
-                   position=[0, 0, 0])
+                   light=PointLight(ambient=[1.0, 1.0, 1.0], 
+                                    diffuse=[1.0, 1.0, 1.0],
+                                    specular=[1.0, 1.0, 1.0]),
+                   pipeline=phong_pipeline
+                   )
 
     world.add_node("sun_model",
                    attach_to="sun_light",
@@ -105,14 +106,18 @@ if __name__ == "__main__":
                    pipeline=phong_pipeline,
                    position = [0, 0, 0],
                    scale = [2.0, 2.0, 2.0],
-                   material=Material())
+                   material=Material(ambient = [1.0, 1.0, 0.0],
+                                     diffuse=[1.0, 1.0, 1.0],
+                                     specular=[0.0, 0.0, 1.0])
+                   )
     
     
     world.add_node("nave",
                    mesh=nave,
                    pipeline=phong_pipeline,
                    rotation=[0, np.pi/2, 0],
-                   material=Material())
+                   material=Material(ambient = [0.5, 0.5, 0.5])
+                   )
 
     
    
