@@ -1,5 +1,5 @@
 """
-=========================================================================================================================
+========================================================================================================================
     Tarea 4: Modelacion y Computacion Grafica para Ingenieros (CC3501-1)
 ------------------------------------------------------------------------------------------------------------------------
     Autor: Jorge Cummins
@@ -123,9 +123,9 @@ if __name__ == "__main__":
     planeta_provisional = mesh_from_file(root+ "/sphere.obj")[0]["mesh"]
     world.add_node("planeta_provisional",
                    mesh=planeta_provisional,
-                   pipeline=phong_pipeline,
+                   pipeline=color_pipeline,
                    position=[0, 1, 0],
-                   material=Material([1, 1, 0.0]))
+                   material=Material(ambient = [1.0, 0.0, 0.0], diffuse=[0.1, 0.4, 0.0], shininess=50))
 
 
     @controller.event
