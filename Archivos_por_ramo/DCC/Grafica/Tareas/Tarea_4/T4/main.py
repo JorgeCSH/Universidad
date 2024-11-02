@@ -107,17 +107,17 @@ if __name__ == "__main__":
     #luz de ejemplo
     world.add_node("luz ejemplo",
                    light=PointLight(),
-                   pipeline=phong_pipeline,
+                   pipeline=color_pipeline,
                    rotation=[np.pi/2, 0, 0],
                    position=[0, -1, 0])
 
     #Nave para navegar su escena
     #realmente es solo decorativa :D
-    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
+    nave = mesh_from_file(root +"/nave.obj")[0]["mesh"]
     world.add_node("nave", 
                    mesh=nave,
-                   pipeline=phong_pipeline,
-                   rotation=[0, np.pi/2, 0],
+                   pipeline=color_pipeline,
+                   rotation=[0, np.pi/2*0, 0],
                    material=Material())
 
     planeta_provisional = mesh_from_file(root+ "/sphere.obj")[0]["mesh"]
@@ -125,7 +125,7 @@ if __name__ == "__main__":
                    mesh=planeta_provisional,
                    pipeline=color_pipeline,
                    position=[0, 1, 0],
-                   material=Material(ambient = [1.0, 0.0, 0.0], diffuse=[0.1, 0.4, 0.0], shininess=50))
+                   material=Material(ambient = [1.0, 0.0, 0.0], diffuse=[1.0, 0.0, 0.0], shininess=50))
 
 
     @controller.event
