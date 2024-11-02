@@ -1,17 +1,3 @@
-"""
-========================================================================================================================
-    Tarea 4: Modelacion y Computacion Grafica para Ingenieros (CC3501-1)
-------------------------------------------------------------------------------------------------------------------------
-    Autor: Jorge Cummins
-    Rut: 21.353.175-1
-    Fecha de Redaccion: 01 de Noviembre de 2024
-    Fecha Limite de Entrega: 25 de Octubre de 2024
-    Fecha en que se Entrego: 04 de Noviembre de 2024 (se autorizaron atrasos, fecha limite final)
-------------------------------------------------------------------------------------------------------------------------
-Palabras Previas:
-
-=========================================================================================================================
-"""
 # Librerias de python
 from pyglet.window import Window, key
 from pyglet.gl import *
@@ -90,43 +76,18 @@ if __name__ == "__main__":
     root = os.path.dirname(__file__)
 
     # Ejemplo de pipeline, con el clásico Phong shader visto en clases
-    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
-
-
-    # Pipelines que voy creando, pro ahora comentados para que no me fundan la grafica
-    color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
-    # flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
-    # phong_pipeline = init_pipeline(root + "/color_mesh_lit.vert", root + "/phong.frag")
-    # toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
-    # textured_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
-    
+    phong_pipeline = init_pipeline(root + "/color_mesh_lit.vert", root + "/phong.frag")
 
     #grafo para contener la escena    
     world = SceneGraph(cam)
     
     #luz de ejemplo
-    world.add_node("luz ejemplo",
-                   light=PointLight(),
-                   pipeline=color_pipeline,
-                   rotation=[np.pi/2, 0, 0],
-                   position=[0, -1, 0])
+    world.add_node("luz ejemplo", light=SpotLight(), pipeline=phong_pipeline, rotation=[np.pi/2, 0, 0], position=[0, -1, 0])
 
     #Nave para navegar su escena
     #realmente es solo decorativa :D
-    nave = mesh_from_file(root +"/nave.obj")[0]["mesh"]
-    world.add_node("nave", 
-                   mesh=nave,
-                   pipeline=color_pipeline,
-                   rotation=[0, np.pi/2*0, 0],
-                   material=Material())
-
-    planeta_provisional = mesh_from_file(root+ "/sphere.obj")[0]["mesh"]
-    world.add_node("planeta_provisional",
-                   mesh=planeta_provisional,
-                   pipeline=color_pipeline,
-                   position=[0, 1, 0],
-                   material=Material(ambient = [1.0, 0.0, 0.0], diffuse=[1.0, 0.0, 0.0], shininess=50))
-
+    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
+    world.add_node("nave", mesh=nave, pipeline=phong_pipeline, rotation=[0, np.pi/2, 0], material=Material())
 
     @controller.event
     def on_draw():
@@ -188,13 +149,4 @@ if __name__ == "__main__":
 
     clock.schedule_interval(update,1/60)
     run()
-
-
-"""
-=======================================================================================================================
-Extras:
-
-Palabras finales:
-=======================================================================================================================
-"""
 
