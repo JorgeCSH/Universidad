@@ -75,27 +75,47 @@ if __name__ == "__main__":
     #Para localizar archivos, fijese como se usa en el pipeline de ejemplo
     root = os.path.dirname(__file__)
 
-    # Ejemplo de pipeline, con el clásico Phong shader visto en clases
-    #phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
-
     # Pipelines que se usaran.....ESTE LO IMPLEMENTE YO
     #color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
     #flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
     phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
     #toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     #textured_pipeline = init_pipeline(root + "/textured.vert", root + "/textured.frag")
-
+    
+    # Cargamos los modelos
+    planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
+    
     #grafo para contener la escena    
     world = SceneGraph(cam)
+
+    # Creamos los objetos/grafo de la escena
+    world.add_node("42")
+    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
     
-    #    #luz de ejemplo
-    #    world.add_node("luz ejemplo", light=SpotLight(), pipeline=phong_pipeline, rotation=[np.pi/2, 0, 0], position=[0, -1, 0])
-    #
-    #    #Nave para navegar su escena
-    #    #realmente es solo decorativa :D
-    #    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
-    #    world.add_node("nave", mesh=nave, pipeline=phong_pipeline, rotation=[0, np.pi/2, 0], material=Material())
-    #
+    world.add_node("sun_light", 
+                   attach_to = "42",
+                   light=PointLight(ambient=[1.0, 0.0, 0.0],
+                                    diffuse=[1.0, 1.0, 1.0]),
+                   pipeline=phong_pipeline,
+                   position=[0, 0, 0])
+
+    world.add_node("sun_model",
+                   attach_to="sun_light",
+                   mesh=planet,
+                   pipeline=phong_pipeline,
+                   position = [0, 0, 0],
+                   scale = [2.0, 2.0, 2.0],
+                   material=Material())
+    
+    
+    world.add_node("nave",
+                   mesh=nave,
+                   pipeline=phong_pipeline,
+                   rotation=[0, np.pi/2, 0],
+                   material=Material())
+
+    
+   
     @controller.event
     def on_draw():
         controller.clear()
