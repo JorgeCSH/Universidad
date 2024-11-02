@@ -24,7 +24,7 @@ class MyCam(FreeCamera):
     def __init__(self, position=np.array([0, 0, 0]), camera_type="perspective"):
         super().__init__(position, camera_type)
         self.direction = np.array([0,0,0])
-        self.speed = 2
+        self.speed = 6
 
     def time_update(self, dt):
         self.update()
@@ -63,6 +63,12 @@ class Model:
     def draw(self, mode):
         self._buffer.draw(mode)
 
+# Funcion hecha por mi para no calcualar en cada instante RGB
+def rgb(r, g, b):
+    return [r/255, g/255, b/255]
+
+
+
 if __name__ == "__main__":
 
     #Controller / window
@@ -94,9 +100,10 @@ if __name__ == "__main__":
     
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=PointLight(ambient=[1.0, 1.0, 1.0], 
-                                    diffuse=[1.0, 1.0, 1.0],
-                                    specular=[1.0, 1.0, 1.0]),
+                   light=PointLight(ambient = rgb(255, 255, 255), 
+                                    diffuse = rgb(255, 255, 255),
+                                    specular = rgb(255, 255, 255)
+                                    ),
                    pipeline=phong_pipeline
                    )
 
@@ -105,12 +112,60 @@ if __name__ == "__main__":
                    mesh=planet,
                    pipeline=phong_pipeline,
                    position = [0, 0, 0],
-                   scale = [2.0, 2.0, 2.0],
-                   material=Material(ambient = [1.0, 1.0, 0.0],
-                                     diffuse=[1.0, 1.0, 1.0],
-                                     specular=[0.0, 0.0, 1.0])
+                   scale = [5.0, 5.0, 5.0],
+                   material=Material(ambient = rgb(255, 255, 0),
+                                     diffuse = rgb(255, 255, 255),
+                                     specular = rgb(0, 0, 255)
+                                     )
                    )
-    
+ 
+    world.add_node("color_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=phong_pipeline,
+                  position=[1.3, 0.0, 1.3],
+                  scale=[0.2, 0.2, 0.2],
+                  material=Material(ambient=rgb(255, 0, 0))
+                   )
+
+    world.add_node("flat_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=phong_pipeline,
+                  position=[1.7, 0.0, 1.7],
+                  scale=[0.25, 0.25, 0.25],
+                  material=Material(ambient=rgb(86, 128, 0))
+                  )
+
+    world.add_node("phong_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=phong_pipeline,
+                  position=[2.1, 0, 2.1],
+                  scale=[0.18, 0.18, 0.18],
+                  material=Material(ambient=rgb(150, 40, 150))
+                  )
+
+    world.add_node("toon_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=phong_pipeline,
+                  position=[2.5, 0, 2.5],
+                  scale=[0.3, 0.3, 0.3],
+                  material=Material(ambient=rgb(150, 150, 150))
+                  )
+
+    world.add_node("textured_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=phong_pipeline,
+                  position=[3.2, 0, 3.2],
+                  scale=[0.5, 0.5, 0.5],
+                  material=Material(ambient=rgb(50, 50, 130))
+                  )
+
+
+
     
     world.add_node("nave",
                    mesh=nave,
