@@ -117,7 +117,10 @@ if __name__ == "__main__":
     # Luz del sol
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=DirectionalLight(),
+                   light=PointLight(ambient=rgb(255, 255, 255),
+                                    diffuse=rgb(255, 255, 255),
+                                    specular=rgb(255, 255, 255)
+                                    ),
                    pipeline=multi_pipeline,
                    )
 
@@ -205,6 +208,7 @@ if __name__ == "__main__":
     @controller.event
     def on_draw():
         controller.clear()
+        #glClearColor(0.01, 0.01, 0.05, 1)
         glClearColor(0.1, 0.1, 0.1, 1)
         glEnable(GL_DEPTH_TEST)
 
@@ -249,7 +253,7 @@ if __name__ == "__main__":
         world.update()
         cam.time_update(dt)
         domega = controller.time
-        dtheta = domega/2*0
+        dtheta = domega/2
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
