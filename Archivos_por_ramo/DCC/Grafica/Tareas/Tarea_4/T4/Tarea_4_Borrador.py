@@ -99,7 +99,7 @@ if __name__ == "__main__":
     #flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
     phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
     #toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
-    #textured_pipeline = init_pipeline(root + "/textured.vert", root + "/textured.frag")
+    textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
     
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
@@ -174,10 +174,15 @@ if __name__ == "__main__":
     world.add_node("textured_planet",
                    attach_to="sun_model",
                    mesh=planet,
-                   pipeline=phong_pipeline,
+                   pipeline=textured_pipeline,
                    position=[3.2, 0, 3.2],
-                   scale=[0.5, 0.5, 0.5],
-                   material=Material(ambient=rgb(50, 50, 130))
+                   scale=[0.3, 0.3, 0.3],
+                   material=Material(ambient=rgb(50, 50, 130),
+                                     specular=rgb(255, 255, 255),
+                                     shininess=50,
+                                     ),
+                   texture=Texture("earth.jpg"),
+                   cull_face=False
                    )
 
     # Nodo de la nave
@@ -200,7 +205,7 @@ if __name__ == "__main__":
     @controller.event
     def on_draw():
         controller.clear()
-        glClearColor(0.01, 0.01, 0.01, 1)
+        glClearColor(0.1, 0.1, 0.1, 1)
         glEnable(GL_DEPTH_TEST)
 
         world.draw()
@@ -244,7 +249,7 @@ if __name__ == "__main__":
         world.update()
         cam.time_update(dt)
         domega = controller.time
-        dtheta = domega/2
+        dtheta = domega/2*0
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
@@ -271,7 +276,7 @@ if __name__ == "__main__":
 
         # Movimiento del planeta con texture shader
         world["textured_planet"]["position"] = [3.2*np.cos(dtheta*1.1), 0, 3.2*np.sin(dtheta*1.1)]
-        world["textured_planet"]["rotation"] = [0, 0.8*domega, 0]
+        world["textured_planet"]["rotation"] = [0, 0*0.8*domega, 0]
         #============================================
 
         world.update()
