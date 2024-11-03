@@ -100,7 +100,7 @@ if __name__ == "__main__":
     phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
     #toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
-    multi_pipeline = [phong_pipeline, textured_pipeline, color_pipeline]
+    multi_pipeline = [color_pipeline, phong_pipeline, textured_pipeline]
 
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
@@ -115,6 +115,12 @@ if __name__ == "__main__":
     world.add_node("42")
     
     # Luz del sol
+    #world.add_node("sun_light", 
+    #               attach_to = "42",
+    #               light=PointLight(),
+    #               pipeline=multi_pipeline
+    #               )
+    
     world.add_node("sun_light", 
                    attach_to = "42",
                    light=PointLight(ambient=rgb(255, 255, 255),
@@ -128,10 +134,13 @@ if __name__ == "__main__":
     world.add_node("sun_model",
                    attach_to="sun_light",
                    mesh=planet,
-                   pipeline=phong_pipeline,
+                   pipeline=color_pipeline,
                    position = [0, 0, 0],
                    scale = [5.0, 5.0, 5.0],
-                   material=Material(ambient = rgb(255, 255, 0))
+                   material=Material(ambient = rgb(255, 255, 0),
+                                     diffuse = rgb(255, 255, 0),
+                                     specular = rgb(255, 255, 0)
+                                     )
                    )
 
     # Planeta con color shader
@@ -182,12 +191,12 @@ if __name__ == "__main__":
                    attach_to="sun_model",
                    mesh=planet,
                    pipeline=textured_pipeline,
+                   texture=Texture("earth.jpg"),
                    position=[3.2, 0, 3.2],
                    scale=[0.3, 0.3, 0.3],
-                   material=Material(ambient=rgb(50, 50, 130)),
-                   texture=Texture("earth.jpg"),
-                   cull_face=False
+                   material=Material(ambient=rgb(100, 100, 230))
                    )
+                   
 
     # Nodo de la nave
     world.add_node("nave",
@@ -253,7 +262,7 @@ if __name__ == "__main__":
         world.update()
         cam.time_update(dt)
         domega = controller.time
-        dtheta = domega/2
+        dtheta = domega/2*0
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
@@ -261,6 +270,18 @@ if __name__ == "__main__":
         # Movimiento del sol 
         world["sun_model"]["rotation"] = [0, 0, 0]
         world["sun_light"]["position"] = [0, 0, 0]
+        
+        # Movimiento del planeta con texture shader
+        world["textured_planet"]["position"] = [3.2*np.cos(dtheta*1.1), 0, 3.2*np.sin(dtheta*1.1)]
+        world["textured_planet"]["rotation"] = [0, 0*0.8*domega, 0]
+        
+        # Movimiento del planeta con toon shader
+        world["toon_planet"]["position"] = [2.5*np.cos(dtheta*0.4), 0, 2.5*np.sin(dtheta*0.4)]
+        world["toon_planet"]["rotation"] = [0.02*domega, -1.3*domega, 0.05*domega]
+        
+        # Movimiento del planeta con phong shader
+        world["phong_planet"]["position"] = [2.1*np.cos(dtheta*1), 0, 2.1*np.sin(dtheta*1)]
+        world["phong_planet"]["rotation"] = [0, 1*domega, 0]
         
         # Movimiento del planeta con color shader
         world["color_planet"]["position"] = [1.3*np.cos(dtheta*1.3), 0, 1.3*np.sin(dtheta*1.3)]
@@ -270,17 +291,8 @@ if __name__ == "__main__":
         world["flat_planet"]["position"] = [1.7*np.cos(-dtheta*0.7), 0, 1.7*np.sin(-dtheta*0.7)]
         world["flat_planet"]["rotation"] = [0, 1.1*domega, 0]
         
-        # Movimiento del planeta con phong shader
-        world["phong_planet"]["position"] = [2.1*np.cos(dtheta*1), 0, 2.1*np.sin(dtheta*1)]
-        world["phong_planet"]["rotation"] = [0, 1*domega, 0]
 
-        # Movimiento del planeta con toon shader
-        world["toon_planet"]["position"] = [2.5*np.cos(dtheta*0.4), 0, 2.5*np.sin(dtheta*0.4)]
-        world["toon_planet"]["rotation"] = [0.02*domega, -1.3*domega, 0.05*domega]
 
-        # Movimiento del planeta con texture shader
-        world["textured_planet"]["position"] = [3.2*np.cos(dtheta*1.1), 0, 3.2*np.sin(dtheta*1.1)]
-        world["textured_planet"]["rotation"] = [0, 0*0.8*domega, 0]
         #============================================
 
         world.update()
