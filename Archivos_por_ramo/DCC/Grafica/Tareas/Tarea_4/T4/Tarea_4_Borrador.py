@@ -100,10 +100,7 @@ if __name__ == "__main__":
     
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=PointLight(ambient = rgb(255, 255, 255), 
-                                    diffuse = rgb(255, 255, 255),
-                                    specular = rgb(255, 255, 255)
-                                    ),
+                   light=PointLight(ambient = rgb(255, 255, 255)),
                    pipeline=phong_pipeline
                    )
 
@@ -113,12 +110,10 @@ if __name__ == "__main__":
                    pipeline=phong_pipeline,
                    position = [0, 0, 0],
                    scale = [5.0, 5.0, 5.0],
-                   material=Material(ambient = rgb(255, 255, 0),
-                                     diffuse = rgb(255, 255, 255),
-                                     specular = rgb(0, 0, 255)
-                                     )
+                   material=Material(ambient = rgb(255, 255, 0), shininess =100)
                    )
- 
+
+    
     world.add_node("color_planet",
                   attach_to="sun_model",
                   mesh=planet,
@@ -164,14 +159,12 @@ if __name__ == "__main__":
                   material=Material(ambient=rgb(50, 50, 130))
                   )
 
-
-
     
     world.add_node("nave",
                    mesh=nave,
                    pipeline=phong_pipeline,
                    rotation=[0, np.pi/2, 0],
-                   material=Material(ambient = [0.5, 0.5, 0.5])
+                   material=Material(ambient=rgb(105, 105, 105)),
                    )
 
     
