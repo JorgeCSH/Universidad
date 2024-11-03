@@ -1,3 +1,20 @@
+"""
+=========================================================================================================================
+    Tarea 4: Modelacion y Computacion Grafica para Ingenieros (CC3501-1)
+------------------------------------------------------------------------------------------------------------------------
+    Autor: Jorge Cummins
+    Rut: 21.353.175-1
+    Fecha de Redaccion: 4 de Noviembre de 2024
+    Fecha Limite de Entrega: 25 de Octubre de 2024
+    Fecha en que se Entrego: 4 de Noviembre de 2024 (aceptando atrasos)
+------------------------------------------------------------------------------------------------------------------------
+Palabras Previas:
+=========================================================================================================================
+"""
+
+
+
+
 # Librerias de python
 from pyglet.window import Window, key
 from pyglet.gl import *
@@ -96,14 +113,18 @@ if __name__ == "__main__":
     world = SceneGraph(cam)
 
     # Creamos los objetos/grafo de la escena
+    # Nodo maestro --borrar antes de entregar
+    # "Node of life, the universe and everything"
     world.add_node("42")
     
+    # Luz del sol
     world.add_node("sun_light", 
                    attach_to = "42",
                    light=PointLight(ambient = rgb(255, 255, 255)),
                    pipeline=phong_pipeline
                    )
 
+    # Creamos el modelo del sol
     world.add_node("sun_model",
                    attach_to="sun_light",
                    mesh=planet,
@@ -113,7 +134,7 @@ if __name__ == "__main__":
                    material=Material(ambient = rgb(255, 255, 0), shininess =100)
                    )
 
-    
+    # Planeta con color shader
     world.add_node("color_planet",
                   attach_to="sun_model",
                   mesh=planet,
@@ -122,7 +143,8 @@ if __name__ == "__main__":
                   scale=[0.2, 0.2, 0.2],
                   material=Material(ambient=rgb(255, 0, 0))
                    )
-
+    
+    # Planeta con flat shader
     world.add_node("flat_planet",
                   attach_to="sun_model",
                   mesh=planet,
@@ -132,6 +154,7 @@ if __name__ == "__main__":
                   material=Material(ambient=rgb(86, 128, 0))
                   )
 
+    # Planeta con phong shader
     world.add_node("phong_planet",
                   attach_to="sun_model",
                   mesh=planet,
@@ -141,6 +164,7 @@ if __name__ == "__main__":
                   material=Material(ambient=rgb(150, 40, 150))
                   )
 
+    # Planeta con toon shader
     world.add_node("toon_planet",
                   attach_to="sun_model",
                   mesh=planet,
@@ -150,6 +174,7 @@ if __name__ == "__main__":
                   material=Material(ambient=rgb(150, 150, 150))
                   )
 
+    # Planeta con texture shader
     world.add_node("textured_planet",
                   attach_to="sun_model",
                   mesh=planet,
@@ -159,14 +184,13 @@ if __name__ == "__main__":
                   material=Material(ambient=rgb(50, 50, 130))
                   )
 
-    
+    # Nodo de la nave
     world.add_node("nave",
                    mesh=nave,
                    pipeline=phong_pipeline,
                    rotation=[0, np.pi/2, 0],
                    material=Material(ambient=rgb(105, 105, 105)),
                    )
-
     
    
     @controller.event
@@ -230,3 +254,9 @@ if __name__ == "__main__":
     clock.schedule_interval(update,1/60)
     run()
 
+
+"""
+=======================================================================================================================
+Palabras Finales:
+=======================================================================================================================
+"""
