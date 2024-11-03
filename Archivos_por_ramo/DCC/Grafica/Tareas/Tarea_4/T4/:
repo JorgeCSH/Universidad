@@ -93,7 +93,7 @@ if __name__ == "__main__":
     controller.set_exclusive_mouse(True)
 
     #Cámara
-    cam = MyCam([0,8,25])
+    cam = MyCam([0,2,2])
 
     #Para localizar archivos, fijese como se usa en el pipeline de ejemplo
     root = os.path.dirname(__file__)
@@ -151,7 +151,7 @@ if __name__ == "__main__":
                   pipeline=phong_pipeline,
                   position=[1.7, 0.0, 1.7],
                   scale=[0.25, 0.25, 0.25],
-                  material=Material(ambient=rgb(20, 180, 0))
+                  material=Material(ambient=rgb(86, 128, 0))
                   )
 
     # Planeta con phong shader
@@ -171,7 +171,7 @@ if __name__ == "__main__":
                   pipeline=phong_pipeline,
                   position=[2.5, 0, 2.5],
                   scale=[0.3, 0.3, 0.3],
-                  material=Material(ambient=rgb(30, 30, 210))
+                  material=Material(ambient=rgb(150, 150, 150))
                   )
 
     # Planeta con texture shader
@@ -188,23 +188,22 @@ if __name__ == "__main__":
     world.add_node("nave",
                    mesh=nave,
                    pipeline=phong_pipeline,
+                   position=[0, 5, 0],
                    rotation=[0, np.pi/2, 0],
-                   material=Material(ambient=rgb(130, 130, 130),
-                                     specular=rgb(255, 255, 255)),
+                   material=Material(ambient=rgb(105, 105, 105))
                    )
-                   
 
     world.add_node("nave_light",
                    attach_to="nave",
-                   light=PointLight(diffuse=rgb(50,25, 50)), 
+                   light=PointLight(diffuse=rgb(20, 0, 20)),
                    pipeline=phong_pipeline,
-                   position=[-0.1, 0.5, 0]
+                   position=[1, 1, 1]
                    )
    
     @controller.event
     def on_draw():
         controller.clear()
-        glClearColor(0.01, 0.01, 0.01, 1)
+        glClearColor(0.1, 0.1, 0.1, 1)
         glEnable(GL_DEPTH_TEST)
 
         world.draw()
