@@ -246,8 +246,8 @@ if __name__ == "__main__":
 
         #======== Movimiento de planetas no lo olvide!! ============
         # Movimiento del sol 
-        world["sun_model"]["rotation"] = [0, 1/5*domega*0, 0]
-        
+        world["sun_model"]["rotation"] = [0, 0, 0]
+        world["sun_light"]["position"] = [0, 0, 0]
         
         # Movimiento del planeta con color shader
         world["color_planet"]["position"] = [1.3*np.cos(dtheta*1.3), 0, 1.3*np.sin(dtheta*1.3)]
