@@ -43,7 +43,76 @@ struct PointLight {
     float quadratic;
 };
 
+
 uniform PointLight u_pointLights[MAX_POINT_LIGHTS];
+
+
+/*
+vec3 computeDirectionalLight(vec3 normal, vec3 viewDir, DirectionalLight light) {
+    //ambient
+    vec3 ambient = light.ambient * u_material.ambient;
+
+    // diffuse
+    
+    float diff = max(dot(normal, light.direction), 0.0f);
+    vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
+    
+
+    // specular blinn phong
+    
+    vec3 halfwayDir = normalize(light.direction + viewDir);
+    float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
+    vec3 specular = light.specular * (spec * u_material.specular);
+    
+
+    return (ambient + diffuse + specular);
+}
+
+vec3 computePointLight(PointLight light) {
+
+    // ambient
+    vec3 ambient = light.ambient * u_material.ambient;
+
+    return ambient;
+}
+
+
+void main()
+{
+    vec3 normal = normalize(fragNormal);
+    vec3 viewDir = normalize(u_viewPos);
+
+    vec3 result = vec3(0.0);
+
+    result += computeDirectionalLight(normal, viewDir, u_dirLight);
+
+    if (u_numPointLights > 0 && u_numPointLights <= MAX_POINT_LIGHTS) {
+        for (int i = 0; i < u_numPointLights; i++)
+            result += computePointLight(u_pointLights[i]);
+    }
+
+    outColor = vec4(result, 1.0f);
+}
+
+
+
+
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Spotlight
 const int MAX_SPOT_LIGHTS = 16;
@@ -164,3 +233,4 @@ void main()
 
     outColor = vec4(result, 1.0f);
 }
+

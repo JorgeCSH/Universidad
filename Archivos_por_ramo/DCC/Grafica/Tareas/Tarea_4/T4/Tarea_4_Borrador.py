@@ -95,12 +95,13 @@ if __name__ == "__main__":
     root = os.path.dirname(__file__)
 
     # Pipelines que se usaran.....ESTE LO IMPLEMENTE YO
-    #color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
+    color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
     #flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
     phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
     #toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
-    
+    multi_pipeline = [phong_pipeline, textured_pipeline, color_pipeline]
+
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
     nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
@@ -117,7 +118,7 @@ if __name__ == "__main__":
     world.add_node("sun_light", 
                    attach_to = "42",
                    light=PointLight(ambient = rgb(255, 255, 255)),
-                   pipeline=phong_pipeline
+                   pipeline=multi_pipeline,
                    )
 
     # Creamos el modelo del sol
@@ -134,7 +135,7 @@ if __name__ == "__main__":
     world.add_node("color_planet",
                   attach_to="sun_model",
                   mesh=planet,
-                  pipeline=phong_pipeline,
+                  pipeline=color_pipeline,
                   position=[1.3, 0.0, 1.3],
                   scale=[0.2, 0.2, 0.2],
                   material=Material(ambient=rgb(255, 0, 0))
@@ -177,10 +178,7 @@ if __name__ == "__main__":
                    pipeline=textured_pipeline,
                    position=[3.2, 0, 3.2],
                    scale=[0.3, 0.3, 0.3],
-                   material=Material(ambient=rgb(50, 50, 130),
-                                     specular=rgb(255, 255, 255),
-                                     shininess=50,
-                                     ),
+                   material=Material(ambient=rgb(50, 50, 130)),
                    texture=Texture("earth.jpg"),
                    cull_face=False
                    )
@@ -190,8 +188,7 @@ if __name__ == "__main__":
                    mesh=nave,
                    pipeline=phong_pipeline,
                    rotation=[0, np.pi/2, 0],
-                   material=Material(ambient=rgb(130, 130, 130),
-                                     specular=rgb(255, 255, 255)),
+                   material=Material(ambient=rgb(130, 130, 130))
                    )
                    
     # Luz que sigue a la nave, esta un poco mas atras para que gane el efecto
