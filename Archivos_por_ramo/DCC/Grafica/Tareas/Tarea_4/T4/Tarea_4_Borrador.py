@@ -239,12 +239,35 @@ if __name__ == "__main__":
     def update(dt):
         world.update()
         cam.time_update(dt)
+        domega = controller.time
+        dtheta = domega/2
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
         #======== Movimiento de planetas no lo olvide!! ============
+        # Movimiento del sol 
+        world["sun_model"]["rotation"] = [0, 1/5*domega*0, 0]
+        
+        
+        # Movimiento del planeta con color shader
+        world["color_planet"]["position"] = [1.3*np.cos(dtheta*1.3), 0, 1.3*np.sin(dtheta*1.3)]
+        world["color_planet"]["rotation"] = [0, domega, 0]
+    
+        # Movimiento del planeta con flat shader
+        world["flat_planet"]["position"] = [1.7*np.cos(-dtheta*0.7), 0, 1.7*np.sin(-dtheta*0.7)]
+        world["flat_planet"]["rotation"] = [0, 1.1*domega, 0]
+        
+        # Movimiento del planeta con phong shader
+        world["phong_planet"]["position"] = [2.1*np.cos(dtheta*1), 0, 2.1*np.sin(dtheta*1)]
+        world["phong_planet"]["rotation"] = [0, 1*domega, 0]
 
+        # Movimiento del planeta con toon shader
+        world["toon_planet"]["position"] = [2.5*np.cos(dtheta*0.4), 0, 2.5*np.sin(dtheta*0.4)]
+        world["toon_planet"]["rotation"] = [0.02*domega, -1.3*domega, 0.05*domega]
 
+        # Movimiento del planeta con texture shader
+        world["textured_planet"]["position"] = [3.2*np.cos(dtheta*1.1), 0, 3.2*np.sin(dtheta*1.1)]
+        world["textured_planet"]["rotation"] = [0, 0.8*domega, 0]
         #============================================
 
         world.update()
