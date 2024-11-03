@@ -11,10 +11,6 @@
 Palabras Previas:
 =========================================================================================================================
 """
-
-
-
-
 # Librerias de python
 from pyglet.window import Window, key
 from pyglet.gl import *
@@ -80,7 +76,7 @@ class Model:
     def draw(self, mode):
         self._buffer.draw(mode)
 
-# Funcion hecha por mi para no calcualar en cada instante RGB
+# Funcion hecha por mi para no normalizar manualmente los colores
 def rgb(r, g, b):
     return [r/255, g/255, b/255]
 
@@ -176,13 +172,13 @@ if __name__ == "__main__":
 
     # Planeta con texture shader
     world.add_node("textured_planet",
-                  attach_to="sun_model",
-                  mesh=planet,
-                  pipeline=phong_pipeline,
-                  position=[3.2, 0, 3.2],
-                  scale=[0.5, 0.5, 0.5],
-                  material=Material(ambient=rgb(50, 50, 130))
-                  )
+                   attach_to="sun_model",
+                   mesh=planet,
+                   pipeline=phong_pipeline,
+                   position=[3.2, 0, 3.2],
+                   scale=[0.5, 0.5, 0.5],
+                   material=Material(ambient=rgb(50, 50, 130))
+                   )
 
     # Nodo de la nave
     world.add_node("nave",
@@ -193,7 +189,7 @@ if __name__ == "__main__":
                                      specular=rgb(255, 255, 255)),
                    )
                    
-
+    # Luz que sigue a la nave, esta un poco mas atras para que gane el efecto
     world.add_node("nave_light",
                    attach_to="nave",
                    light=PointLight(diffuse=rgb(50,25, 50)), 
