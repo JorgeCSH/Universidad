@@ -117,7 +117,7 @@ if __name__ == "__main__":
     # Luz del sol
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=PointLight(ambient = rgb(255, 255, 255)),
+                   light=DirectionalLight(),
                    pipeline=multi_pipeline,
                    )
 
@@ -138,7 +138,10 @@ if __name__ == "__main__":
                   pipeline=color_pipeline,
                   position=[1.3, 0.0, 1.3],
                   scale=[0.2, 0.2, 0.2],
-                  material=Material(ambient=rgb(255, 0, 0))
+                  material=Material(ambient=rgb(255, 0, 0),
+                                    diffuse=rgb(255, 0, 0),
+                                    specular=rgb(255, 0, 0)
+                                    )
                    )
     
     # Planeta con flat shader
