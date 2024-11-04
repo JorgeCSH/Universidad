@@ -58,7 +58,7 @@ vec3 computeDirectionalLight(vec3 normal, vec3 viewDir, DirectionalLight light) 
     vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
 
     // specular blinn phong
-    vec3 halfwayDir = normalize(light.direction+viewDir);
+    vec3 halfwayDir = normalize(light.direction + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
     vec3 specular = light.specular * (spec * u_material.specular);
 
@@ -71,8 +71,7 @@ vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
     // attenuation
     vec3 lightVec = light.position - fragPos;
     float distance = length(lightVec);
-    float attenuation_general = 1.0f / ( light.quadratic * distance * distance  );
-    float attenuation_set = 1.0f / (0.5 * distance * distance);
+    float attenuation = 1.0f /(( light.linear * distance + light.quadratic * distance * distance + light.constant ));
 	
     // ambient
     vec3 ambient = light.ambient * u_material.ambient;
@@ -81,12 +80,12 @@ vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
     vec3 lightDir = normalize(lightVec);
     float diff = max(dot(normal, lightDir), 0.0f);
     vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
-
-    vec3 halfwayDir = normalize(lightDir+viewDir);
+    
+    vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
     vec3 specular = light.specular * (spec * u_material.specular);
-
-    return (diffuse + ambient + specular) * attenuation_general;
+    
+    return (diffuse + ambient + specular);
 }
 
 void main() {
@@ -106,16 +105,16 @@ void main() {
 
 
 /*
-vec3 computeDirectionalLight(vec3 normal, DirectionalLight light) {
-    ???
-}
-
-vec3 computePointLight(vec3 normal, PointLight light) {
-   ???
-}
-
-void main()
-{
-    outColor = ???
-}
+Notas de autor:
+- A la hora de realizar la tarea, como estipulado en las palabras finales,
+  se tuvo el percanse de que el texture shader no funcionaba bien siempre, para
+  corroborar que por lo menos carga la textura, basta con eliminar 
+  "attenuation" en computePointLight y se podrá ver la textura en su totalidad.
+  Se desconoce el motivo de este comportamiento. Si no se incluye esa variable,
+  es porque realizando pruebas olvido agregarse. De no ser un bug hay algunas 
+  hipotesis que podrian ser consideradas, siendo una de esas que haya ocurrido
+  por cargar el phong shader y calcular dos vecez attenuation, esta nace de
+  que si se elimina el texture shader y crea un shader para phong y texture mutuos
+  entonces no ocurre el problema. Sin embargo, no se tiene certeza de ello y se
+  mantiene otra hipotesis como un posible BUG.
 */
