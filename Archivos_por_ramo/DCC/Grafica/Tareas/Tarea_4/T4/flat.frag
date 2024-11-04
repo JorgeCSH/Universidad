@@ -1,5 +1,4 @@
 #version 330
-
 //Escriba aquí su flat shader
 //Este debe considerar el efecto de Directional lights y Pointlights
 //También debe evitar la interpolación de las normales (revise el enunciado)
@@ -50,7 +49,7 @@ struct PointLight {
 uniform PointLight u_pointLights[MAX_POINT_LIGHTS];
 
 //funcion que procesa directional light
-vec3 computeDirectionalLight(vec3 normal, vec3 viewDir, DirectionalLight light) {
+vec3 computeDirectionalLight(vec3 normal, DirectionalLight light) {
     //ambient
     vec3 ambient = light.ambient * u_material.ambient;
 
@@ -62,7 +61,8 @@ vec3 computeDirectionalLight(vec3 normal, vec3 viewDir, DirectionalLight light) 
 }
 
 
-vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
+//funcion que procesa pointlight
+vec3 computePointLight(vec3 normal, PointLight light) {
     // attenuation
     vec3 lightVec = light.position - fragPos;
     float distance = length(lightVec);
@@ -84,37 +84,25 @@ vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
 void main()
 {
     vec3 normal = normalize(fragNormal);
-    vec3 viewDir = normalize(u_viewPos - fragPos);
-
     vec3 result = vec3(0.0);
 
-    result += computeDirectionalLight(normal, viewDir, u_dirLight);
+    result += computeDirectionalLight(normal, u_dirLight);
 
     if (u_numPointLights > 0 && u_numPointLights <= MAX_POINT_LIGHTS) {
         for (int i = 0; i < u_numPointLights; i++)
-            result += computePointLight(normal, viewDir, u_pointLights[i]);
+            result += computePointLight(normal, u_pointLights[i]);
     }
 
     outColor = vec4(result, 1.0f);
 }
 
+/* 
+Notas de autor:
+- Un error que se tuvo al realizar este shader fue que, al cargarlo este no cargaba las sombras de la parte que 
+  no daban al sol. Si bien se considero un posible error ocurrio que cuando se cambio el shader para que todos
+  utilizaran el mismo, este ultimo cargaba bien, mas aun, si se cambiaba el phong shader por el flat shader, 
+  este cargaba bien (cambiar el nombre flat_pipeline por phong_pipeline y vicerversa para que al cargar uno se 
+  carge el otro).
 
-
-
-
-/*
-vec3 computeDirectionalLight(vec3 normal, DirectionalLight light) {
-    ???
-}
-
-//funcion que procesa pointlight
-vec3 computePointLight(vec3 normal, PointLight light) {
-    ???
-}
-
-
-void main()
-{
-    outColor = ???
-}
+- El mismo error de la variable "attenuation" se tuvo en este shader.
 */

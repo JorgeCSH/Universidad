@@ -121,7 +121,7 @@ if __name__ == "__main__":
     '''
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=PointLight(ambient=rgb(210, 210, 210),
+                   light=PointLight(
                                     ),
                    pipeline=multi_pipeline,
                    )
@@ -157,8 +157,9 @@ if __name__ == "__main__":
                   mesh=planet,
                   pipeline=flat_pipeline,
                   scale=[0.25, 0.25, 0.25],
-                  material=Material(ambient=rgb(0, 50, 0),
-                                    diffuse=rgb(100, 100, 100))
+                  material=Material(ambient=rgb(0, 50, 10),
+                                    diffuse=rgb(0, 50, 10),
+                                    specular=rgb(0, 50, 10))
                   )
 
     # Planeta con phong shader
@@ -167,7 +168,10 @@ if __name__ == "__main__":
                   mesh=planet,
                   pipeline=phong_pipeline,
                   scale=[0.18, 0.18, 0.18],
-                  material=Material(ambient=rgb(150, 40, 150))
+                  material=Material(ambient=rgb(150, 40, 150),
+                                    diffuse=rgb(150, 40, 150),
+                                    specular=rgb(150, 40, 150)
+                                    )
                   )
 
     # Planeta con toon shader
@@ -256,7 +260,7 @@ if __name__ == "__main__":
         world.update()
         cam.time_update(dt)
         domega = controller.time
-        dtheta = domega/2
+        dtheta = 0*domega/2
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
