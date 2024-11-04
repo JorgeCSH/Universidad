@@ -97,11 +97,11 @@ if __name__ == "__main__":
 
     # Pipelines que se usaran.....ESTE LO IMPLEMENTE YO
     color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
-    #flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
-    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
+    phong_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
+    flat_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
     #toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
-    multi_pipeline = [color_pipeline, phong_pipeline, textured_pipeline]
+    multi_pipeline = [flat_pipeline, phong_pipeline, textured_pipeline]
 
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     world.add_node("flat_planet",
                   attach_to="sun_model",
                   mesh=planet,
-                  pipeline=phong_pipeline,
+                  pipeline=flat_pipeline,
                   scale=[0.25, 0.25, 0.25],
                   material=Material(ambient=rgb(20, 205, 0))
                   )
@@ -254,7 +254,7 @@ if __name__ == "__main__":
         world.update()
         cam.time_update(dt)
         domega = controller.time
-        dtheta = domega/2
+        dtheta = domega/2*0
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
