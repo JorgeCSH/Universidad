@@ -148,7 +148,6 @@ if __name__ == "__main__":
                   attach_to="sun_model",
                   mesh=planet,
                   pipeline=color_pipeline,
-                  position=[1.3, 0.0, 1.3],
                   scale=[0.2, 0.2, 0.2],
                   material=Material(ambient=rgb(255, 0, 0),
                                     diffuse=rgb(255, 0, 0),
@@ -161,7 +160,6 @@ if __name__ == "__main__":
                   attach_to="sun_model",
                   mesh=planet,
                   pipeline=phong_pipeline,
-                  position=[1.7, 0.0, 1.7],
                   scale=[0.25, 0.25, 0.25],
                   material=Material(ambient=rgb(20, 180, 0))
                   )
@@ -171,7 +169,6 @@ if __name__ == "__main__":
                   attach_to="sun_model",
                   mesh=planet,
                   pipeline=phong_pipeline,
-                  position=[2.1, 0, 2.1],
                   scale=[0.18, 0.18, 0.18],
                   material=Material(ambient=rgb(150, 40, 150))
                   )
@@ -181,7 +178,6 @@ if __name__ == "__main__":
                   attach_to="sun_model",
                   mesh=planet,
                   pipeline=phong_pipeline,
-                  position=[2.5, 0, 2.5],
                   scale=[0.3, 0.3, 0.3],
                   material=Material(ambient=rgb(30, 30, 210))
                   )
@@ -192,9 +188,9 @@ if __name__ == "__main__":
                    mesh=planet,
                    pipeline=textured_pipeline,
                    texture=Texture("earth.jpg"),
-                   position=[3.2, 0, 3.2],
                    scale=[0.3, 0.3, 0.3],
-                   material=Material(ambient=rgb(100, 100, 230))
+                   material=Material(diffuse=rgb(255, 255, 255), 
+                                     shininess=100)
                    )
                    
 
@@ -272,24 +268,25 @@ if __name__ == "__main__":
         world["sun_light"]["position"] = [0, 0, 0]
         
         # Movimiento del planeta con texture shader
-        world["textured_planet"]["position"] = [3.2*np.cos(dtheta*1.1), 0, 3.2*np.sin(dtheta*1.1)]
+        world["textured_planet"]["position"] = [1.3*np.cos(dtheta*1.1), 0, 1.3*np.sin(dtheta*1.1)]
         world["textured_planet"]["rotation"] = [0, 0*0.8*domega, 0]
         
         # Movimiento del planeta con toon shader
-        world["toon_planet"]["position"] = [2.5*np.cos(dtheta*0.4), 0, 2.5*np.sin(dtheta*0.4)]
+        world["toon_planet"]["position"] = [1.7*np.cos(dtheta*0.4), 0, 1.7*np.sin(dtheta*0.4)]
         world["toon_planet"]["rotation"] = [0.02*domega, -1.3*domega, 0.05*domega]
         
         # Movimiento del planeta con phong shader
         world["phong_planet"]["position"] = [2.1*np.cos(dtheta*1), 0, 2.1*np.sin(dtheta*1)]
         world["phong_planet"]["rotation"] = [0, 1*domega, 0]
         
+        # Movimiento del planeta con flat shader
+        world["flat_planet"]["position"] = [2.5*np.cos(-dtheta*0.7), 0, 2.5*np.sin(-dtheta*0.7)]
+        world["flat_planet"]["rotation"] = [0, 1.1*domega, 0]
+        
         # Movimiento del planeta con color shader
-        world["color_planet"]["position"] = [1.3*np.cos(dtheta*1.3), 0, 1.3*np.sin(dtheta*1.3)]
+        world["color_planet"]["position"] = [3.2*np.cos(dtheta*1.3), 0, 3.2*np.sin(dtheta*1.3)]
         world["color_planet"]["rotation"] = [0, domega, 0]
     
-        # Movimiento del planeta con flat shader
-        world["flat_planet"]["position"] = [1.7*np.cos(-dtheta*0.7), 0, 1.7*np.sin(-dtheta*0.7)]
-        world["flat_planet"]["rotation"] = [0, 1.1*domega, 0]
         
 
 
