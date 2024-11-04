@@ -58,11 +58,6 @@ vec3 computeDirectionalLight(vec3 normal, vec3 viewDir, DirectionalLight light) 
     float diff = max(dot(normal, light.direction), 0.0f);
     vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
 
-    // specular blinn phong
-    //vec3 halfwayDir = normalize(light.direction + viewDir);
-    //float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
-    //vec3 specular = light.specular * (spec * u_material.specular);
-
     return (ambient + diffuse);
 }
 
@@ -81,12 +76,8 @@ vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
     float diff = max(dot(normal, lightDir), 0.0f);
     vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
 
-    // specular blinn phong
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
-    vec3 specular = light.specular * (spec * u_material.specular);
-
-    return (ambient + diffuse + specular) * attenuation;
+    //return (ambiebt + diffuse) * attenuation; 
+    return (ambient + diffuse);
 }
 
 

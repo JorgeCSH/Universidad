@@ -80,11 +80,13 @@ vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
     vec3 lightDir = normalize(lightVec);
     float diff = max(dot(normal, lightDir), 0.0f);
     vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
-    
+
+    // spec
     vec3 halfwayDir = normalize(lightDir + viewDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
     vec3 specular = light.specular * (spec * u_material.specular);
-    
+   
+    //return (diffuse + ambient + specular) * attenuation;
     return (diffuse + ambient + specular);
 }
 
