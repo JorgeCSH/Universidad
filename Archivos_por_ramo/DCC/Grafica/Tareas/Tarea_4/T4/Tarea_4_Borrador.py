@@ -101,7 +101,7 @@ if __name__ == "__main__":
     phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
     toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
-    multi_pipeline = [color_pipeline, flat_pipeline, phong_pipeline, textured_pipeline]
+    multi_pipeline = [flat_pipeline, phong_pipeline, toon_pipeline, textured_pipeline]
 
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
@@ -121,9 +121,10 @@ if __name__ == "__main__":
     '''
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=PointLight(
+                   light=PointLight(ambient=rgb(255, 255, 255),
+                                    diffuse=rgb(255, 255, 255),
                                     ),
-                   pipeline=multi_pipeline,
+                   pipeline=multi_pipeline
                    )
 
     # Creamos el modelo del sol
@@ -178,7 +179,7 @@ if __name__ == "__main__":
     world.add_node("toon_planet",
                   attach_to="sun_model",
                   mesh=planet,
-                  pipeline=phong_pipeline,
+                  pipeline=toon_pipeline,
                   scale=[0.3, 0.3, 0.3],
                   material=Material(ambient=rgb(30, 30, 210))
                   )

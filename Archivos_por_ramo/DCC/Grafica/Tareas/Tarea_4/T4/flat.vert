@@ -1,4 +1,6 @@
 #version 330
+//Escriba aquí el vertex shader para el flat.frag
+//Este vertex shader es distinto a los otros dado que necesita evitar la interpolación en las normales
 
 in vec3 position;
 in vec2 texCoord;
@@ -19,16 +21,3 @@ void main() {
     gl_Position = u_projection * u_view * u_model * vec4(position, 1.0f);
 }
 
-
-
-
-/*
-flat out vec3 normal;
-//Escriba aquí el vertex shader para el flat.frag
-//Este vertex shader es distinto a los otros dado que necesita evitar la interpolación en las normales
-
-
-void main() {
-    ???
-}
-*/
