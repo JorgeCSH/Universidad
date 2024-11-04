@@ -97,11 +97,11 @@ if __name__ == "__main__":
 
     # Pipelines que se usaran.....ESTE LO IMPLEMENTE YO
     color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
-    phong_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
-    flat_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
+    flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
+    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
     #toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
-    multi_pipeline = [flat_pipeline, phong_pipeline, textured_pipeline]
+    multi_pipeline = [color_pipeline, flat_pipeline, phong_pipeline, textured_pipeline]
 
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
@@ -114,13 +114,16 @@ if __name__ == "__main__":
     # Nodo inicial 
     world.add_node("42")
     
-    
+    '''
+    Luz, esta es (o deberia) ser PointLight, sin embargo por problemas al momento de realizar la tarea
+    algunos shaders no funcionaban con el pipeline cuando habian mas en la escena en algunos dispositivos,
+    jemplo entre mi computador de sobremesa  mi notebook
+    '''
     world.add_node("sun_light", 
                    attach_to = "42",
-                   light=PointLight(ambient=rgb(210, 210, 210),
+                   light=DirectionalLight(ambient=rgb(210, 210, 210),
                                     diffuse=rgb(100, 100, 100),
-                                    specular=rgb(210, 210, 210),
-                                    quadratic=0.000001
+                                    specular=rgb(210, 210, 210)
                                     ),
                    pipeline=multi_pipeline,
                    )
@@ -156,7 +159,7 @@ if __name__ == "__main__":
                   mesh=planet,
                   pipeline=flat_pipeline,
                   scale=[0.25, 0.25, 0.25],
-                  material=Material(ambient=rgb(20, 205, 0))
+                  material=Material(ambient=rgb(20, 180, 0))
                   )
 
     # Planeta con phong shader

@@ -1,5 +1,5 @@
 #version 330
-
+/*
 in vec3 fragPos;
 in vec2 fragTexCoord;
 in vec3 fragNormal;
@@ -156,9 +156,8 @@ void main()
 
     outColor = vec4(result, 1.0f) * texel;
 }
+*/
 
-/*
-#version 330
 
 in vec3 fragPos;
 in vec3 fragNormal;
@@ -324,4 +323,3 @@ void main()
 
     outColor = vec4(result, 1.0f);
 }
-*/
