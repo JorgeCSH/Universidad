@@ -1,3 +1,16 @@
+"""
+=========================================================================================================================
+ * attenuation;   Tarea 4: Modelacion y Computacion Grafica para Ingenieros (CC3501-1)
+------------------------------------------------------------------------------------------------------------------------
+    Autor: Jorge Cummins
+    Rut: 21.353.175-1
+    Fecha de Redaccion: 4 de Noviembre de 2024
+    Fecha Limite de Entrega: 25 de Octubre de 2024
+    Fecha en que se Entrego: 4 de Noviembre de 2024 (aceptando atrasos)
+------------------------------------------------------------------------------------------------------------------------
+Palabras Previas:
+=========================================================================================================================
+"""
 # Librerias de python
 from pyglet.window import Window, key
 from pyglet.gl import *
@@ -24,7 +37,7 @@ class MyCam(FreeCamera):
     def __init__(self, position=np.array([0, 0, 0]), camera_type="perspective"):
         super().__init__(position, camera_type)
         self.direction = np.array([0,0,0])
-        self.speed = 2
+        self.speed = 6
 
     def time_update(self, dt):
         self.update()
@@ -63,6 +76,13 @@ class Model:
     def draw(self, mode):
         self._buffer.draw(mode)
 
+
+# Funcion hecha por mi para no normalizar manualmente los colores
+def rgb(r, g, b):
+    return [r/255, g/255, b/255]
+
+
+
 if __name__ == "__main__":
 
     #Controller / window
@@ -70,43 +90,147 @@ if __name__ == "__main__":
     controller.set_exclusive_mouse(True)
 
     #Cámara
-    cam = MyCam([0,2,2])
+    cam = MyCam([0,8,25])
 
     #Para localizar archivos, fijese como se usa en el pipeline de ejemplo
     root = os.path.dirname(__file__)
 
-    # Ejemplo de pipeline, con el clásico Phong shader visto en clases
-    #phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
-
     # Pipelines que se usaran.....ESTE LO IMPLEMENTE YO
-    #color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
-    #flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
+    color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
+    flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
     phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
-    #toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
-    #textured_pipeline = init_pipeline(root + "/textured.vert", root + "/textured.frag")
+    toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
+    textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
+    multi_pipeline = [color_pipeline, flat_pipeline, phong_pipeline, toon_pipeline, textured_pipeline]
 
+    # Cargamos los modelos
+    planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
+    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
+   
     #grafo para contener la escena    
     world = SceneGraph(cam)
+
+    # Creamos los objetos/grafo de la escena
+    # Nodo general, inicialmente con las luces.
+    world.add_node("god_node")
+
+    # PointLight que sale del sol
+    world.add_node("sun_light",
+                   attach_to="god_node",
+                   light=PointLight(),
+                   pipeline=multi_pipeline, 
+                   position=[0, 0, 0]
+                   )
+
+    # DirectionalLight, este se busco que apunte de arriba hacia abajo
+    world.add_node("divine_light",
+                   attach_to="god_node",
+                   light=DirectionalLight(),
+                   pipeline=multi_pipeline,
+                   rotation = [-np.pi/2, 0, 0]
+                   )
+
+    # Creamos el modelo del sol
+    world.add_node("sun_model",
+                   attach_to="sun_light",
+                   mesh=planet,
+                   pipeline=color_pipeline,
+                   position = [0, 0, 0],
+                   scale = [5.0, 5.0, 5.0],
+                   material=Material(ambient = rgb(255, 255, 0),
+                                     diffuse = rgb(255, 255, 0),
+                                     specular = rgb(255, 255, 0)
+                                     )
+                   )
+
+    # Planeta con color shader
+    world.add_node("color_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=color_pipeline,
+                  scale=[0.2, 0.2, 0.2],
+                  material=Material(ambient=rgb(255, 0, 0),
+                                    diffuse=rgb(255, 0, 0),
+                                    specular=rgb(255, 0, 0)
+                                    )
+                   )
     
-    #    #luz de ejemplo
-    #    world.add_node("luz ejemplo", light=SpotLight(), pipeline=phong_pipeline, rotation=[np.pi/2, 0, 0], position=[0, -1, 0])
-    #
-    #    #Nave para navegar su escena
-    #    #realmente es solo decorativa :D
-    #    nave = mesh_from_file(root + "/nave.obj")[0]["mesh"]
-    #    world.add_node("nave", mesh=nave, pipeline=phong_pipeline, rotation=[0, np.pi/2, 0], material=Material())
-    #
+    # Planeta con flat shader
+    world.add_node("flat_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=flat_pipeline,
+                  scale=[0.25, 0.25, 0.25],
+                  material=Material(ambient=rgb(0, 50, 10),
+                                    diffuse=rgb(0, 50, 10),
+                                    specular=rgb(0, 50, 10),
+                                    )
+                  )
+
+    # Planeta con phong shader
+    world.add_node("phong_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=phong_pipeline,
+                  scale=[0.18, 0.18, 0.18],
+                  material=Material(ambient=rgb(150, 40, 150),
+                                    diffuse=rgb(150, 40, 150),
+                                    specular=rgb(150, 40, 150)
+                                    )
+                  )
+
+    # Planeta con toon shader
+    world.add_node("toon_planet",
+                  attach_to="sun_model",
+                  mesh=planet,
+                  pipeline=toon_pipeline,
+                  scale=[0.3, 0.3, 0.3],
+                  material=Material(ambient=rgb(5, 5, 120),
+                                    diffuse=rgb(5, 5, 120),
+                                    specular=rgb(5, 5, 120)
+                                    )
+                  )
+
+    # Planeta con texture shader
+    world.add_node("textured_planet",
+                   attach_to="sun_model",
+                   mesh=planet,
+                   pipeline=textured_pipeline,
+                   texture=Texture("earth.jpg"),
+                   scale=[0.3, 0.3, 0.3],
+                   material=Material(ambient=rgb(100, 100, 100), 
+                                     diffuse=rgb(100, 100, 100),
+                                     )
+                   )
+                   
+
+    # Nodo de la nave
+    world.add_node("nave",
+                   mesh=nave,
+                   pipeline=phong_pipeline,
+                   rotation=[0, np.pi/2, 0],
+                   material=Material(ambient=rgb(130, 130, 130))
+                   )
+                   
+    # Luz que sigue a la nave, esta un poco mas atras para que gane el efecto
+    world.add_node("nave_light",
+                   attach_to="nave",
+                   light=PointLight(diffuse=rgb(50,25, 50)), 
+                   pipeline=phong_pipeline,
+                   position=[-0.1, 0.5, 0]
+                   )
+   
     @controller.event
     def on_draw():
         controller.clear()
+        #glClearColor(0.01, 0.01, 0.05, 1)
         glClearColor(0.1, 0.1, 0.1, 1)
         glEnable(GL_DEPTH_TEST)
-
         world.draw()
 
     @controller.event
     def on_key_press(symbol, modifiers):
-        if symbol == key.SPACE: controller.light_mode = not controller.light_mode
+        #if symbol == key.SPACE: controller.light_mode = not controller.light_mode
         if symbol == key.W:
             cam.direction[0] = 1
         if symbol == key.S:
@@ -142,10 +266,35 @@ if __name__ == "__main__":
     def update(dt):
         world.update()
         cam.time_update(dt)
+        domega = controller.time
+        dtheta = domega/2
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
         #======== Movimiento de planetas no lo olvide!! ============
+        # Movimiento del sol 
+        world["sun_model"]["rotation"] = [0, 0, 0]
+        world["sun_light"]["position"] = [0, 0, 0]
+        
+        # Movimiento del planeta con color shader
+        world["color_planet"]["position"] = [1.2*np.cos(dtheta*1.3), 0, 1.2*np.sin(dtheta*1.3)]
+        world["color_planet"]["rotation"] = [0, domega, 0]
+        
+        # Movimiento del planeta con flat shader
+        world["flat_planet"]["position"] = [1.7*np.cos(-dtheta*0.7), 0, 1.7*np.sin(-dtheta*0.7)]
+        world["flat_planet"]["rotation"] = [0, 1.1*domega, 0]
+        
+        # Movimiento del planeta con phong shader
+        world["phong_planet"]["position"] = [2.1*np.cos(dtheta*1), 0, 2.1*np.sin(dtheta*1)]
+        world["phong_planet"]["rotation"] = [0, 1*domega, 0]
+        
+        # Movimiento del planeta con toon shader
+        world["toon_planet"]["position"] = [2.5*np.cos(dtheta*0.4), 0, 2.5*np.sin(dtheta*0.4)]
+        world["toon_planet"]["rotation"] = [0, 0.8*domega, 0]
+    
+        # Movimiento del planeta con texture shader 
+        world["textured_planet"]["position"] = [3.2*np.cos(dtheta*1.1), 0, 3.2*np.sin(dtheta*1.1)]
+        world["textured_planet"]["rotation"] = [0.02*domega, -1.3*domega, 0.05*domega] 
 
 
         #============================================
@@ -157,3 +306,9 @@ if __name__ == "__main__":
     clock.schedule_interval(update,1/60)
     run()
 
+
+"""
+=======================================================================================================================
+Palabras Finales:
+=======================================================================================================================
+"""

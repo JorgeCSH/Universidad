@@ -1,8 +1,4 @@
 #version 330
-//Escriba aquí su flat shader
-//Este debe considerar el efecto de Directional lights y Pointlights
-//También debe evitar la interpolación de las normales (revise el enunciado)
-
 in vec3 fragPos;
 flat in vec3 fragNormal;
 in vec2 fragTexCoord;
@@ -19,8 +15,6 @@ struct Material {
 
 uniform Material u_material;
 
-// Lighting
-uniform vec3 u_viewPos;
 
 // Directional
 struct DirectionalLight {
