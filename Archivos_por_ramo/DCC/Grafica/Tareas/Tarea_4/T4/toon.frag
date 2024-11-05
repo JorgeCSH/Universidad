@@ -89,7 +89,8 @@ vec3 computePointLight(vec3 normal, PointLight light) {
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
     vec3 specular = light.specular * (spec * u_material.specular);
 
-    return (ambient + diffuse + specular) * attenuation;
+    //return (ambient + diffuse + specular) * attenuation;
+    return (ambient + diffuse + specular);
 }
 
 // Calculo final

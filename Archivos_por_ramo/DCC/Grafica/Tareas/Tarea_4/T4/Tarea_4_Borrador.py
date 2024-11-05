@@ -98,10 +98,10 @@ if __name__ == "__main__":
     # Pipelines que se usaran.....ESTE LO IMPLEMENTE YO
     color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
     flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
-    toon_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
-    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
+    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
+    toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
-    multi_pipeline = [flat_pipeline, phong_pipeline, toon_pipeline, textured_pipeline]
+    multi_pipeline = [color_pipeline, flat_pipeline, phong_pipeline, toon_pipeline, textured_pipeline]
 
     # Cargamos los modelos
     planet = mesh_from_file(root + "/sphere.obj")[0]["mesh"]
@@ -111,20 +111,23 @@ if __name__ == "__main__":
     world = SceneGraph(cam)
 
     # Creamos los objetos/grafo de la escena
-    # Nodo inicial 
-    world.add_node("42")
-    
-    '''
-    Luz, esta es (o deberia) ser PointLight, sin embargo por problemas al momento de realizar la tarea
-    algunos shaders no funcionaban con el pipeline cuando habian mas en la escena en algunos dispositivos,
-    jemplo entre mi computador de sobremesa  mi notebook
-    '''
-    world.add_node("sun_light", 
-                   attach_to = "42",
-                   light=PointLight(ambient=rgb(255, 255, 255),
-                                    diffuse=rgb(255, 255, 255),
-                                    ),
-                   pipeline=multi_pipeline
+    # Nodo general, inicialmente con las luces.
+    world.add_node("god_node")
+
+    # PointLight que sale del sol
+    world.add_node("sun_light",
+                   attach_to="god_node",
+                   light=PointLight(),
+                   pipeline=multi_pipeline, 
+                   position=[0, 0, 0]
+                   )
+
+    # DirectionalLight, este se busco que apunte de arriba hacia abajo
+    world.add_node("divine_light",
+                   attach_to="god_node",
+                   light=DirectionalLight(),
+                   pipeline=multi_pipeline,
+                   rotation = [-np.pi/2, 0, 0]
                    )
 
     # Creamos el modelo del sol
@@ -160,7 +163,8 @@ if __name__ == "__main__":
                   scale=[0.25, 0.25, 0.25],
                   material=Material(ambient=rgb(0, 50, 10),
                                     diffuse=rgb(0, 50, 10),
-                                    specular=rgb(0, 50, 10))
+                                    specular=rgb(0, 50, 10),
+                                    )
                   )
 
     # Planeta con phong shader
@@ -181,7 +185,10 @@ if __name__ == "__main__":
                   mesh=planet,
                   pipeline=toon_pipeline,
                   scale=[0.3, 0.3, 0.3],
-                  material=Material(ambient=rgb(30, 30, 210))
+                  material=Material(ambient=rgb(5, 5, 120),
+                                    diffuse=rgb(5, 5, 120),
+                                    specular=rgb(5, 5, 120)
+                                    )
                   )
 
     # Planeta con texture shader
@@ -219,7 +226,6 @@ if __name__ == "__main__":
         #glClearColor(0.01, 0.01, 0.05, 1)
         glClearColor(0.1, 0.1, 0.1, 1)
         glEnable(GL_DEPTH_TEST)
-
         world.draw()
 
     @controller.event
@@ -261,7 +267,7 @@ if __name__ == "__main__":
         world.update()
         cam.time_update(dt)
         domega = controller.time
-        dtheta = 0*domega/2
+        dtheta = domega/2
 
         world["nave"]["position"] = cam.position + cam.forward*2 + [0, -1.5, 0]
 
@@ -288,7 +294,7 @@ if __name__ == "__main__":
     
         # Movimiento del planeta con texture shader 
         world["textured_planet"]["position"] = [3.2*np.cos(dtheta*1.1), 0, 3.2*np.sin(dtheta*1.1)]
-        world["textured_planet"]["rotation"] = [0.02*domega, -1.3*domega, 0.05*domega]              # Ha Ha, Earth   R O T A T E S 
+        world["textured_planet"]["rotation"] = [0.02*domega, -1.3*domega, 0.05*domega] 
 
 
         #============================================
