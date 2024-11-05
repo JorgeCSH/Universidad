@@ -9,6 +9,20 @@
     Fecha en que se Entrego: 4 de Noviembre de 2024 (aceptando atrasos)
 ------------------------------------------------------------------------------------------------------------------------
 Palabras Previas:
+- El presente documento contiene los archivos solicitados con la realización de la tarea n4 del curso finalizada y 
+realizada por Jorge Cummins. Este documento fue entregado en formato zip como solicitado.
+
+- Esta tarea presenta diversos archivos en los que se destacan archivos en formato .frag y .vert, 
+(o mejor dicho en lenguaje, creo, glsl) donde fueron realizados los shaders solicitados, además de un archivo main.py 
+donde se encuentran el desarrollo en formato Python para la ejecución de la tarea.
+
+- La realización, si bien fue realizada por el autor mencionado, hizo uso de material externo permitido según las
+instrucciones de la tarea, donde se hizo uso de los desarrollos realizados en clase auxiliar. Además, como punto de 
+partida y considerando el contexto inicial donde se contaba con uno de los documentos de shaders ya "completo", fue utilizado como
+punto de partida para la realización del resto.
+
+- Los desarrollos de la tarea no se vieron sin errores, estos se encuentran detallados tanto en algunos de los archivos
+de los shaders al final de estos y más explicito al final de este presente documento en la sección de palabras finales.
 =========================================================================================================================
 """
 # Librerias de python
@@ -216,15 +230,15 @@ if __name__ == "__main__":
     world.add_node("nave_light",
                    attach_to="nave",
                    light=PointLight(diffuse=rgb(50,25, 50)), 
-                   pipeline=phong_pipeline,
+                   pipeline=multi_pipeline,
                    position=[-0.1, 0.5, 0]
                    )
    
     @controller.event
     def on_draw():
         controller.clear()
-        #glClearColor(0.01, 0.01, 0.05, 1)
-        glClearColor(0.1, 0.1, 0.1, 1)
+        glClearColor(0.01, 0.01, 0.05, 1)
+        #glClearColor(0.1, 0.1, 0.1, 1)
         glEnable(GL_DEPTH_TEST)
         world.draw()
 
