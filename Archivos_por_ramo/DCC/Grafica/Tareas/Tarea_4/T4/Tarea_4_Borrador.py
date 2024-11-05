@@ -1,6 +1,6 @@
 """
 =========================================================================================================================
-    Tarea 4: Modelacion y Computacion Grafica para Ingenieros (CC3501-1)
+ * attenuation;   Tarea 4: Modelacion y Computacion Grafica para Ingenieros (CC3501-1)
 ------------------------------------------------------------------------------------------------------------------------
     Autor: Jorge Cummins
     Rut: 21.353.175-1
@@ -98,8 +98,8 @@ if __name__ == "__main__":
     # Pipelines que se usaran.....ESTE LO IMPLEMENTE YO
     color_pipeline = init_pipeline(root + "/basic.vert", root + "/color.frag")
     flat_pipeline = init_pipeline(root + "/flat.vert", root + "/flat.frag")
-    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
-    toon_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
+    toon_pipeline = init_pipeline(root + "/basic.vert", root + "/phong.frag")
+    phong_pipeline = init_pipeline(root + "/basic.vert", root + "/toon.frag")
     textured_pipeline = init_pipeline(root + "/basic.vert", root + "/textured.frag")
     multi_pipeline = [flat_pipeline, phong_pipeline, toon_pipeline, textured_pipeline]
 

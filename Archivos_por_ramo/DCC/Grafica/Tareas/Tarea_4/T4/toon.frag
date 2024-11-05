@@ -1,16 +1,12 @@
 #version 330
-//Escriba aquí su toon shader
-//Para más indicaciones lea el enunciado
-/*
-Tome el Phong shader como un punto de partida
-*/
-
+// Notas de autor al final del archivo, ademas de comentarios en el codigo
 
 in vec3 fragPos;
 in vec3 fragNormal;
 in vec2 fragTexCoord;
 
 out vec4 outColor;
+
 
 // Material
 struct Material {
@@ -20,10 +16,6 @@ struct Material {
     float shininess;
 };
 
-uniform Material u_material;
-
-// Lighting
-uniform vec3 u_viewPos;
 
 // Directional
 struct DirectionalLight {
@@ -33,12 +25,9 @@ struct DirectionalLight {
     vec3 specular;
 };
 
-uniform DirectionalLight u_dirLight;
 
 // Pointlight
 const int MAX_POINT_LIGHTS = 16;
-uniform int u_numPointLights;
-
 struct PointLight {
     vec3 position;
     vec3 ambient;
@@ -49,146 +38,90 @@ struct PointLight {
     float quadratic;
 };
 
+
+// Uniforms
+uniform Material u_material;
+uniform DirectionalLight u_dirLight;
 uniform PointLight u_pointLights[MAX_POINT_LIGHTS];
+uniform int u_numPointLights;
 
-float discretize(float value, int N) {
-    // Clamp value to [0, 1]
-    value = clamp(value, 0.0, 1.0);
-    // Scale to [0, N-1], round to nearest integer, then scale back to [0, 1]
-    return floor(value * float(N)) / float(N - 1);
-}
 
-vec3 computeDirectionalLight(vec3 normal, vec3 viewDir, DirectionalLight light, int N) {
-    // Ambient light
+// Computamos valores para luz direccional 
+vec3 computeDirectionalLight(vec3 normal, DirectionalLight light) {
+    
+    // Ambiental 
     vec3 ambient = light.ambient * u_material.ambient;
 
-    // Diffuse light
+    // Difusa
+    int N = 4;								// Nuevo: numero de discretizacion.	
     float diff = max(dot(normal, light.direction), 0.0f);
-    diff = discretize(diff, N); // Discretize the diffuse intensity
+    diff = float(int(diff * float(N))) / float(N);  			// Nuevo: usamos N para discretizar.
     vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
 
-    // Specular Blinn-Phong
-    vec3 halfwayDir = normalize(light.direction + viewDir);
+    // Especular (Blinn-Phong segun auxiliares del repositorio), no se toco ademas de para no considerar viewPos 
+    vec3 halfwayDir = normalize(light.direction);
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
-    spec = discretize(spec, N); // Discretize the specular intensity
     vec3 specular = light.specular * (spec * u_material.specular);
 
-    // Combine components
-    return ambient + diffuse + specular;
-}
-vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light, int N) {
-    // Attenuation
-    vec3 lightVec = light.position - fragPos;
-    float distance = length(lightVec);
-    float attenuation = 1.0f / (light.linear * distance + light.quadratic * distance * distance + light.constant);
-
-    // Ambient light
-    vec3 ambient = light.ambient * u_material.ambient;
-
-    // Diffuse light
-    vec3 lightDir = normalize(lightVec);
-    float diff = max(dot(normal, lightDir), 0.0f);
-    diff = discretize(diff, N); // Discretize the diffuse intensity
-    vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
-
-    // Specular Blinn-Phong
-    vec3 halfwayDir = normalize(lightDir + viewDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
-    spec = discretize(spec, N); // Discretize the specular intensity
-    vec3 specular = light.specular * (spec * u_material.specular);
-
-    // Combine components and apply attenuation
     return (ambient + diffuse + specular);
 }
 
 
-
-
-/*
-vec3 computeDirectionalLight(vec3 normal, vec3 viewDir, DirectionalLight light) {
-    //ambient
-    vec3 ambient = light.ambient * u_material.ambient;
-
-    // diffuse
-    
-    float diff = max(dot(normal, light.direction), 0.0f);
-    vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
-    
-
-    // specular blinn phong
-    vec3 halfwayDir = normalize(light.direction + viewDir);
-    float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
-    vec3 specular = light.specular * (spec * u_material.specular);
-    
-
-    //specular phong
-
-    
-    vec3 R = -light.direction - 2*dot(-light.direction, normal) * normal;
-    float specPhong = max(dot(R, viewDir), 0.0f);
-    specPhong = pow(specPhong, u_material.shininess);
-    vec3 specularPhong = light.specular * (specPhong * u_material.specular);
-    
-
-    return (ambient + diffuse + specular);
-}
-
-vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
-    // attenuation
+// Computamos valores para luz puntual
+vec3 computePointLight(vec3 normal, PointLight light) {
+    // Atteunacion
     vec3 lightVec = light.position - fragPos;
     float distance = length(lightVec);
     float attenuation = 1.0f / ( light.linear * distance + light.quadratic * distance * distance + light.constant );
 
-    // ambient
+    // Ambiental
     vec3 ambient = light.ambient * u_material.ambient;
 
-    // diffuse
+    // Difusa
+    int N = 4;								// Nuevo: analogo a DirectionalLight.				
     vec3 lightDir = normalize(lightVec);
     float diff = max(dot(normal, lightDir), 0.0f);
+    diff = float(int(diff * float(N))) / float(N); 			// Nuevo: analogo a DirectionalLight. 
     vec3 diffuse = light.diffuse * (diff * u_material.diffuse);
 
-    // specular blinn phong
-    vec3 halfwayDir = normalize(lightDir + viewDir);
+    // Especular (Blinn-Phong segun auxiliares del repositorio), no se toco ademas de para no considerar viewPos 
+    vec3 halfwayDir = normalize(lightDir);
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
     vec3 specular = light.specular * (spec * u_material.specular);
 
     return (ambient + diffuse + specular) * attenuation;
 }
 
-*/
+// Calculo final
 void main()
 {
     vec3 normal = normalize(fragNormal);
-    vec3 viewDir = normalize(u_viewPos - fragPos);
-    int N = 7;
     vec3 result = vec3(0.0);
 
-    result += computeDirectionalLight(normal, viewDir, u_dirLight, N);
+    result += computeDirectionalLight(normal, u_dirLight);
 
     if (u_numPointLights > 0 && u_numPointLights <= MAX_POINT_LIGHTS) {
         for (int i = 0; i < u_numPointLights; i++)
-            result += computePointLight(normal, viewDir, u_pointLights[i], N);
+            result += computePointLight(normal, u_pointLights[i]);
     }
 
     outColor = vec4(result, 1.0f);
 }
 
-
-
 /*
+Notas de autor:
 
+- En el enunciado, si bien no se especificia directamente y solo se hace referencia a la 
+  "intensidad de la luz", esta se le daban instrucciones con respecto al componente difuso,
+  por ende se decidio discretizar este. Sin embargo es importante destacar que esta se puede
+  llevar para otras componentes pues basta con tomar el valor previo al calculo final, es decir,
+  el porcentaje de luz declarado como float antes de declarar los resultados como vectores aplicando
+  el mismo procedimiento de discretizacion que se llevo en el caso difuso.
 
-vec3 computeDirectionalLight(vec3 normal, DirectionalLight light) {
-    ???
-}
+- Se tomo como punto de partida el archivo equivalente al PhongShader incluido en el archivo de la
+  tarea.
 
-vec3 computePointLight(vec3 normal, PointLight light) {
-    ???
-}
-
-void main()
-{
-    outColor = ???
-}
+- Se tuvo problemas al desarrollar los cuales se encuentran en el documento principal (main.py). Si
+  ademas nota que hay comentarios destacando esto en otros archivos es porque se me olvido borrarlos.
 */
 
