@@ -324,5 +324,22 @@ if __name__ == "__main__":
 """
 =======================================================================================================================
 Palabras Finales:
+Comparado con realizaciones previas, aprovecharé este apartado para realizar algunos comentarios con respecto a ciertos problemas que se tuvo de extraña procedencia mientras se realizaba la tarea. Específicamente y como fue comentado en algunos de los shaders, hubo problemas a la hora de cargarlos.
+
+El primer problema es que al momento de realizar esta tarea se trabajo en dos diferentes equipos, un computador de sobremesa (PC principal) y un laptop para los momentos en que estaba en la Universidad o fuera de mi casa. Cuando se inició el desarrollo de esta tarea, esto fue en el PC, al momento de realizarla esta arrojaba errores que se pensó eran de desarrollo. Esto llevo a una serie de problemas en especial al intentar ejecutar códigos que se suponían debían funcionar y por ende llevo a una manipulación bastante profunda (en un inicio) de los documentos de los shakers o procesos que no hicieron más que enredar o directamente que dejara de hacer funcionar la tarea. Durante los últimos dos días de desarrollo, es decir, domingo 3 de noviembre y lunes 4 de noviembre se trabajó en el laptop debido a circunstancias mayores donde me pude percatar que el problema era de mi computador, esto debido a que la versión que la branch que se cargó no era la que presentaba los intentos de arreglos de cuando realizaba los códigos en mi PC principal. Más aún, daban el resultado que se suponía deberían haber dado desde un inicio.
+
+Si bien una gran mayoría de problemas fueron solucionados, entre los que destaca que el specular cuando no se nombraba (incluso en archivos vacíos) arrojaba error diciendo que era necesario para calcular este parámetro que supuestamente requería de él (lo cual no podría haber sido puesto a que en algunos casos ni se nombraba). Sin embargo, destaca un problema que persistió, el cual se hizo especial énfasis en los comentarios de los shaders. Este problema en cuestión correspondió a que al cargarse el phong shader (específicamente este en cualquiera de sus versiones, sé probo 2 versiones más otras 3 diferentes que eran editadas por mí para ver si lograba solucionar) en donde a menos que se le quitara el parámetro "attenuation", estos no cargaban o cargaban con una atenuación que hacía de color negro al planeta. Se pensó que era algún problema con como estaba escrito el shader, sin embargo si se cambiaba el nombre, o mejor dicho el rol de los shaders, esto tambien pasaba y la unica forma que quedo para poder intentar solucionar este problema al cual dedique dos dias y la creacion de una branch completamente nueva en mi repositorio fue eliminando la atenuacion en todos los shaders menos el phong. Esto no arroja los mejores resultados pero por lo menos permite visualizar los planetas. De igual manera se incorporo una linea de codigo comentada en todos los shader donde se tomo esta decision para poder realizar pruebas en caso de que no funcione esta version.
+
+Para finalizar lo que pareciera ser un ensayo de problemas, me gustaría disculparme por la extensión y por no haber consultado previamente. Durante el plazo oficial no se realizo debido a falta de tiempo de la cual me hago responsable y durante el receso decidio no molestar realizando consultas.
+
+Como se ejecuto:
+Computador de sobremesa: dos opciones:
+-> Windows 11 con pycharm y neovim como editores, en pycharm fue donde se ejecuto en un virtual environment creado segun las instrucciones del repositorio, en neovim solo se edito en un inicio.
+-> Arch linux con editor neovim como editor, esto sourceando un environment segun las instrucciones del repositiorio oficial.
+
+Laptop:
+-> Arch linux, neovim, analogo al sistema de sobremesa.
+
+Disculpe por los errores de ortografia, es lunes, 4 de noviembre y son las 23.55.
 =======================================================================================================================
 """
