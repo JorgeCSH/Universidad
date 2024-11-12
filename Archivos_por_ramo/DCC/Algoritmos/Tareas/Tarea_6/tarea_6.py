@@ -38,6 +38,18 @@ La operación de búsqueda (``search``) debe retornar un puntero al nodo que con
 exitosa, o ``None`` si es infructuosa
 '''
 
+'''
+def search(self,x):
+    return None # Aquí hay que retornar el resultado de buscar x a partir de este punto
+                # Esto puede ser un puntero al nodo en donde está x, o None si no está
+'''
+'''
+def search(self,x):
+    return None # Aquí hay que retornar el resultado de buscar x a partir de este punto
+                # Esto puede ser un puntero al nodo en donde está, o None si no está
+'''
+
+
 class Nodo2:
     def __init__(self, izq, info, der):
         self.izq=izq
@@ -48,8 +60,17 @@ class Nodo2:
         return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
 
     def search(self,x):
-        return None # Aquí hay que retornar el resultado de buscar x a partir de este punto
-                    # Esto puede ser un puntero al nodo en donde está x, o None si no está
+      # Caso donde vemos si el valor buscado es menor al del nodo.
+      if x < self.info:
+        return self.izq.search(x)
+
+      # Caso donde vemos si el valor buscado es mayor al del nodo.
+      elif x > self.info:
+        return self.der.search(x)
+
+      # Caso sobrante es y sin error es que sea igual.
+      return self
+
 
     def string(self):
         return ("("+self.izq.string()
@@ -68,8 +89,23 @@ class Nodo3:
         return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
 
     def search(self,x):
-        return None # Aquí hay que retornar el resultado de buscar x a partir de este punto
-                    # Esto puede ser un puntero al nodo en donde está, o None si no está
+        # Caso donde x es igual a la llave/info1.
+        if x == self.info1:
+          return self
+
+        # Caso donde x es igual a la llave/info2.
+        elif x == self.info2:
+          return self
+
+        # Caso donde es menor que info1, se baja a la izquierda.
+        elif x < self.info1:
+            return self.izq.search(x)
+
+        # Caso donde es mayot que info2, se baja a la derecha.
+        elif x > self.info2:
+            return self.der.search(x)
+
+        return self.med.search(x)
 
     def string(self):
         return ("("+self.izq.string()
@@ -87,6 +123,11 @@ class Nodoe:
 
     def string(self):
         return"☐"
+
+    # Metodo provisorio, probablemente reemplazar en el arbol
+    def search(self,x):
+        return None
+
 
 class Arbol23:
     def __init__(self,raiz=Nodoe()):
@@ -106,5 +147,16 @@ class Arbol23:
 # Para probar este código, vamos a construir "a mano" el árbol 2-3 que aparece en el apunte, y luego imprimirlo
 a=Nodo3(Nodo2(Nodoe(),10,Nodoe()),25,Nodo3(Nodoe(),32,Nodoe(),48,Nodoe()),57,Nodo2(Nodoe(),74,Nodoe()))
 print(a.string())
+
+#print(a.search(25).string())
+
+
 #((☐10☐)25(☐32☐48☐)57(☐74☐))
+
+'''
+Corregir o estar atento
+- Por ahora estoy haciendo uso de un metodo que  me saque de la raja, atento.
+- Por ahora search es literal lo que  implemente en mi ejercicio 9.
+
+'''
 
