@@ -48,14 +48,26 @@ class Nodo2:
     def insert(self,x):
         return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
 
-    def search(self,x):
-        return None # Aquí hay que retornar el resultado de buscar x a partir de este punto
-                    # Esto puede ser un puntero al nodo en donde está x, o None si no está
+    # Adaptacion de lo realizado en el ejercicio 8 
+    def search(self, x):
+        # Caso donde debemos buscar por el arbol izquierdo
+        if x < self.info:
+            return self.izq.search(x)
+        # Caso donde debemos buscar por el arbol derecho
+        elif x > self.info:
+            return self.der.search(x)
+        # Caso donde encontramos el valor
+        elif x == self.info:
+            return self
+        # Este es el cambio, para tener incluido el caso en que el valor no este. (CORREGIR)
+        else:
+            return None
 
     def string(self):
         return ("("+self.izq.string()
                 +str(self.info)
                 +self.der.string()+")")
+
 
 class Nodo3:
     def __init__(self, izq, info1, med, info2, der):
@@ -68,9 +80,24 @@ class Nodo3:
     def insert(self,x):
         return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
 
-    def search(self,x):
-        return None # Aquí hay que retornar el resultado de buscar x a partir de este punto
-                    # Esto puede ser un puntero al nodo en donde está, o None si no está
+    # Adaptado de lo realizado en el ejercicio 8, analogo al caso de Nodo2 en terminos de cambios.
+    def search(self, x):
+        # Caso donde encontramos alguno de los valores.
+        if x == self.info1 or x == self.info2:
+            return self
+        # Caso donde debemos buscar por el arbol izquierdo.
+        elif x < self.info1:
+            return self.izq.search(x)
+        # Caso donde debemos buscar por el arbol del medio.
+        elif x < self.info2:
+            assert x > self.info1       # Assert incluido porsiacaso pero el condicional asegura que no sera mayor.
+            return self.med.search(x)
+        # Caso donde debemos buscar por el arbol derecho.
+        elif x > self.info2:
+            return self.der.search(x)
+        # Caso nuevo, no encontramos el valor. (CORREGIR)
+        else:
+            return None
 
     def string(self):
         return ("("+self.izq.string()
@@ -79,15 +106,23 @@ class Nodo3:
                 +str(self.info2)
                 +self.der.string()+")")
 
+
 class Nodoe:
     def __init__(self):
         pass
 
-    def insert(self,x):
-        return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
+    #def insert(self,x):
+    #    return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
+    
+    # Metodo provisorio
+    def insert(self, x):
+        return Nodoe(), x, Nodoe()
+    
+    # Metodo provisorio.
 
     def string(self):
         return"☐"
+
 
 class Arbol23:
     def __init__(self,raiz=Nodoe()):
@@ -96,7 +131,6 @@ class Arbol23:
     def insert(self,x):
         self.raiz=self.raiz.insert(x)   # Esto funciona casi siempre, excepto cuando la antigua raíz se divide
                                         # Usted tiene que poner algo que funcione siempre
-
     def search(self,x):
         return self.raiz.search(x)
 
@@ -119,5 +153,5 @@ santa_claus_llego_a_la_ciudad.insert(2)
 santa_claus_llego_a_la_ciudad.imprimir()
 santa_claus_llego_a_la_ciudad.search(2)
 santa_claus_llego_a_la_ciudad.search(3)
-santa_claus_llego_a_la_ciudad.search(7)
+#santa_claus_llego_a_la_ciudad.search(7)
 
