@@ -1,5 +1,7 @@
 # Archivo para realizar la tarea 6 de algoritmos
 '''
+Increiblemente, Enunciado.
+
 El objetivo de esta tarea es que usted implemente árboles 2-3. Si ve en el apunte, para los árboles AVL aparece la
 implementación, pero no así para los árboles 2-3. Usted debe ayudar a completar el apunte y si lo hace bien, es posible
  que en el futuro aparezca su código en este capítulo.
@@ -76,14 +78,19 @@ class Nodo2:
                 izq_nuevo, med, der_nuevo = arbol_derecho_viejo
                 return Nodo3(self.izq, self.info, izq_nuevo, med, der_nuevo)
             return self
-
+    
+    # Adaptacoion de lo realizado en el ejercicio 8 
     def search(self, x):
-        if x == self.info:
-            return self
-        elif x < self.info:
+        # Caso donde debemos buscar por el arbol izquierdo
+        if x < self.info:
             return self.izq.search(x)
+        # Caso donde debemos buscar por el arbol derecho
         elif x > self.info:
             return self.der.search(x)
+        # Caso donde encontramos el valor
+        elif x == self.info:
+            return self
+        # Este es el cambio, para tener incluido el caso en que el valor no este. (CORREGIR)
         else:
             return None
 
@@ -125,15 +132,22 @@ class Nodo3:
                 self.der = resultado
         return self
 
+    # Adaptado de lo realizado en el ejercicio 8, analogo al caso de Nodo2 en terminos de cambios.
     def search(self, x):
+        # Caso donde encontramos alguno de los valores.
         if x == self.info1 or x == self.info2:
             return self
+        # Caso donde debemos buscar por el arbol izquierdo.
         elif x < self.info1:
             return self.izq.search(x)
+        # Caso donde debemos buscar por el arbol del medio.
         elif x < self.info2:
+            assert x > self.info1       # Assert incluido porsiacaso pero el condicional asegura que no sera mayor.
             return self.med.search(x)
+        # Caso donde debemos buscar por el arbol derecho.
         elif x > self.info2:
             return self.der.search(x)
+        # Caso nuevo, no encontramos el valor. (CORREGIR)
         else:
             return None
 
@@ -195,6 +209,10 @@ gogos.insert(9)
 gogos.insert(6)
 gogos.insert(2)
 gogos.imprimir()
+gogos.search(2)
+#gogos.search(3)
+gogos.search(7)
+
 #assert gogos.imprimir() == "((☐1☐2☐)3(☐4☐)5(☐6☐9☐))"
 #gogos.imprimir()
 
