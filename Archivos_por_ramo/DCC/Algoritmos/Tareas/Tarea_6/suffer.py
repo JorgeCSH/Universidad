@@ -9,25 +9,26 @@ class Nodo2:
     def insert(self, x):
         if x < self.info:
             # La insertamos recursivamente en el hijo izquierdo
-            arbol_izquierdo_viejo = self.izq.insert(x)
-            
-            # Caso donde se produce split en el nodo hijo.
-            if isinstance(arbol_izquierdo_viejo, tuple):
-                izq_nuevo, llave, der_nuevo = arbol_izquierdo_viejo
-                return Nodo3(izq_nuevo, llave, self.izq, self.info, self.der)
-            # Si no se produjo split 
-            return self.izq.insert(x)
+            nodo_hijo = self.izq.insert(x)
 
+            # Caso donde se produce split en el nodo hijo.
+            if isinstance(nodo_hijo, tuple):
+                izq_nuevo, llave, der_nuevo = nodo_hijo
+                print("2")
+                return Nodo3(izq_nuevo, llave, self.izq, self.info, self.der)
+            print("1") 
         else:
             # La insertamos recursivamente en el hijo derecho 
-            arbol_derecho_viejo = self.der.insert(x)
-
-            if isinstance(arbol_derecho_viejo, tuple):
-                izq_nuevo, med, der_nuevo = arbol_derecho_viejo
+            nodo_hijo = self.der.insert(x)
+        
+            if isinstance(nodo_hijo, tuple):
+                izq_nuevo, med, der_nuevo = nodo_hijo
+                print("4")
                 return Nodo3(self.izq, self.info, izq_nuevo, med, der_nuevo)
-            
-            return self.der.insert(x)
-        return self 
+            print("3")
+        print("mega_return_1")
+        return nodo_hijo 
+
     # Adaptacoion de lo realizado en el ejercicio 8 
     def search(self, x):
         # Caso donde debemos buscar por el arbol izquierdo
@@ -39,9 +40,6 @@ class Nodo2:
         # Caso donde encontramos el valor
         elif x == self.info:
             return self
-        # Este es el cambio, para tener incluido el caso en que el valor no este. (CORREGIR)
-        else:
-            return None
 
     def string(self):
         return ("("+self.izq.string()
@@ -59,32 +57,31 @@ class Nodo3:
 
     def insert(self, x):
         if x < self.info1:
-            arbol_izquierdo_viejo = self.izq.insert(x)
+            nodo_hijo = self.izq.insert(x)
             
-            if isinstance(arbol_izquierdo_viejo, tuple):  # Se produjo una división en el hijo izquierdo
-                izq_nuevo, med, der_nuevo = arbol_izquierdo_viejo
+            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo izquierdo
+                izq_nuevo, med, der_nuevo = nodo_hijo
+                print("6")
                 return Nodo3(izq_nuevo, med, der_nuevo, self.info1, self.med), self.info2, self.der
-            
-            return arbol_izquierdo_viejo
-
+            print("5") 
         elif x < self.info2:
-            arbol_medio_viejo = self.med.insert(x)
+            nodo_hijo = self.med.insert(x)
 
-            if isinstance(arbol_medio_viejo, tuple):  # Se produjo una división en el hijo medio
-                izq_nuevo, med, der_nuevo = arbol_medio_viejo
+            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo medio
+                izq_nuevo, med, der_nuevo = nodo_hijo
+                print("8")
                 return Nodo3(self.izq, self.info1, izq_nuevo, med, der_nuevo), self.info2, self.der
-
-            return arbol_medio_viejo
-
+            print("7")
         else:
-            arbol_derecho_viejo = self.der.insert(x)
+            nodo_hijo = self.der.insert(x)
 
-            if isinstance(arbol_derecho_viejo, tuple):  # Se produjo una división en el hijo derecho
-                izq_nuevo, med, der_nuevo = arbol_derecho_viejo
+            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo derecho
+                izq_nuevo, med, der_nuevo = nodo_hijo
+                print("10")
                 return Nodo3(self.izq, self.info1, self.med, self.info2, izq_nuevo), med, der_nuevo
-
-            return arbol_derecho_viejo
-
+            print("9")
+        print("mega_return_2")
+        return nodo_hijo 
 
     # Adaptado de lo realizado en el ejercicio 8, analogo al caso de Nodo2 en terminos de cambios.
     def search(self, x):
@@ -118,6 +115,7 @@ class Nodoe:
         pass
 
     def insert(self, x):
+        print("sad")
         return Nodoe(), x, Nodoe()
 
     def search(self):
@@ -135,8 +133,10 @@ class Arbol23:
         inserta_raiz = self.raiz.insert(x)
         if isinstance(inserta_raiz, tuple):
             izq_nuevo, med, der_nuevo = inserta_raiz
+            print("poto")
             self.raiz = Nodo2(izq_nuevo, med, der_nuevo)
         else:                                               # La raíz se dividió
+            print("ajio")
             self.raiz = inserta_raiz
 
     def search(self, x):
@@ -157,10 +157,17 @@ a=Nodo3(Nodo2(Nodoe(),10,Nodoe()),25,Nodo3(Nodoe(),32,Nodoe(),48,Nodoe()),57,Nod
 
 gogos = Arbol23()
 chococrispis = [3, 1, 4, 5, 9, 6, 2]
+#chococrispis = [3]
+#chococrispis = [3, 1]
+#chococrispis = [3, 1, 4]
+#chococrispis = [3, 1, 4, 5]
+#chococrispis = [3, 1, 4, 5, 9]
+#chococrispis = [3, 1, 4, 5, 9, 6]
+#chococrispis = [3, 1, 4, 5, 9, 6, 2]
 for i in chococrispis:
     gogos.insert(i)
     gogos.imprimir()
-gogos.imprimir()
+#gogos.imprimir()
 #gogos.search(2)
 #gogos.search(3)
 #gogos.search(7)
