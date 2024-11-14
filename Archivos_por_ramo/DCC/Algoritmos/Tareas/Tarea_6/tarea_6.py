@@ -14,7 +14,6 @@ class Nodo2:
         if x < self.info:
             # La insertamos recursivamente en el hijo izquierdo
             nodo_hijo = self.izq.insert(x)
-            
             # Caso donde el nodo binario pasa a ser un nodo ternario 
             if isinstance(nodo_hijo, tuple):
                 izq_nuevo, key, der_nuevo = nodo_hijo
@@ -27,7 +26,6 @@ class Nodo2:
         else:
             # La insertamos recursivamente en el hijo derecho 
             nodo_hijo = self.der.insert(x)
-        
             if isinstance(nodo_hijo, tuple):
                 izq_nuevo, key, der_nuevo = nodo_hijo
                 resultado = Nodo3(self.izq, self.info, izq_nuevo, key, der_nuevo)
@@ -57,7 +55,7 @@ class Nodo2:
 
 
 """ Clase Nodo3.
-Clase/estructura que representa los nodos ternarios en el arbol.
+Clase/estructura que representa los nodosternarios en el arbol.
 """
 class Nodo3:
     def __init__(self, izq, info1, med, info2, der):
@@ -70,7 +68,7 @@ class Nodo3:
     def insert(self, x):
         if x < self.info1:
             nodo_hijo = self.izq.insert(x)
-            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo izquierdo
+            if isinstance(nodo_hijo, tuple):  
                 izq_nuevo, key, der_nuevo = nodo_hijo
                 resultado = Nodo2(izq_nuevo, key, self.med), self.info1, Nodo2(der_nuevo, self.info2, self.der) 
                 return resultado
@@ -79,7 +77,7 @@ class Nodo3:
                 return resultado
         elif x < self.info2:
             nodo_hijo = self.med.insert(x)
-            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo keyio
+            if isinstance(nodo_hijo, tuple):  
                 izq_nuevo, key, der_nuevo = nodo_hijo
                 resultado = Nodo2(self.izq, self.info1, izq_nuevo), key, Nodo2(der_nuevo, self.info2, self.der) 
                 return resultado 
