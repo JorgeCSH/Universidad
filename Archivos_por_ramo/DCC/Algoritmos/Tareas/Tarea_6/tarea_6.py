@@ -12,9 +12,7 @@ class Nodo2:
 
     def insert(self, x):
         if x < self.info:
-            # La insertamos recursivamente en el hijo izquierdo
             nodo_hijo = self.izq.insert(x)
-            # Caso donde el nodo binario pasa a ser un nodo ternario 
             if isinstance(nodo_hijo, tuple):
                 izq_nuevo, key, der_nuevo = nodo_hijo
                 resultado = Nodo3(izq_nuevo, key, der_nuevo, self.info, self.der) 
@@ -22,9 +20,7 @@ class Nodo2:
             else:
                 resultado = Nodo2(nodo_hijo, self.info, self.der)
                 return resultado
-
         else:
-            # La insertamos recursivamente en el hijo derecho 
             nodo_hijo = self.der.insert(x)
             if isinstance(nodo_hijo, tuple):
                 izq_nuevo, key, der_nuevo = nodo_hijo
@@ -33,7 +29,6 @@ class Nodo2:
             else: 
                 resultado = Nodo2(self.izq, self.info, nodo_hijo)
                 return resultado
-
     # Adaptacoion de lo realizado en el ejercicio 8 
     def search(self, x):
         # Caso donde debemos buscar por el arbol izquierdo
