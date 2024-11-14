@@ -36,8 +36,6 @@ class Nodo2:
                 print("3")
                 jesus_christ_super_star = Nodo2(self.izq, self.info, nodo_hijo)
                 return jesus_christ_super_star
-        print("mega_return_1")
-        return nodo_hijo 
 
     # Adaptacoion de lo realizado en el ejercicio 8 
     def search(self, x):
@@ -74,7 +72,10 @@ class Nodo3:
                 print("6")
                 banana_split = Nodo2(izq_nuevo, llave, self.med), self.info1, Nodo2(der_nuevo, self.info2, self.der) 
                 return banana_split
-            print("5") 
+            else:   
+                print("5") 
+                banana_split = Nodo3(nodo_hijo, self.info1, self.med, self.info2, self.der)
+                return banana_split
 
         elif x < self.info2:
             nodo_hijo = self.med.insert(x)
@@ -84,7 +85,10 @@ class Nodo3:
                 print("8")
                 banana_split = Nodo2(self.izq, self.info1, izq_nuevo), llave, Nodo2(der_nuevo, self.info2, self.der) 
                 return banana_split 
-            print("7")
+            else:
+                print("7")
+                banana_split = Nodo3(self.izq, self.info1, nodo_hijo, self.info2, self.der)
+                return banana_split
 
         else:
             nodo_hijo = self.der.insert(x)
@@ -94,10 +98,10 @@ class Nodo3:
                 print("10")
                 banana_split = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(der_nuevo, llave, self.der)
                 return banana_split 
-            print("9")
-
-        print("mega_return_2")
-        return nodo_hijo 
+            else:
+                print("9")
+                banana_split = Nodo3(self.izq, self.info1, self.med, self.info2, nodo_hijo)
+                return banana_split
 
     # Adaptado de lo realizado en el ejercicio 8, analogo al caso de Nodo2 en terminos de cambios.
     def search(self, x):
