@@ -18,7 +18,7 @@ class Nodo2:
             # Caso donde el nodo binario pasa a ser un nodo ternario 
             if isinstance(nodo_hijo, tuple):
                 izq_nuevo, key, der_nuevo = nodo_hijo
-                resultado = Nodo3(izq_nuevo, key, self.izq, self.info, self.der) 
+                resultado = Nodo3(izq_nuevo, key, der_nuevo, self.info, self.der) 
                 return resultado 
             else:
                 resultado = Nodo2(nodo_hijo, self.info, self.der)
@@ -184,7 +184,7 @@ print(f"Tests solicitados")
 b = Arbol23()
 
 # Insertamos los valores e imprimimos a medida que insertamos
-valores_a_insertar = [3, 1, 4, 5, 9, 6, 2, 7]
+valores_a_insertar = [3, 1, 4, 5, 9, 6, 2]
 for i in valores_a_insertar:
     print(f"insertamos {i}")
     b.insert(i)
@@ -201,6 +201,8 @@ b.search(3)
 print(f"Busqueda de {3}: {b.search(3)}\n")
 b.search(7)
 print(f"Busqueda de {7}: {b.search(7)}\n")
+b.search(69)
+print(f"Busqueda de {69}: {b.search(69)}\n")
 
 # Error original que me estaba dando
 #"(((☐2☐3☐)4☐5☐)6☐9☐)"
