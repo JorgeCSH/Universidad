@@ -1,44 +1,4 @@
 # Archivo para realizar la tarea 6 de algoritmos
-'''
-Increiblemente, Enunciado.
-
-El objetivo de esta tarea es que usted implemente árboles 2-3. Si ve en el apunte, para los árboles AVL aparece la
-implementación, pero no así para los árboles 2-3. Usted debe ayudar a completar el apunte y si lo hace bien, es posible
- que en el futuro aparezca su código en este capítulo.
-
-A continuación aparece algo de código para ayudarlo a partir. Hay dos tipos de nodos internos (``Nodo2`` y ``Nodo3``),
- según si ese nodo es binario o ternario, y un tipo de nodo externo u hoja (``Nodoe``). Además, está la clase
- ``Arbol23``, que es el punto de partida. Las operaciones que usted tiene que implementar son ``insert`` y ``search``.
-
-En varias partes se ha rellenado con código provisorio, para que compile. Usted debe reemplazar y completar todo lo que
-sea necesario para que todo funcione.
-
-El código esbozado más abajo está orientado a una implementación recursiva, la que podemos describir de la siguiente
-manera:
-
-* Si se inserta una llave en un nodo binario, hay que insertarla recursivamente en el hijo izquierdo o en el derecho,
-según corresponda. Si esto no produce un *split* del hijo, el resultado es un puntero al nodo resultante (que puede ser
- binario o ternario), lo cual se anota en el lugar respectivo y se retorna un puntero al nodo resultante. Pero si el
-  hijo se divide, se recibe el resultado que es una tupla que contiene el árbol izquierdo, el árbol derecho, y la llave
-   que los separa. Con esto este nodo tiene la información para mutar a ternario y retornar el resultado.
-
-* Si se inserta una llave en un nodo ternario hay que insertarla recursivamente en el hijo izquierdo, en el del medio
-o en el derecho, según corresponda. Si esto no produce un *split* del hijo, el resultado es un puntero al nodo
-resultante (que puede ser binario o ternario), lo cual se anota en el lugar respectivo y se retorna un puntero al nodo
-resultante. Pero si el hijo se divide, se recibe el resultado que es una tupla que contiene el árbol izquierdo, el
-árbol derecho, y la llave que los separa. Con esto este nodo tiene la información para a su vez dividirse y retornar
-la tupla resultante.
-
-* Lo anterior permite modelar de la misma manera la inserción en una hoja: al recibir una llave, se divide en dos
- hojas, y la llave entrante las separa. Esto se retorna hacia arriba en la forma de una tupla y se la da el mismo
- tratamiento anterior.
-
-* En la clase ``Arbol23`` hay que estar preparado para recibir una tupla como resultado de la inserción, lo cual
-indicaría que la raíz se dividió. En ese caso, hay que crear nodo binario para que sea la nueva raíz.
-
-La operación de búsqueda (``search``) debe retornar un puntero al nodo que contiene la llave buscada, en caso de ser
-exitosa, o ``None`` si es infructuosa
-'''
 ############################################################################################################
 
 """ Clase Nodo2.
