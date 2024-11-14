@@ -96,7 +96,7 @@ class Nodo3:
             if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo derecho
                 izq_nuevo, llave, der_nuevo = nodo_hijo
                 print("10")
-                banana_split = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(der_nuevo, llave, self.der)
+                banana_split = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(izq_nuevo, llave, der_nuevo)
                 return banana_split 
             else:
                 print("9")
@@ -178,7 +178,8 @@ a=Nodo3(Nodo2(Nodoe(),10,Nodoe()),25,Nodo3(Nodoe(),32,Nodoe(),48,Nodoe()),57,Nod
 # Test solicitados e implementados por yo
 
 gogos = Arbol23()
-chococrispis = [3, 1, 4, 5, 9, 6, 2]
+#chococrispis = [3, 1, 4, 5, 9, 6, 2]
+chococrispis = [1, 2, 3, 4, 5, 6 , 7]
 #chococrispis = [3]
 #chococrispis = [3, 1]
 #chococrispis = [3, 1, 4]

@@ -15,7 +15,7 @@ class Nodo2:
             # La insertamos recursivamente en el hijo izquierdo
             nodo_hijo = self.izq.insert(x)
             
-            # Caso donde se produce split en el nodo hijo.
+            # Caso donde el nodo binario pasa a ser un nodo ternario 
             if isinstance(nodo_hijo, tuple):
                 izq_nuevo, key, der_nuevo = nodo_hijo
                 resultado = Nodo3(izq_nuevo, key, self.izq, self.info, self.der) 
@@ -90,7 +90,7 @@ class Nodo3:
             nodo_hijo = self.der.insert(x)
             if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo derecho
                 izq_nuevo, key, der_nuevo = nodo_hijo
-                resultado = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(der_nuevo, key, self.der)
+                resultado = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(izq_nuevo, key, der_nuevo)
                 return resultado 
             else:
                 resultado = Nodo3(self.izq, self.info1, self.med, self.info2, nodo_hijo)
@@ -184,7 +184,7 @@ print(f"Tests solicitados")
 b = Arbol23()
 
 # Insertamos los valores e imprimimos a medida que insertamos
-valores_a_insertar = [3, 1, 4, 5, 9, 6, 2]
+valores_a_insertar = [3, 1, 4, 5, 9, 6, 2, 7]
 for i in valores_a_insertar:
     print(f"insertamos {i}")
     b.insert(i)
