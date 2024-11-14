@@ -10,22 +10,32 @@ class Nodo2:
         if x < self.info:
             # La insertamos recursivamente en el hijo izquierdo
             nodo_hijo = self.izq.insert(x)
-
+            
             # Caso donde se produce split en el nodo hijo.
             if isinstance(nodo_hijo, tuple):
                 izq_nuevo, llave, der_nuevo = nodo_hijo
                 print("2")
-                return Nodo3(izq_nuevo, llave, self.izq, self.info, self.der)
-            print("1") 
+                jesus_christ_super_star = Nodo3(izq_nuevo, llave, self.izq, self.info, self.der) 
+                return jesus_christ_super_star 
+            else:
+                print("1")
+                jesus_christ_super_star = Nodo2(nodo_hijo, self.info, self.der)
+                return jesus_christ_super_star
+
+
         else:
             # La insertamos recursivamente en el hijo derecho 
             nodo_hijo = self.der.insert(x)
         
             if isinstance(nodo_hijo, tuple):
-                izq_nuevo, med, der_nuevo = nodo_hijo
+                izq_nuevo, llave, der_nuevo = nodo_hijo
                 print("4")
-                return Nodo3(self.izq, self.info, izq_nuevo, med, der_nuevo)
-            print("3")
+                jesus_christ_super_star = Nodo3(self.izq, self.info, izq_nuevo, llave, der_nuevo)
+                return jesus_christ_super_star 
+            else: 
+                print("3")
+                jesus_christ_super_star = Nodo2(self.izq, self.info, nodo_hijo)
+                return jesus_christ_super_star
         print("mega_return_1")
         return nodo_hijo 
 
@@ -64,8 +74,8 @@ class Nodo3:
                 print("6")
                 banana_split = Nodo2(izq_nuevo, llave, self.med), self.info1, Nodo2(der_nuevo, self.info2, self.der) 
                 return banana_split
-                #return Nodo3(izq_nuevo, llave, der_nuevo, self.info1, self.llave), self.info2, self.der
             print("5") 
+
         elif x < self.info2:
             nodo_hijo = self.med.insert(x)
 
@@ -74,8 +84,8 @@ class Nodo3:
                 print("8")
                 banana_split = Nodo2(self.izq, self.info1, izq_nuevo), llave, Nodo2(der_nuevo, self.info2, self.der) 
                 return banana_split 
-                #return Nodo3(self.izq, self.info1, izq_nuevo, llave, der_nuevo), self.info2, self.der
             print("7")
+
         else:
             nodo_hijo = self.der.insert(x)
 
@@ -84,8 +94,8 @@ class Nodo3:
                 print("10")
                 banana_split = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(der_nuevo, llave, self.der)
                 return banana_split 
-                #return Nodo3(self.izq, self.info1, self.llave, self.info2, izq_nuevo), llave, der_nuevo
             print("9")
+
         print("mega_return_2")
         return nodo_hijo 
 
@@ -139,11 +149,13 @@ class Arbol23:
         inserta_raiz = self.raiz.insert(x)
         if isinstance(inserta_raiz, tuple):
             izq_nuevo, med, der_nuevo = inserta_raiz
-            #print("poto")
+            print("completo italiano")
             self.raiz = Nodo2(izq_nuevo, med, der_nuevo)
+            return self.raiz
         else:                                               # La raíz se dividió
-            #print("ajio")
+            print("choripan")
             self.raiz = inserta_raiz
+            
 
     def search(self, x):
         return self.raiz.search(x)
