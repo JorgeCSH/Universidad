@@ -46,39 +46,48 @@ Representa a los nodos binarios presentes en el arbol.
 """
 class Nodo2:
     def __init__(self, izq, info, der):
-        self.izq=izq
-        self.info=info
-        self.der=der
+        self.izq = izq
+        self.info = info
+        self.der = der
 
-    def insert(self,x):
-        #return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
-        # Caso donde debemos insertar en el hijo izquierdo
-        if x<self.info:
-            # Caso donde no se produce split en el hijo entregamos puntero al nodo resultante
-            if not isinstance(self.izq.insert(x), Nodo3):
-                self.izq = self.izq.insert(x)
-                return self.izq 
-            # Caso donde se produce split en el hijo
+    def insert(self, x):
+        if x < self.info:
+            # La insertamos recursivamente en el hijo izquierdo
+            nodo_hijo = self.izq.insert(x)
+            
+            # Caso donde se produce split en el nodo hijo.
+            if isinstance(nodo_hijo, tuple):
+                izq_nuevo, llave, der_nuevo = nodo_hijo
+                jesus_christ_super_star = Nodo3(izq_nuevo, llave, self.izq, self.info, self.der) 
+                return jesus_christ_super_star 
             else:
-                izq_nuevo, llave, der_nuevo = self.izq.insert(x)
-                return (izq_nuevo, llave, Nodo2(der_nuevo, self.info, self.der))
+                jesus_christ_super_star = Nodo2(nodo_hijo, self.info, self.der)
+                return jesus_christ_super_star
 
-    # Adaptacion de lo realizado en el ejercicio 8 
+
+        else:
+            # La insertamos recursivamente en el hijo derecho 
+            nodo_hijo = self.der.insert(x)
+        
+            if isinstance(nodo_hijo, tuple):
+                izq_nuevo, llave, der_nuevo = nodo_hijo
+                jesus_christ_super_star = Nodo3(self.izq, self.info, izq_nuevo, llave, der_nuevo)
+                return jesus_christ_super_star 
+            else: 
+                jesus_christ_super_star = Nodo2(self.izq, self.info, nodo_hijo)
+                return jesus_christ_super_star
+
+    # Adaptacoion de lo realizado en el ejercicio 8 
     def search(self, x):
-        # Retornamos None si el siguiente es Nodoe
-        if isinstance(self, Nodoe):
-            return None
-        # Caso donde encontramos el valor
-        elif x == self.info:
-            return self
         # Caso donde debemos buscar por el arbol izquierdo
-        elif x < self.info:
+        if x < self.info:
             return self.izq.search(x)
         # Caso donde debemos buscar por el arbol derecho
         elif x > self.info:
             return self.der.search(x)
-
-
+        # Caso donde encontramos el valor
+        elif x == self.info:
+            return self
 
     def string(self):
         return ("("+self.izq.string()
@@ -86,30 +95,55 @@ class Nodo2:
                 +self.der.string()+")")
 
 
-
 """ Clase Nodo3.
 Clase/estructura que representa los nodos ternarios en el arbol.
 """
 class Nodo3:
     def __init__(self, izq, info1, med, info2, der):
-        self.izq=izq
-        self.info1=info1
-        self.med=med
-        self.info2=info2
-        self.der=der
+        self.izq = izq
+        self.info1 = info1
+        self.med = med
+        self.info2 = info2
+        self.der = der
 
-    def insert(self,x):
-        return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
+    def insert(self, x):
+        if x < self.info1:
+            nodo_hijo = self.izq.insert(x)
+            
+            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo izquierdo
+                izq_nuevo, llave, der_nuevo = nodo_hijo
+                banana_split = Nodo2(izq_nuevo, llave, self.med), self.info1, Nodo2(der_nuevo, self.info2, self.der) 
+                return banana_split
+            else:   
+                banana_split = Nodo3(nodo_hijo, self.info1, self.med, self.info2, self.der)
+                return banana_split
 
+        elif x < self.info2:
+            nodo_hijo = self.med.insert(x)
 
+            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo llaveio
+                izq_nuevo, llave, der_nuevo = nodo_hijo
+                banana_split = Nodo2(self.izq, self.info1, izq_nuevo), llave, Nodo2(der_nuevo, self.info2, self.der) 
+                return banana_split 
+            else:
+                banana_split = Nodo3(self.izq, self.info1, nodo_hijo, self.info2, self.der)
+                return banana_split
+
+        else:
+            nodo_hijo = self.der.insert(x)
+
+            if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo derecho
+                izq_nuevo, llave, der_nuevo = nodo_hijo
+                banana_split = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(der_nuevo, llave, self.der)
+                return banana_split 
+            else:
+                banana_split = Nodo3(self.izq, self.info1, self.med, self.info2, nodo_hijo)
+                return banana_split
 
     # Adaptado de lo realizado en el ejercicio 8, analogo al caso de Nodo2 en terminos de cambios.
     def search(self, x):
-        # Retornamos None si el siguiente es Nodoe
-        if isinstance(self, Nodoe):
-            return None
         # Caso donde encontramos alguno de los valores.
-        elif x == self.info1 or x == self.info2:
+        if x == self.info1 or x == self.info2:
             return self
         # Caso donde debemos buscar por el arbol izquierdo.
         elif x < self.info1:
@@ -121,7 +155,9 @@ class Nodo3:
         # Caso donde debemos buscar por el arbol derecho.
         elif x > self.info2:
             return self.der.search(x)
-
+        # Caso nuevo, no encontramos el valor. (CORREGIR)
+        else:
+            return None
 
     def string(self):
         return ("("+self.izq.string()
@@ -138,63 +174,70 @@ class Nodoe:
     def __init__(self):
         pass
 
-    def insert(self,x):
-        return None # Aquí hay que retornar el resultado de insertar x a partir de este punto
-    
-    # Metodo provisorio... E L I M I N A R def search(self, x):
-        return None
+    def insert(self, x):
+        #print("sad")
+        return Nodoe(), x, Nodoe()
 
+    def search(self):
+        return None
+    
     def string(self):
         return"☐"
-
 
 
 """ Clase Arbol23
 Clase encargada de formar la estructura del arbol 2-3, esta hace uso de las clases Nodo2 y Nodo3.
 """
 class Arbol23:
-    def __init__(self,raiz=Nodoe()):
-        self.raiz=raiz
+    def __init__(self, raiz=Nodoe()):
+        self.raiz = raiz
 
-    def insert(self,x):
-        self.raiz=self.raiz.insert(x)   # Esto funciona casi siempre, excepto cuando la antigua raíz se divide
-                                        # Usted tiene que poner algo que funcione siempre
-    def search(self,x):
-        if isinstance(self.raiz, Nodoe):
-            return None
-        else:
-            return self.raiz.search(x)
+    def insert(self, x):
+        inserta_raiz = self.raiz.insert(x)
+        if isinstance(inserta_raiz, tuple):
+            izq_nuevo, med, der_nuevo = inserta_raiz
+            self.raiz = Nodo2(izq_nuevo, med, der_nuevo)
+            return self.raiz
+        else:                                               # La raíz se dividió
+            self.raiz = inserta_raiz
+
+    def search(self, x):
+        return self.raiz.search(x)
 
     def imprimir(self):
         print(self.raiz.string())
+        return self.raiz.string()
 
-
-
-"""
-Test playground
-"""
-# Ejemplo original sin el uso del arbol
+'''
+Testeamos el codigo
+'''
+# Tests originales
+print(f"Tests originales")
+# Para probar este código, vamos a construir "a mano" el árbol 2-3 que aparece en el apunte, y luego imprimirlo
 a=Nodo3(Nodo2(Nodoe(),10,Nodoe()),25,Nodo3(Nodoe(),32,Nodoe(),48,Nodoe()),57,Nodo2(Nodoe(),74,Nodoe()))
+print(a.string())
 #print(a.search(10))
 #print(a.search(25))
 #print(a.search(57))
 #print(a.search(69))
+print(f"\n")
 
-# Ejemplo donde nosotros implementaremos un arbol.
+# Test solicitados
+print(f"Tests solicitados")
 # Formamos el arbol
-santa_claus_llego_a_la_ciudad = Arbol23()
-# Insertamos los valores
-"""
+b = Arbol23()
+# Insertamos los valores e imprimimos a medida que insertamos
 valores_a_insertar = [3, 1, 4, 5, 9, 6, 2]
 for i in valores_a_insertar:
-    santa_claus_llego_a_la_ciudad.insert(i)
-    santa_claus_llego_a_la_ciudad.imprimir()
-"""
-# Imprimimos el arbol final (ademas de donde imprimiamos cada iteracion
-#santa_claus_llego_a_la_ciudad.imprimir()
+    print(f"insertamos {i}")
+    b.insert(i)
+    b.imprimir()
+    print()
+assert b.imprimir() == "((☐1☐2☐)3(☐4☐)5(☐6☐9☐))"
+#b.imprimir()
+#b.search(2)
+#b.search(3)
+#b.search(7)
 
-# Realizamos las busquedas                             
-santa_claus_llego_a_la_ciudad.search(2)
-santa_claus_llego_a_la_ciudad.search(3)
-#santa_claus_llego_a_la_ciudad.search(7)
-
+# Error original que me estaba dando
+#"(((☐2☐3☐)4☐5☐)6☐9☐)"
