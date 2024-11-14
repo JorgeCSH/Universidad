@@ -62,15 +62,19 @@ class Nodo3:
             if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo izquierdo
                 izq_nuevo, llave, der_nuevo = nodo_hijo
                 print("6")
-                return Nodo3(izq_nuevo, llave, der_nuevo, self.info1, self.llave), self.info2, self.der
+                banana_split = Nodo2(izq_nuevo, llave, self.med), self.info1, Nodo2(der_nuevo, self.info2, self.der) 
+                return banana_split
+                #return Nodo3(izq_nuevo, llave, der_nuevo, self.info1, self.llave), self.info2, self.der
             print("5") 
         elif x < self.info2:
-            nodo_hijo = self.llave.insert(x)
+            nodo_hijo = self.med.insert(x)
 
             if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo llaveio
                 izq_nuevo, llave, der_nuevo = nodo_hijo
                 print("8")
-                return Nodo3(self.izq, self.info1, izq_nuevo, llave, der_nuevo), self.info2, self.der
+                banana_split = Nodo2(self.izq, self.info1, izq_nuevo), llave, Nodo2(der_nuevo, self.info2, self.der) 
+                return banana_split 
+                #return Nodo3(self.izq, self.info1, izq_nuevo, llave, der_nuevo), self.info2, self.der
             print("7")
         else:
             nodo_hijo = self.der.insert(x)
@@ -78,7 +82,8 @@ class Nodo3:
             if isinstance(nodo_hijo, tuple):  # Se produjo una división en el hijo derecho
                 izq_nuevo, llave, der_nuevo = nodo_hijo
                 print("10")
-                return Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(der_nuevo, llave, self.der)
+                banana_split = Nodo2(self.izq, self.info1, self.med), self.info2, Nodo2(der_nuevo, llave, self.der)
+                return banana_split 
                 #return Nodo3(self.izq, self.info1, self.llave, self.info2, izq_nuevo), llave, der_nuevo
             print("9")
         print("mega_return_2")
