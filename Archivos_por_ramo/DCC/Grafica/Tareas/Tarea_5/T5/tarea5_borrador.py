@@ -155,22 +155,34 @@ if __name__ == "__main__":
         planet_coordz = 0
 
         # X coordinate
+        last_pos_x = [0.2]
         if coin_flipx == 1:
-            planet_coordx = np.random.randint(SUN_RADIUS+0.2, ( SUN_RADIUS+0.2)*7)
+            planet_coordx = np.random.randint(SUN_RADIUS+last_pos_x[len(last_pos_x)-1], ( SUN_RADIUS+0.2)*7)
+            last_pos_x += [planet_coordx]
+        last_neg_x = [-0.2]
         if coin_flipx == -1:
-            planet_coordx = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS-0.2)
+            planet_coordx = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_x[len(last_neg_x)-1])
+            last_neg_x += [planet_coordx]
 
         # Y coordinate
+        last_pos_y = [0.2]
         if coin_flipy == 1:
-            planet_coordy = np.random.randint(SUN_RADIUS+0.2, ( SUN_RADIUS+0.2)*7)
+            planet_coordy = np.random.randint(SUN_RADIUS+last_pos_y[len(last_pos_y)-1], ( SUN_RADIUS+0.2)*7)
+            last_pos_y += [planet_coordy]
+        last_neg_y = [-0.2]
         if coin_flipx == -1:
-            planet_coordy = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS-0.2)
+            planet_coordy = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_y[len(last_neg_y)-1])
+            last_neg_y += [planet_coordy]
 
         # Z coordinate
+        last_pos_z = [0.2]
         if coin_flipz == 1:
-            planet_coordz = np.random.randint(SUN_RADIUS+0.2, ( SUN_RADIUS+0.2)*7)
+            planet_coordz = np.random.randint(SUN_RADIUS+last_pos_z[len(last_pos_z)-1], ( SUN_RADIUS+0.2)*7)
+            last_pos_z += [planet_coordz]
+        last_neg_z = [-0.2]
         if coin_flipx == -1:
-            planet_coordz = np.random.randint((-SUN_RADIUS - 0.2) * 7 , -SUN_RADIUS - 0.2)
+            planet_coordz = np.random.randint((-SUN_RADIUS - 0.2) * 7 , -SUN_RADIUS +last_neg_z[len(last_neg_z)-1])
+            last_neg_z += [planet_coordz]
 
         PLANET_POS = np.array([planet_coordx, planet_coordy, planet_coordz]) + planet_scale
         planets_position_lists += [PLANET_POS]
@@ -239,7 +251,7 @@ if __name__ == "__main__":
             print(f"FPS: {fps_master_race}")
         #print(1/dt)
 
-    clock.schedule_interval(update, 1 / 144)
+    clock.schedule_interval(update, 1 / 165)
     app.run()
 
 """
