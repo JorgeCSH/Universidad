@@ -75,12 +75,26 @@ class Sphere(drawables.Model):
         super().__init__(position_data, None, normal_data, index_data)
 
 
+''' Clase Planeta
+Clase donde contengo toda las caracteristicas de los planetas, ademas de algunos comportamientos como la actualizacion
+de la pocision, velocidad, etc.
+
+'''
+class Planeta:
+    def __init__(self, masa, radio, posicion, velocidad, id):
+        self.masa = masa
+        self.radio = radio
+        self.posicion = posicion
+        self.velocidad = velocidad
+        self.id = id
+
+
+
+
 SUN_MASS = 2
 SUN_RADIUS = 1.0
+SUN_VELOCITY = 0
 GRAVITY = 2
-
-global G
-G = 6.6743*(10**(-11))
 
 if __name__ == "__main__":
     controller = Controller(1000, 1000, "Tarea 5")
@@ -101,14 +115,14 @@ if __name__ == "__main__":
 
     planet_mesh = Sphere(36)
 
-    # Sun light node, we use a point light
+    # Nodo de la luz del sol
     world.add_node("sun_light",
                    light=PointLight(),
                    pipeline=pipeline,
                    position=[0, 0, 0]
                    )
 
-    # Sun node, we attach the sun light to the sun node
+    # Nodo del sol, esta conectado al nodo de la luz
     world.add_node(
         "sun",
         attach_to= "sun_light",
@@ -119,42 +133,34 @@ if __name__ == "__main__":
         position = [0, 0, 0],
     )
 
-    # Creation of planets, from 10 to 15
+    # Creamos una cantidad de planetas aleatoria, entre 10 y 15
     planets_quantities = np.random.randint(10, 15)
     print(planets_quantities)
 
-    planets_radius_lists = []
-    planets_position_lists = []
-    planets_mass_lists = []
-    sun_planet_distance = []
-
+    # Creacion de los planetas
+    planets_atrocities = []
     for i in range(0, planets_quantities):
-        # Planet color
+        # Color del planeta
         r = np.random.rand()
         g = np.random.rand()
         b = np.random.rand()
         crayon = [r, g, b]
 
-        # Planet size
-        planet_coordx = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
-        planet_coordy = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
-        planet_coordz = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
-        planet_scale = np.array([planet_coordx, planet_coordy, planet_coordz])
+        # Tamaño del planeta
+        planet_x = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
+        planet_y = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
+        planet_z = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
 
-        PLANET_RADIUS = (((planet_coordx)**(2))+((planet_coordy)**(2))+((planet_coordz)**(2)))**(1/2)
-        planets_radius_lists += [[PLANET_RADIUS, planet_scale]]
-
-        # Planet position
+        # Posicion del planeta
+        # Decidimos de manera aleatoria en cual octante (creo que asi se llama) esta inicialmente un planeta.
         coin_flipx = np.random.choice([-1, 1], 1)
         coin_flipy = np.random.choice([-1, 1], 1)
         coin_flipz = np.random.choice([-1, 1], 1)
-
-        # Coordinates
+        # Coordenadas
         planet_coordx = 0
         planet_coordy = 0
         planet_coordz = 0
-
-        # X coordinate
+        # Coordenada inicial en el eje OX
         last_pos_x = [0.2]
         if coin_flipx == 1:
             planet_coordx = np.random.randint(SUN_RADIUS+last_pos_x[len(last_pos_x)-1], ( SUN_RADIUS+0.2)*7)
@@ -163,8 +169,7 @@ if __name__ == "__main__":
         if coin_flipx == -1:
             planet_coordx = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_x[len(last_neg_x)-1])
             last_neg_x += [planet_coordx]
-
-        # Y coordinate
+        # Coordenada inicial en el eje OY
         last_pos_y = [0.2]
         if coin_flipy == 1:
             planet_coordy = np.random.randint(SUN_RADIUS+last_pos_y[len(last_pos_y)-1], ( SUN_RADIUS+0.2)*7)
@@ -173,8 +178,7 @@ if __name__ == "__main__":
         if coin_flipx == -1:
             planet_coordy = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_y[len(last_neg_y)-1])
             last_neg_y += [planet_coordy]
-
-        # Z coordinate
+        # Coordenada inicial en el eje OZ
         last_pos_z = [0.2]
         if coin_flipz == 1:
             planet_coordz = np.random.randint(SUN_RADIUS+last_pos_z[len(last_pos_z)-1], ( SUN_RADIUS+0.2)*7)
@@ -184,24 +188,42 @@ if __name__ == "__main__":
             planet_coordz = np.random.randint((-SUN_RADIUS - 0.2) * 7 , -SUN_RADIUS +last_neg_z[len(last_neg_z)-1])
             last_neg_z += [planet_coordz]
 
-        PLANET_POS = np.array([planet_coordx, planet_coordy, planet_coordz]) + planet_scale
-        planets_position_lists += [PLANET_POS]
+        # Velocidad inicial, vectorial
+        v_x = np.random.randint(-3, 3)
+        v_y = np.random.randint(-3, 3)
+        v_z = np.random.randint(-3, 3)
 
-        PLANET_POS_SCAL = ((PLANET_POS[0]**(2))+(PLANET_POS[1]**(2))+(PLANET_POS[2]**(2)))**(1/2) 
-        sun_planet_distance += [PLANET_POS_SCAL]
+        # Juntamos todas las componentes en listas (que se interpretaran como vectores...probablemente sea mejor usar un arreglo)
+        # radio inicial
+        #PLANET_RADIUS = (((planet_x)**(2))+((planet_y)**(2))+((planet_z)**(2)))**(1/2)
+        PLANET_RADIUS = [planet_x, planet_y, planet_z]
+        # posicion inicial
+        #PLANET_POS = ((PLANET_POS_VEC[0]**(2))+(PLANET_POS_VEC[1]**(2))+(PLANET_POS_VEC[2]**(2)))**(1/2)
+        PLANET_POS = [planet_coordx + planet_x, planet_coordy + planet_y, planet_coordz + planet_z]
+        # velocidad inicial
+        #PLANET_VEL = ((v_x**(2))+(v_y**(2))+(v_z**(2)))**(1/2)
+        PLANET_VEL = [v_x, v_y, v_z]
+        # Masa inicial
+        PLANET_MASS = np.random.randint(1, 10)
 
-        # Planet generation
+        # arreglo donde contemenos las clases con la info de cada planeta
+        planets_atrocities += [Planeta(masa = PLANET_MASS, radio = PLANET_RADIUS, posicion = PLANET_POS, velocidad = PLANET_VEL, id = i)]
+
+        # Nodo con cada planeta
         world.add_node(
             name = f"planet{i}",
             mesh = planet_mesh,
             pipeline = lpipeline,
-            scale = planet_scale,
+            scale = PLANET_RADIUS,
             material = Material(ambient = crayon,
                                 diffuse = [crayon[i]*np.random.rand() for i in range(0, len(crayon))],
                                 specular = [crayon[i]*np.random.rand() for i in range(0, len(crayon))]),
             color = crayon,
         )
 
+    # Aca creamos los planetas
+    for i in range(0, planets_quantities):
+        world[f"planet{i}"]["position"] = planets_atrocities[i].posicion
 
     @controller.event
     def on_draw():
@@ -222,6 +244,7 @@ if __name__ == "__main__":
         if symbol == window.key.D:
             controller.input[0] = -1
 
+
     @controller.event
     def on_key_release(symbol, modifiers):
         if symbol == window.key.W or symbol == window.key.S:
@@ -234,14 +257,7 @@ if __name__ == "__main__":
         cam.phi += controller.input[0] * controller.speed * dt
         cam.theta += controller.input[1] * controller.speed * dt
 
-        # Update planets position, the new position is calculated using the gravity formula and the velocity of the planet
-        for i in range(0, planets_quantities):
-            # Spherical coordinates:
-            theta = np.arctan(((((planets_position_lists[i][0])**2)+(planets_position_lists[i][1]**2))**(1/2))/planets_position_lists[i][2])
-            phi = np.arctan(planets_position_lists[i][1]/planets_position_lists[i][0])
-            world[f"planet{i}"]["position"] = [sun_planet_distance[i]*np.sin(theta)*np.cos(phi),
-                                               sun_planet_distance[i]*np.sin(theta)*np.sin(phi),
-                                               sun_planet_distance[i]*np.cos(theta)] 
+
         world.update()
         cam.update()
 
