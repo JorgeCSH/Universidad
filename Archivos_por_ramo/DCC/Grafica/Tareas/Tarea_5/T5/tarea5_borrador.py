@@ -120,6 +120,11 @@ if __name__ == "__main__":
     # Creation of planets, from 10 to 15
     planets_quantities = np.random.randint(10, 15)
     print(planets_quantities)
+
+    planets_radius_lists = []
+    planets_position_lists = []
+    planets_mass_lists = []
+
     for i in range(0, planets_quantities):
         # Planet color
         r = np.random.rand()
@@ -128,8 +133,13 @@ if __name__ == "__main__":
         crayon = [r, g, b]
 
         # Planet size
-        radius_proportion = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
-        planet_scale = [radius_proportion, radius_proportion, radius_proportion]
+        planet_coordx = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
+        planet_coordy = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
+        planet_coordz = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
+        planet_scale = np.array([planet_coordx, planet_coordy, planet_coordz])
+
+        PLANET_RADIUS = (((planet_coordx)**(2))+((planet_coordy)**(2))+((planet_coordz)**(2)))**(1/2)
+        planets_radius_lists += [[PLANET_RADIUS, planet_scale]]
 
         # Planet position
         coin_flipx = np.random.choice([-1, 1], 1)
@@ -159,7 +169,8 @@ if __name__ == "__main__":
         if coin_flipx == -1:
             planet_coordz = np.random.randint((-SUN_RADIUS - 0.2) * 7 , -SUN_RADIUS - 0.2)
 
-        planet_coords = [planet_coordx, planet_coordy, planet_coordz]
+        PLANET_POS = np.array([planet_coordx, planet_coordy, planet_coordz]) + planet_scale
+        planets_position_lists += [PLANET_POS]
 
         # Planet generation
         world.add_node(
@@ -170,7 +181,6 @@ if __name__ == "__main__":
             material = Material(ambient = crayon,
                                 diffuse = [crayon[i]*np.random.rand() for i in range(0, len(crayon))],
                                 specular = [crayon[i]*np.random.rand() for i in range(0, len(crayon))]),
-            position = planet_coords
         )
 
 
@@ -204,6 +214,10 @@ if __name__ == "__main__":
     def update(dt):
         cam.phi += controller.input[0] * controller.speed * dt
         cam.theta += controller.input[1] * controller.speed * dt
+
+        # Update planets position, the new position is calculated using the gravity formula and the velocity of the planet
+        for i in range(0, planets_quantities):
+            world[f"planet{i}"]["position"] = [planets_position_lists[i][0]*np.cos(dt*(i/15)), planets_position_lists[i][1]*np.sin(dt*(i/15)), planets_position_lists[i][2]]
 
         world.update()
         cam.update()
