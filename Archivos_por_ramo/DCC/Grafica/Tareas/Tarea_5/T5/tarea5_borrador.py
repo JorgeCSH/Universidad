@@ -16,6 +16,8 @@
 from networkx.algorithms.bipartite import collaboration_weighted_projected_graph
 import numpy as np
 import os
+
+from numpy.ma.core import indices
 from pyglet import window, gl, app, clock
 from scipy.fft import prev_fast_len
 
@@ -82,12 +84,13 @@ de la pocision, velocidad, etc.
 '''
 
 class Planeta:
-    def __init__(self, masa, radio, posicion, velocidad, id):
+    def __init__(self, masa, radio, posicion, velocidad, id, eliminado):
         self.masa = masa
         self.radio = radio
         self.posicion = posicion
         self.velocidad = velocidad
         self.id = id
+        self.eliminado = eliminado
         self.radio_escalar = (self.radio[0]**(2)+self.radio[1]**(2)+self.radio[2]**(2))**(1/2)
 
     # Metodo update_pocision, usa el metodo de newton
@@ -109,7 +112,7 @@ class Planeta:
 
 
 
-SUN_MASS = 1000000
+SUN_MASS = 100000
 SUN_RADIUS = 1.0
 SUN_VELOCITY = 0
 
@@ -206,7 +209,7 @@ if __name__ == "__main__":
             last_neg_z += [planet_coordz]
 
         # Velocidad inicial, vectorial
-        v_x = np.random.uniform(-2, 2)
+        v_x = np.random.uniform(-0.0005, 2)
         v_y = np.random.uniform(-2, 2)
         v_z = np.random.uniform(-2, 2)
 
@@ -221,10 +224,10 @@ if __name__ == "__main__":
         #PLANET_VEL = ((v_x**(2))+(v_y**(2))+(v_z**(2)))**(1/2)
         PLANET_VEL = [v_x, v_y, v_z]
         # Masa inicial
-        PLANET_MASS = np.random.randint(5000, 10000)
+        PLANET_MASS = np.random.uniform(100, 1000)
 
         # arreglo donde contemenos las clases con la info de cada planeta
-        planets_atrocities += [Planeta(masa = PLANET_MASS, radio = PLANET_RADIUS, posicion = PLANET_POS, velocidad = PLANET_VEL, id = i)]
+        planets_atrocities += [Planeta(masa = PLANET_MASS, radio = PLANET_RADIUS, posicion = PLANET_POS, velocidad = PLANET_VEL, id = i, eliminado = False)]
 
         # Nodo con cada planeta
         world.add_node(
@@ -239,13 +242,51 @@ if __name__ == "__main__":
         )
 
     # Aca creamos los planetas
-    for i in range(0, planets_quantities):
-        world[f"planet{i}"]["position"] = planets_atrocities[i].posicion
+    indices_remover = []
+    for i in range(0, len(planets_atrocities)):
+        if planets_atrocities[i].eliminado:
+            if i == n-1:
+                break
+            else:
+                i+=1
+        n = len(planets_atrocities)
+        planeta_afectado = planets_atrocities[i]
+        k = 0
+        while k < n:
+            planeta_colisionado = planets_atrocities[k]
+            if k == i:
+                k += 1
+            else:
+                r = ((planeta_afectado.posicion[0] - planeta_colisionado.posicion[0]) ** 2 + (
+                            planeta_afectado.posicion[1] - planeta_colisionado.posicion[1]) ** 2 + (
+                                 planeta_afectado.posicion[2] - planeta_colisionado.posicion[2]) ** 2) ** (1 / 2)
+                if not r > (planeta_afectado.radio_escalar + planeta_colisionado.radio_escalar):
+                    # Colision
+                    # masas deben sumarse, radios tambien, posicion se saca el promedio y las velocidades se suman
+                    planeta_afectado.masa += planeta_colisionado.masa
+                    planeta_afectado.radio = [(planeta_afectado.radio[0] + planeta_colisionado.radio[0]),
+                                              (planeta_afectado.radio[1] + planeta_colisionado.radio[1]),
+                                              (planeta_afectado.radio[2] + planeta_colisionado.radio[2])]
+                    planeta_afectado.posicion = [(planeta_afectado.posicion[0] + planeta_colisionado.posicion[0]) / 2,
+                                                 (planeta_afectado.posicion[1] + planeta_colisionado.posicion[1]) / 2,
+                                                 (planeta_afectado.posicion[2] + planeta_colisionado.posicion[2]) / 2]
+                    planeta_afectado.velocidad = [(planeta_afectado.velocidad[0] + planeta_colisionado.velocidad[0]),
+                                                  (planeta_afectado.velocidad[1] + planeta_colisionado.velocidad[1]),
+                                                  (planeta_afectado.velocidad[2] + planeta_colisionado.velocidad[2])]
+                    # Eliminamos el planeta colisionado
+                    planets_atrocities[k].eliminado = True
+                    indices_remover += [k]
+                    k += 1
+                else:
+                    k += 1
+        if not planeta_afectado.eliminado == True:
+            world[f"planet{i}"]["position"] = planeta_afectado.posicion
+
 
     @controller.event
     def on_draw():
         controller.clear()
-        gl.glClearColor(0.0, 0.0, 0.0, 1.0)
+        gl.glClearColor(0.1, 0.1, 0.1, 1.0)
         gl.glEnable(gl.GL_DEPTH_TEST)
         world.draw()
 
@@ -270,16 +311,26 @@ if __name__ == "__main__":
         if symbol == window.key.A or symbol == window.key.D:
             controller.input[0] = 0
 
+
     def update(dt):
         cam.phi += controller.input[0] * controller.speed * dt
         cam.theta += controller.input[1] * controller.speed * dt
 
         # Update posicion planetas dado a que se updetean las velocidades de los planetas
-        for i in range(0, len(planets_atrocities)):
+
+        n = len(planets_atrocities)
+
+        for i in range(0, n):
             planeta_afectado = planets_atrocities[i]
+            if planeta_afectado.eliminado:
+                if i == n-1:
+                    break
+                else:
+                    i+=1
+
             # Update de velocidad dado a posicion respecto a otros planetas
             j = 0
-            while j < len(planets_atrocities):
+            while j < n:
                 planeta_afectante = planets_atrocities[j]
                 if j == i:
                     j += 1
@@ -288,8 +339,13 @@ if __name__ == "__main__":
             # Update de velocidad dado a posicion respecto al sol
             planeta_afectado.update_velocidad(SUN_MASS, [0, 0, 0])
             planeta_afectado.update_posicion(dt)
-            world[f"planet{i}"]["position"] = planeta_afectado.posicion
+            # Vemos caso colision
 
+            if not planeta_afectado.eliminado:
+                world[f"planet{i}"]["position"] = planeta_afectado.posicion
+
+            # Colision de planetas
+            # masas deben sumarse, radios tambien, posicion se saca el promedio y las velocidades se suma
         world.update()
         cam.update()
 
