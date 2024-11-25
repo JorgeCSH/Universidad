@@ -87,7 +87,8 @@ class Planeta:
         self.posicion = posicion
         self.velocidad = velocidad
         self.id = id
-
+    def update_posicion(self, dt):
+        self.posicion = [self.posicion[i] + self.velocidad[i]*dt for i in range(0, len(self.posicion))]
 
 
 
@@ -257,6 +258,9 @@ if __name__ == "__main__":
         cam.phi += controller.input[0] * controller.speed * dt
         cam.theta += controller.input[1] * controller.speed * dt
 
+        for i in range(0, planets_quantities):
+            planets_atrocities[i].update_posicion(dt)
+            world[f"planet{i}"]["position"] = planets_atrocities[i].posicion
 
         world.update()
         cam.update()
