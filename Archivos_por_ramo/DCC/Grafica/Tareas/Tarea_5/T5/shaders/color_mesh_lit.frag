@@ -98,7 +98,8 @@ vec3 computePointLight(vec3 normal, vec3 viewDir, PointLight light) {
     float spec = pow(max(dot(normal, halfwayDir), 0.0f), u_material.shininess);
     vec3 specular = light.specular * (spec * u_material.specular);
 
-    return (ambient + diffuse + specular) * attenuation;
+    vec3 result =(ambient + diffuse + specular) * attenuation;
+    return result / attenuation;;
 }
 
 vec3 computeSpotLight(vec3 normal, vec3 viewDir, SpotLight light) {
@@ -125,7 +126,8 @@ vec3 computeSpotLight(vec3 normal, vec3 viewDir, SpotLight light) {
     float epsilon = light.cutOff - light.outerCutOff;
     float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0f, 1.0f);
 
-    return (ambient + diffuse + specular) * intensity * attenuation;;
+    vec3 result =(ambient + diffuse + specular) * intensity * attenuation;
+    return result / attenuation;;
 }
 
 

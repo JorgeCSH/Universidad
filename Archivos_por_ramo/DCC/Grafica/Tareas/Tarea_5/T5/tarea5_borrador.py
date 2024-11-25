@@ -17,7 +17,9 @@ from networkx.algorithms.bipartite import collaboration_weighted_projected_graph
 import numpy as np
 import os
 from pyglet import window, gl, app, clock
-from utils.drawables import Material
+from scipy.fft import prev_fast_len
+
+from utils.drawables import Texture, PointLight, DirectionalLight, SpotLight, Material
 from utils import helpers, scene_graph, drawables, camera, drawables
 
 
@@ -97,19 +99,28 @@ if __name__ == "__main__":
 
     planet_mesh = Sphere(36)
 
-    # Creacion del sol
+    # Sun light node, we use a point light
+    world.add_node("sun_light",
+                   light=PointLight(),
+                   pipeline=pipeline,
+                   position=[0, 0, 0]
+                   )
+
+    # Sun node, we attach the sun light to the sun node
     world.add_node(
         "sun",
+        attach_to= "sun_light",
         mesh=planet_mesh,
         pipeline=lpipeline,
-        scale= [2.5, 2.5, 2.5],
-        color=[0.98, 0.98, 0.1],
+        scale =  [SUN_RADIUS, SUN_RADIUS, SUN_RADIUS],
+        color = [1.0, 0.8, 0.3],
         position = [0, 0, 0],
     )
 
-    # Creacion de planetas al azar, entre 10 y 15
+    # Creation of planets, from 10 to 15
     planets_quantities = np.random.randint(10, 15)
-    for i in range(1, planets_quantities+1):
+    print(planets_quantities)
+    for i in range(0, planets_quantities):
         # Planet color
         r = np.random.rand()
         g = np.random.rand()
@@ -117,19 +128,48 @@ if __name__ == "__main__":
         crayon = [r, g, b]
 
         # Planet size
-        radius_proportion = SUN_RADIUS*((planets_quantities+1-i)/planets_quantities)
+        radius_proportion = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
         planet_scale = [radius_proportion, radius_proportion, radius_proportion]
 
         # Planet position
-        planet_coords = np.random.randint(5, 10, 3)
+        coin_flipx = np.random.choice([-1, 1], 1)
+        coin_flipy = np.random.choice([-1, 1], 1)
+        coin_flipz = np.random.choice([-1, 1], 1)
+
+        # Coordinates
+        planet_coordx = 0
+        planet_coordy = 0
+        planet_coordz = 0
+
+        # X coordinate
+        if coin_flipx == 1:
+            planet_coordx = np.random.randint(SUN_RADIUS+0.2, ( SUN_RADIUS+0.2)*7)
+        if coin_flipx == -1:
+            planet_coordx = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS-0.2)
+
+        # Y coordinate
+        if coin_flipy == 1:
+            planet_coordy = np.random.randint(SUN_RADIUS+0.2, ( SUN_RADIUS+0.2)*7)
+        if coin_flipx == -1:
+            planet_coordy = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS-0.2)
+
+        # Z coordinate
+        if coin_flipz == 1:
+            planet_coordz = np.random.randint(SUN_RADIUS+0.2, ( SUN_RADIUS+0.2)*7)
+        if coin_flipx == -1:
+            planet_coordz = np.random.randint((-SUN_RADIUS - 0.2) * 7 , -SUN_RADIUS - 0.2)
+
+        planet_coords = [planet_coordx, planet_coordy, planet_coordz]
 
         # Planet generation
         world.add_node(
             name = f"planet{i}",
             mesh = planet_mesh,
-            pipeline = lpipeline,
+            pipeline = pipeline,
             scale = planet_scale,
-            color = crayon,
+            material = Material(ambient = crayon,
+                                diffuse = [crayon[i]*np.random.rand() for i in range(0, len(crayon))],
+                                specular = [crayon[i]*np.random.rand() for i in range(0, len(crayon))]),
             position = planet_coords
         )
 
@@ -168,7 +208,17 @@ if __name__ == "__main__":
         world.update()
         cam.update()
 
-    clock.schedule_interval(update, 1 / 60)
+        fps_master_race = 1/dt
+        if fps_master_race < 144:
+            if fps_master_race < 60:
+                if fps_master_race < 30:
+                    print(f"(FPS: {fps_master_race}) Master race community: Seriously, now we are in problems ({fps_master_race})\n")
+                print(f"(FPS: {fps_master_race}) Master race community: dirty CONSOLE ENJOYER ({fps_master_race})\n")
+            print(f"(FPS: {fps_master_race}) Master race community: UNACCEPTABLE ({fps_master_race})\n")
+        print(f"(FPS: {fps_master_race}) Master race community: happy sounds* ({fps_master_race})\n")
+        #print(1/dt)
+
+    clock.schedule_interval(update, 1 / 144)
     app.run()
 
 """
