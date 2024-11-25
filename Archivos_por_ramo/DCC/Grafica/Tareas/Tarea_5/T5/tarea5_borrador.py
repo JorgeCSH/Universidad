@@ -17,8 +17,8 @@ from networkx.algorithms.bipartite import collaboration_weighted_projected_graph
 import numpy as np
 import os
 from pyglet import window, gl, app, clock
-
-from utils import helpers, scene_graph, drawables, camera
+from utils.drawables import Material
+from utils import helpers, scene_graph, drawables, camera, drawables
 
 
 class Controller(window.Window):
@@ -95,15 +95,44 @@ if __name__ == "__main__":
         shaders_folder + "/color_mesh.vert", shaders_folder + "/color_mesh.frag"
     )
 
-    mesh = Sphere(36)
+    planet_mesh = Sphere(36)
 
+    # Creacion del sol
     world.add_node(
         "sun",
-        mesh=mesh,
+        mesh=planet_mesh,
         pipeline=lpipeline,
-        scale=np.full(3, SUN_RADIUS),
-        color=[1.0, 0.8, 0.3],
+        scale= [2.5, 2.5, 2.5],
+        color=[0.98, 0.98, 0.1],
+        position = [0, 0, 0],
     )
+
+    # Creacion de planetas al azar, entre 10 y 15
+    planets_quantities = np.random.randint(10, 15)
+    for i in range(1, planets_quantities+1):
+        # Planet color
+        r = np.random.rand()
+        g = np.random.rand()
+        b = np.random.rand()
+        crayon = [r, g, b]
+
+        # Planet size
+        radius_proportion = SUN_RADIUS*((planets_quantities+1-i)/planets_quantities)
+        planet_scale = [radius_proportion, radius_proportion, radius_proportion]
+
+        # Planet position
+        planet_coords = np.random.randint(5, 10, 3)
+
+        # Planet generation
+        world.add_node(
+            name = f"planet{i}",
+            mesh = planet_mesh,
+            pipeline = lpipeline,
+            scale = planet_scale,
+            color = crayon,
+            position = planet_coords
+        )
+
 
     @controller.event
     def on_draw():
