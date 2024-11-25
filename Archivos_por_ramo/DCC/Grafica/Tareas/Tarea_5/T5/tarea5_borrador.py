@@ -80,6 +80,7 @@ Clase donde contengo toda las caracteristicas de los planetas, ademas de algunos
 de la pocision, velocidad, etc.
 
 '''
+
 class Planeta:
     def __init__(self, masa, radio, posicion, velocidad, id):
         self.masa = masa
@@ -87,15 +88,30 @@ class Planeta:
         self.posicion = posicion
         self.velocidad = velocidad
         self.id = id
+        self.radio_escalar = (self.radio[0]**(2)+self.radio[1]**(2)+self.radio[2]**(2))**(1/2)
+
+    # Metodo update_pocision, usa el metodo de newton
     def update_posicion(self, dt):
-        self.posicion = [self.posicion[i] + self.velocidad[i]*dt for i in range(0, len(self.posicion))]
+        self.posicion[0] += self.velocidad[0]*dt
+        self.posicion[1] += self.velocidad[1]*dt
+        self.posicion[2] += self.velocidad[2]*dt
+
+
+    # Metodo update_velocidad, usa el metodo de newton
+    def update_velocidad(self, m2, pos2):
+        G = 6.67430*(10**(-11))
+        r = ((self.posicion[0]-pos2[0])**2 + (self.posicion[1]-pos2[1])**2 + (self.posicion[2]-pos2[2])**2)**(1/2)
+        F = G*(self.masa*m2)/(r**2+self.radio_escalar)
+        self.velocidad[0] += F*(pos2[0]-self.posicion[0])/(r+self.radio_escalar)
+        self.velocidad[1] += F*(pos2[1]-self.posicion[1])/(r+self.radio_escalar)
+        self.velocidad[2] += F*(pos2[2]-self.posicion[2])/(r+self.radio_escalar)
 
 
 
-SUN_MASS = 2
+
+SUN_MASS = 1000000
 SUN_RADIUS = 1.0
 SUN_VELOCITY = 0
-GRAVITY = 2
 
 if __name__ == "__main__":
     controller = Controller(1000, 1000, "Tarea 5")
@@ -164,35 +180,35 @@ if __name__ == "__main__":
         # Coordenada inicial en el eje OX
         last_pos_x = [0.2]
         if coin_flipx == 1:
-            planet_coordx = np.random.randint(SUN_RADIUS+last_pos_x[len(last_pos_x)-1], ( SUN_RADIUS+0.2)*7)
+            planet_coordx = np.random.uniform(SUN_RADIUS+last_pos_x[len(last_pos_x)-1], ( SUN_RADIUS+0.2)*7)
             last_pos_x += [planet_coordx]
         last_neg_x = [-0.2]
         if coin_flipx == -1:
-            planet_coordx = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_x[len(last_neg_x)-1])
+            planet_coordx = np.random.uniform((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_x[len(last_neg_x)-1])
             last_neg_x += [planet_coordx]
         # Coordenada inicial en el eje OY
         last_pos_y = [0.2]
         if coin_flipy == 1:
-            planet_coordy = np.random.randint(SUN_RADIUS+last_pos_y[len(last_pos_y)-1], ( SUN_RADIUS+0.2)*7)
+            planet_coordy = np.random.uniform(SUN_RADIUS+last_pos_y[len(last_pos_y)-1], ( SUN_RADIUS+0.2)*7)
             last_pos_y += [planet_coordy]
         last_neg_y = [-0.2]
         if coin_flipx == -1:
-            planet_coordy = np.random.randint((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_y[len(last_neg_y)-1])
+            planet_coordy = np.random.uniform((-SUN_RADIUS-0.2)*7, -SUN_RADIUS+last_neg_y[len(last_neg_y)-1])
             last_neg_y += [planet_coordy]
         # Coordenada inicial en el eje OZ
         last_pos_z = [0.2]
         if coin_flipz == 1:
-            planet_coordz = np.random.randint(SUN_RADIUS+last_pos_z[len(last_pos_z)-1], ( SUN_RADIUS+0.2)*7)
+            planet_coordz = np.random.uniform(SUN_RADIUS+last_pos_z[len(last_pos_z)-1], ( SUN_RADIUS+0.2)*7)
             last_pos_z += [planet_coordz]
         last_neg_z = [-0.2]
         if coin_flipx == -1:
-            planet_coordz = np.random.randint((-SUN_RADIUS - 0.2) * 7 , -SUN_RADIUS +last_neg_z[len(last_neg_z)-1])
+            planet_coordz = np.random.uniform((-SUN_RADIUS - 0.2) * 7 , -SUN_RADIUS +last_neg_z[len(last_neg_z)-1])
             last_neg_z += [planet_coordz]
 
         # Velocidad inicial, vectorial
-        v_x = np.random.randint(-3, 3)
-        v_y = np.random.randint(-3, 3)
-        v_z = np.random.randint(-3, 3)
+        v_x = np.random.uniform(-2, 2)
+        v_y = np.random.uniform(-2, 2)
+        v_z = np.random.uniform(-2, 2)
 
         # Juntamos todas las componentes en listas (que se interpretaran como vectores...probablemente sea mejor usar un arreglo)
         # radio inicial
@@ -205,7 +221,7 @@ if __name__ == "__main__":
         #PLANET_VEL = ((v_x**(2))+(v_y**(2))+(v_z**(2)))**(1/2)
         PLANET_VEL = [v_x, v_y, v_z]
         # Masa inicial
-        PLANET_MASS = np.random.randint(1, 10)
+        PLANET_MASS = np.random.randint(5000, 10000)
 
         # arreglo donde contemenos las clases con la info de cada planeta
         planets_atrocities += [Planeta(masa = PLANET_MASS, radio = PLANET_RADIUS, posicion = PLANET_POS, velocidad = PLANET_VEL, id = i)]
@@ -258,9 +274,21 @@ if __name__ == "__main__":
         cam.phi += controller.input[0] * controller.speed * dt
         cam.theta += controller.input[1] * controller.speed * dt
 
-        for i in range(0, planets_quantities):
-            planets_atrocities[i].update_posicion(dt)
-            world[f"planet{i}"]["position"] = planets_atrocities[i].posicion
+        # Update posicion planetas dado a que se updetean las velocidades de los planetas
+        for i in range(0, len(planets_atrocities)):
+            planeta_afectado = planets_atrocities[i]
+            # Update de velocidad dado a posicion respecto a otros planetas
+            j = 0
+            while j < len(planets_atrocities):
+                planeta_afectante = planets_atrocities[j]
+                if j == i:
+                    j += 1
+                planeta_afectado.update_velocidad(planeta_afectante.masa, planeta_afectante.posicion)
+                j += 1
+            # Update de velocidad dado a posicion respecto al sol
+            planeta_afectado.update_velocidad(SUN_MASS, [0, 0, 0])
+            planeta_afectado.update_posicion(dt)
+            world[f"planet{i}"]["position"] = planeta_afectado.posicion
 
         world.update()
         cam.update()
