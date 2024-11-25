@@ -79,6 +79,8 @@ SUN_MASS = 2
 SUN_RADIUS = 1.0
 GRAVITY = 2
 
+global G
+G = 6.6743*(10**(-11))
 
 if __name__ == "__main__":
     controller = Controller(1000, 1000, "Tarea 5")
@@ -124,6 +126,7 @@ if __name__ == "__main__":
     planets_radius_lists = []
     planets_position_lists = []
     planets_mass_lists = []
+    sun_planet_distance = []
 
     for i in range(0, planets_quantities):
         # Planet color
@@ -172,15 +175,19 @@ if __name__ == "__main__":
         PLANET_POS = np.array([planet_coordx, planet_coordy, planet_coordz]) + planet_scale
         planets_position_lists += [PLANET_POS]
 
+        PLANET_POS_SCAL = ((PLANET_POS[0]**(2))+(PLANET_POS[1]**(2))+(PLANET_POS[2]**(2)))**(1/2) 
+        sun_planet_distance += [PLANET_POS_SCAL]
+
         # Planet generation
         world.add_node(
             name = f"planet{i}",
             mesh = planet_mesh,
-            pipeline = pipeline,
+            pipeline = lpipeline,
             scale = planet_scale,
             material = Material(ambient = crayon,
                                 diffuse = [crayon[i]*np.random.rand() for i in range(0, len(crayon))],
                                 specular = [crayon[i]*np.random.rand() for i in range(0, len(crayon))]),
+            color = crayon,
         )
 
 
@@ -217,19 +224,19 @@ if __name__ == "__main__":
 
         # Update planets position, the new position is calculated using the gravity formula and the velocity of the planet
         for i in range(0, planets_quantities):
-            world[f"planet{i}"]["position"] = [planets_position_lists[i][0]*np.cos(dt*(i/15)), planets_position_lists[i][1]*np.sin(dt*(i/15)), planets_position_lists[i][2]]
-
+            # Spherical coordinates:
+            theta = np.arctan(((((planets_position_lists[i][0])**2)+(planets_position_lists[i][1]**2))**(1/2))/planets_position_lists[i][2])
+            phi = np.arctan(planets_position_lists[i][1]/planets_position_lists[i][0])
+            world[f"planet{i}"]["position"] = [sun_planet_distance[i]*np.sin(theta)*np.cos(phi),
+                                               sun_planet_distance[i]*np.sin(theta)*np.sin(phi),
+                                               sun_planet_distance[i]*np.cos(theta)] 
         world.update()
         cam.update()
 
+        # Here we monitorize the FPS of the simulation
         fps_master_race = 1/dt
-        if fps_master_race < 144:
-            if fps_master_race < 60:
-                if fps_master_race < 30:
-                    print(f"(FPS: {fps_master_race}) Master race community: Seriously, now we are in problems ({fps_master_race})\n")
-                print(f"(FPS: {fps_master_race}) Master race community: dirty CONSOLE ENJOYER ({fps_master_race})\n")
-            print(f"(FPS: {fps_master_race}) Master race community: UNACCEPTABLE ({fps_master_race})\n")
-        print(f"(FPS: {fps_master_race}) Master race community: happy sounds* ({fps_master_race})\n")
+        if fps_master_race <=30:
+            print(f"FPS: {fps_master_race}")
         #print(1/dt)
 
     clock.schedule_interval(update, 1 / 144)
