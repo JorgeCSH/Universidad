@@ -352,52 +352,57 @@ if __name__ == "__main__":
             planeta_afectado.update_posicion(dt)
 
             # Colision con el sol, correspondera a un choque elastico.
-            if ((planeta_afectado.posicion[0]**(2))+(planeta_afectado.posicion[1]**(2))+(planeta_afectado.posicion[2]**(2)))**(1/2) <= SUN_RADIUS:
+            if not ((planeta_afectado.posicion[0]**(2))+(planeta_afectado.posicion[1]**(2))+(planeta_afectado.posicion[2]**(2)))**(1/2) > SUN_RADIUS:
                 # Obtenemos la normal con respecto a la colision.
                 normal = [planeta_afectado.posicion[0]/SUN_RADIUS, planeta_afectado.posicion[1]/SUN_RADIUS, planeta_afectado.posicion[2]/SUN_RADIUS]
-                # Se calcula la velocidad reflejada
+                # Se calcula la velocidad, es similar a una reflexion.
                 planeta_afectado.velocidad = [planeta_afectado.velocidad[0] - 2*(np.dot(planeta_afectado.velocidad, normal))*normal[0],
                                               planeta_afectado.velocidad[1] - 2*(np.dot(planeta_afectado.velocidad, normal))*normal[1],
                                               planeta_afectado.velocidad[2] - 2*(np.dot(planeta_afectado.velocidad, normal))*normal[2]]
-                # Se actualiza la posicion para que no se quede pegado al sol
+                # Nueva posicion
                 planeta_afectado.posicion = [normal[0]*SUN_RADIUS, normal[1]*SUN_RADIUS, normal[2]*SUN_RADIUS]
 
-            # Vemos caso colision
+            # Colision entre planetas, iteramos todos los planetas con respecto a uno para ver que ocurrira.
             k = 0
             while k < n:
+                # Definimos el planeta con el que se colisionara.
                 planeta_colisionado = planets_atrocities[k]
+                # Caso donde el planeta con el que se colisionara y el que colisionara seran el mismo.
                 if k == i:
                     k += 1
+                # Caso donde se colisionara con otro planeta.
                 else:
+                    # Definimos r como la distancia entre los centros de dos planetas.
                     r = ((planeta_afectado.posicion[0] - planeta_colisionado.posicion[0]) ** 2 + (
                             planeta_afectado.posicion[1] - planeta_colisionado.posicion[1]) ** 2 + (
                                  planeta_afectado.posicion[2] - planeta_colisionado.posicion[2]) ** 2) ** (1 / 2)
+                    # Caso donde la distancia es menor a la suma de los radios (significa que se cruzan).
                     if not r > (planeta_afectado.radio_escalar + planeta_colisionado.radio_escalar):
-                        # Colision
-                        # masas deben sumarse, radios tambien, posicion se saca el promedio y las velocidades se suman
-                        planeta_afectado.masa += planeta_colisionado.masa
+                        # El planeta que colisiona sera el que heredara los valores (el otro se elimina).
+                        # Sumamos su masa.
+                        planeta_afectado.masa = planeta_afectado.masa + planeta_colisionado.masa
+                        # Sumamos sus radios (sus componentes).
                         planeta_afectado.radio = [(planeta_afectado.radio[0] + planeta_colisionado.radio[0]),
                                                   (planeta_afectado.radio[1] + planeta_colisionado.radio[1]),
                                                   (planeta_afectado.radio[2] + planeta_colisionado.radio[2])]
+                        # Obtenemos la nueva posicion, esta es el promedio de las originales.
                         planeta_afectado.posicion = [
                             (planeta_afectado.posicion[0] + planeta_colisionado.posicion[0]) / 2,
                             (planeta_afectado.posicion[1] + planeta_colisionado.posicion[1]) / 2,
                             (planeta_afectado.posicion[2] + planeta_colisionado.posicion[2]) / 2]
+                        # Sumamos las velocidades, es la suma "vectorial".
                         planeta_afectado.velocidad = [
                             (planeta_afectado.velocidad[0] + planeta_colisionado.velocidad[0]),
                             (planeta_afectado.velocidad[1] + planeta_colisionado.velocidad[1]),
                             (planeta_afectado.velocidad[2] + planeta_colisionado.velocidad[2])]
-                        # Eliminamos el planeta colisionado
+                        # La clase planetas tiene un atributo para indicar si fue o no eliminado.
                         planeta_colisionado.eliminado = True
-                        #planeta_colisionado = planeta_afectado
+                        world.remove_node(f"planet{k}")
                         k += 1
                     else:
                         k += 1
 
-            if planeta_afectado.eliminado == True:
-                world.remove_node(f"planet{i}")
-
-            elif not planeta_afectado.eliminado == True:
+            if planeta_afectado.eliminado == False:
                 world[f"planet{i}"]["position"] = planeta_afectado.posicion
 
             # Colision de planetas
@@ -416,10 +421,25 @@ if __name__ == "__main__":
 
 """
 =======================================================================================================================
-
-
 Como ejecutar (o ejecute) la tarea:
+- Windows 11, idle: Pycharm corriendo de manera nativa las librerias.
 
-Nota de autor:
+- Archlinux, neovim: corriendo en un virtual environment con las librerias.
+
+Palabras finales:
+La tarea fue entregada en el tiempo respectivo considerando los atrasos, esta intento incorporar las diferentes 
+mecanicas solicitadas las cuales, debido a la falta de tiempo que se viene arrastrando desde semana 11 (la cual
+se junto con mi desorganizacion) no permitieron tener el tiempo adecuado para corregirlas. Se tiene conciencia de 
+ciertos errores como:
+ - Los planetas luego de colisionar tienen una probabilidad de desaparecer a la vez.
+ - Al colisionar con la luna no siempre ocurre un choque perfecto.
+Se tuvo diferentes ideas para solucionar estos problemas. El mas tentador pero que no pudo llevarse a cabo (pese
+a que fue lo primero que se realizo al empezar la tarea....) fue que no se trataran con indices que correspondieran 
+a un entero en un rango, si no que al atributo que inclui desde un inicio pero que nunca use (id). De esta forma pero
+no de una manera optima se podria incorporar un ciclo iterativo donde se dibujen los valores de los nodos cuyos indices
+esten guardados en una lista (en vez de ser la posicion en una lista), con el cual se igualara al atributo id para
+despues ser dibujado, asi se podrian eliminar nodos sin que se obtuviera el error que afirmaba que faltaba un nodo 
+i-esimo.
+
 =======================================================================================================================
 """
