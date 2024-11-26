@@ -177,7 +177,7 @@ if __name__ == "__main__":
     print(planets_quantities)
 
     # Creacion de los planetas
-    planets_atrocities = []
+    planets_list = []
     for i in range(0, planets_quantities):
         # Color del planeta
         r = np.random.rand()
@@ -237,16 +237,14 @@ if __name__ == "__main__":
         scalar_radius = (((planet_x)**(2))+((planet_y)**(2))+((planet_z)**(2)))**(1/2)
         PLANET_RADIUS = [planet_x, planet_y, planet_z]
         # posicion inicial
-        #PLANET_POS = ((PLANET_POS_VEC[0]**(2))+(PLANET_POS_VEC[1]**(2))+(PLANET_POS_VEC[2]**(2)))**(1/2)
         PLANET_POS = [planet_coordx + planet_x, planet_coordy + planet_y, planet_coordz + planet_z]
         # velocidad inicial
-        #PLANET_VEL = ((v_x**(2))+(v_y**(2))+(v_z**(2)))**(1/2)
         PLANET_VEL = [v_x, v_y, v_z]
         # Masa inicial
         PLANET_MASS = 10000*scalar_radius
 
         # arreglo donde contemenos las clases con la info de cada planeta
-        planets_atrocities += [Planeta(masa = PLANET_MASS, radio = PLANET_RADIUS, posicion = PLANET_POS, velocidad = PLANET_VEL, id = i, eliminado = False)]
+        planets_list += [Planeta(masa = PLANET_MASS, radio = PLANET_RADIUS, posicion = PLANET_POS, velocidad = PLANET_VEL, id = i, eliminado = False)]
 
         # Nodo con cada planeta
         world.add_node(
@@ -260,44 +258,6 @@ if __name__ == "__main__":
             color = planet_color,
         )
 
-    # Aca consideramos todos los casos superpuestos y los eliminamos
-    for i in range(0, len(planets_atrocities)):
-        if planets_atrocities[i].eliminado:
-            if i == n-1:
-                break
-            else:
-                i+=1
-        n = len(planets_atrocities)
-        planeta_afectado = planets_atrocities[i]
-        k = 0
-        while k < n:
-            planeta_colisionado = planets_atrocities[k]
-            if k == i:
-                k += 1
-            else:
-                r = ((planeta_afectado.posicion[0] - planeta_colisionado.posicion[0]) ** 2 + (
-                            planeta_afectado.posicion[1] - planeta_colisionado.posicion[1]) ** 2 + (
-                                 planeta_afectado.posicion[2] - planeta_colisionado.posicion[2]) ** 2) ** (1 / 2)
-                if not r > (planeta_afectado.radio_escalar + planeta_colisionado.radio_escalar):
-                    # Colision
-                    # masas deben sumarse, radios tambien, posicion se saca el promedio y las velocidades se suman
-                    planeta_afectado.masa += planeta_colisionado.masa
-                    planeta_afectado.radio = [(planeta_afectado.radio[0] + planeta_colisionado.radio[0]),
-                                              (planeta_afectado.radio[1] + planeta_colisionado.radio[1]),
-                                              (planeta_afectado.radio[2] + planeta_colisionado.radio[2])]
-                    planeta_afectado.posicion = [(planeta_afectado.posicion[0] + planeta_colisionado.posicion[0]) / 2,
-                                                 (planeta_afectado.posicion[1] + planeta_colisionado.posicion[1]) / 2,
-                                                 (planeta_afectado.posicion[2] + planeta_colisionado.posicion[2]) / 2]
-                    planeta_afectado.velocidad = [(planeta_afectado.velocidad[0] + planeta_colisionado.velocidad[0]),
-                                                  (planeta_afectado.velocidad[1] + planeta_colisionado.velocidad[1]),
-                                                  (planeta_afectado.velocidad[2] + planeta_colisionado.velocidad[2])]
-                    # Eliminamos el planeta colisionado
-                    planeta_colisionado.eliminado = True
-                    k += 1
-                else:
-                    k += 1
-        if not planeta_afectado.eliminado == True:
-            world[f"planet{i}"]["position"] = planeta_afectado.posicion
 
 
     @controller.event
@@ -334,14 +294,14 @@ if __name__ == "__main__":
         cam.theta += controller.input[1] * controller.speed * dt
 
         # Update posicion de los planetas.
-        n = len(planets_atrocities)
+        n = len(planets_list)
         for i in range(0, n):
-            planeta_afectado = planets_atrocities[i]
+            planeta_afectado = planets_list[i]
 
             # Update respecto al efecto de la fuerza gravitatoria ejercida por otros planetas.
             j = 0
             while j < n:
-                planeta_afectante = planets_atrocities[j]
+                planeta_afectante = planets_list[j]
                 if j == i:
                     j += 1
                 planeta_afectado.update_velocidad(planeta_afectante.masa, planeta_afectante.posicion)
@@ -366,7 +326,7 @@ if __name__ == "__main__":
             k = 0
             while k < n:
                 # Definimos el planeta con el que se colisionara.
-                planeta_colisionado = planets_atrocities[k]
+                planeta_colisionado = planets_list[k]
                 # Caso donde el planeta con el que se colisionara y el que colisionara seran el mismo.
                 if k == i:
                     k += 1
@@ -405,18 +365,14 @@ if __name__ == "__main__":
             if planeta_afectado.eliminado == False:
                 world[f"planet{i}"]["position"] = planeta_afectado.posicion
 
-            # Colision de planetas
-            # masas deben sumarse, radios tambien, posicion se saca el promedio y las velocidades se suma
         world.update()
         cam.update()
 
-        # Here we monitorize the FPS of the simulation
-        fps_master_race = 1/dt
-        if fps_master_race <=30:
-            print(f"FPS: {fps_master_race}")
-        #print(1/dt)
+        fps = 1/dt
+        if fps <=30:
+            print(f"FPS: {fps}")
 
-    clock.schedule_interval(update, 1 / 165)
+    clock.schedule_interval(update, 1 / 60)
     app.run()
 
 """
