@@ -9,7 +9,11 @@
     Fecha en que se Entrego: 25 de Noviembre de 2024 (atraso autorizado)
 -----------------------------------------------------------------------------------------------------------------------
     Palabras Previas:
+    Este archivo contiene el desarrollo realizado para la tarea 5 (y final) de la asignatura Modelación y Computación
+    Gráfica para Ingenieros (CC3501-1) de la Universidad de Chile. La tarea fue realizada sobre un template entregado
+    por el cuerpo docente para la realizacion de la tarea.
 
+    El desarrollo fue inspirado en las clases auxiliares, por lo que pueden tener similitudes.
 =======================================================================================================================
 """
 
@@ -81,6 +85,14 @@ class Sphere(drawables.Model):
 Clase donde contengo toda las caracteristicas de los planetas, ademas de algunos comportamientos como la actualizacion
 de la pocision, velocidad, etc.
 
+Esta clase cuenta con los siguientes metodos:
+
+    - metodo update_posicion: actualiza la posicion respecto a la velocidad que este tenga.
+    
+    - metodo update_velocidad: actualiza la velocidad respecto a la fuerza gravitacional que este sienta.
+    
+Los calculos se realizaron tomando como inicio el metodo de Newton y el metodo de Euler visto en clases.
+
 '''
 
 class Planeta:
@@ -102,17 +114,24 @@ class Planeta:
 
     # Metodo update_velocidad, usa el metodo de newton
     def update_velocidad(self, m2, pos2):
+        '''
+        Se considero la constante de gravitacion universal por su valor original, razon la cual se decidio cambiar el
+        valor que originalmente se intuye se queria para las masas.
+        '''
         G = 6.67430*(10**(-11))
         r = ((self.posicion[0]-pos2[0])**2 + (self.posicion[1]-pos2[1])**2 + (self.posicion[2]-pos2[2])**2)**(1/2)
-        F = G*(self.masa*m2)/(r**2+self.radio_escalar)
-        self.velocidad[0] += F*(pos2[0]-self.posicion[0])/(r+self.radio_escalar)
-        self.velocidad[1] += F*(pos2[1]-self.posicion[1])/(r+self.radio_escalar)
-        self.velocidad[2] += F*(pos2[2]-self.posicion[2])/(r+self.radio_escalar)
+        # El codigo se cae si no consideramos el caso de este condicional.
+        if r == 0:
+            r = 1
+        F = G*(self.masa*m2)/(r**2)
+        self.velocidad[0] += F*(pos2[0]-self.posicion[0])/(r)
+        self.velocidad[1] += F*(pos2[1]-self.posicion[1])/(r)
+        self.velocidad[2] += F*(pos2[2]-self.posicion[2])/(r)
 
 
 
-
-SUN_MASS = 100000
+# Valores originalmente entregados pero que fueron alterados
+SUN_MASS = 200000
 SUN_RADIUS = 1.0
 SUN_VELOCITY = 0
 
@@ -135,7 +154,7 @@ if __name__ == "__main__":
 
     planet_mesh = Sphere(36)
 
-    # Nodo de la luz del sol
+    # Nodo de la luz del sol, inspirado en la tarea 4, se utilizo un Pointlight
     world.add_node("sun_light",
                    light=PointLight(),
                    pipeline=pipeline,
@@ -164,7 +183,7 @@ if __name__ == "__main__":
         r = np.random.rand()
         g = np.random.rand()
         b = np.random.rand()
-        crayon = [r, g, b]
+        planet_color = [r, g, b]
 
         # Tamaño del planeta
         planet_x = SUN_RADIUS*((planets_quantities-i)/planets_quantities)/2
@@ -209,13 +228,13 @@ if __name__ == "__main__":
             last_neg_z += [planet_coordz]
 
         # Velocidad inicial, vectorial
-        v_x = np.random.uniform(-0.0005, 2)
-        v_y = np.random.uniform(-2, 2)
-        v_z = np.random.uniform(-2, 2)
+        v_x = np.random.uniform(-0.05, 0.05)
+        v_y = np.random.uniform(-0.05, 0.05)
+        v_z = np.random.uniform(-0.05, 0.05)
 
         # Juntamos todas las componentes en listas (que se interpretaran como vectores...probablemente sea mejor usar un arreglo)
         # radio inicial
-        #PLANET_RADIUS = (((planet_x)**(2))+((planet_y)**(2))+((planet_z)**(2)))**(1/2)
+        scalar_radius = (((planet_x)**(2))+((planet_y)**(2))+((planet_z)**(2)))**(1/2)
         PLANET_RADIUS = [planet_x, planet_y, planet_z]
         # posicion inicial
         #PLANET_POS = ((PLANET_POS_VEC[0]**(2))+(PLANET_POS_VEC[1]**(2))+(PLANET_POS_VEC[2]**(2)))**(1/2)
@@ -224,7 +243,7 @@ if __name__ == "__main__":
         #PLANET_VEL = ((v_x**(2))+(v_y**(2))+(v_z**(2)))**(1/2)
         PLANET_VEL = [v_x, v_y, v_z]
         # Masa inicial
-        PLANET_MASS = np.random.uniform(100, 1000)
+        PLANET_MASS = 10000*scalar_radius
 
         # arreglo donde contemenos las clases con la info de cada planeta
         planets_atrocities += [Planeta(masa = PLANET_MASS, radio = PLANET_RADIUS, posicion = PLANET_POS, velocidad = PLANET_VEL, id = i, eliminado = False)]
@@ -233,16 +252,15 @@ if __name__ == "__main__":
         world.add_node(
             name = f"planet{i}",
             mesh = planet_mesh,
-            pipeline = lpipeline,
+            pipeline = pipeline,
             scale = PLANET_RADIUS,
-            material = Material(ambient = crayon,
-                                diffuse = [crayon[i]*np.random.rand() for i in range(0, len(crayon))],
-                                specular = [crayon[i]*np.random.rand() for i in range(0, len(crayon))]),
-            color = crayon,
+            material = Material(ambient = planet_color,
+                                diffuse = [planet_color[i]*np.random.rand() for i in range(0, len(planet_color))],
+                                specular = [planet_color[i]*np.random.rand() for i in range(0, len(planet_color))]),
+            color = planet_color,
         )
 
-    # Aca creamos los planetas
-    indices_remover = []
+    # Aca consideramos todos los casos superpuestos y los eliminamos
     for i in range(0, len(planets_atrocities)):
         if planets_atrocities[i].eliminado:
             if i == n-1:
@@ -274,8 +292,7 @@ if __name__ == "__main__":
                                                   (planeta_afectado.velocidad[1] + planeta_colisionado.velocidad[1]),
                                                   (planeta_afectado.velocidad[2] + planeta_colisionado.velocidad[2])]
                     # Eliminamos el planeta colisionado
-                    planets_atrocities[k].eliminado = True
-                    indices_remover += [k]
+                    planeta_colisionado.eliminado = True
                     k += 1
                 else:
                     k += 1
@@ -286,7 +303,7 @@ if __name__ == "__main__":
     @controller.event
     def on_draw():
         controller.clear()
-        gl.glClearColor(0.1, 0.1, 0.1, 1.0)
+        gl.glClearColor(0.0, 0.0, 0.0, 1.0)
         gl.glEnable(gl.GL_DEPTH_TEST)
         world.draw()
 
@@ -316,19 +333,12 @@ if __name__ == "__main__":
         cam.phi += controller.input[0] * controller.speed * dt
         cam.theta += controller.input[1] * controller.speed * dt
 
-        # Update posicion planetas dado a que se updetean las velocidades de los planetas
-
+        # Update posicion de los planetas.
         n = len(planets_atrocities)
-
         for i in range(0, n):
             planeta_afectado = planets_atrocities[i]
-            if planeta_afectado.eliminado:
-                if i == n-1:
-                    break
-                else:
-                    i+=1
 
-            # Update de velocidad dado a posicion respecto a otros planetas
+            # Update respecto al efecto de la fuerza gravitatoria ejercida por otros planetas.
             j = 0
             while j < n:
                 planeta_afectante = planets_atrocities[j]
@@ -336,12 +346,58 @@ if __name__ == "__main__":
                     j += 1
                 planeta_afectado.update_velocidad(planeta_afectante.masa, planeta_afectante.posicion)
                 j += 1
-            # Update de velocidad dado a posicion respecto al sol
+
+            # Update respecto a la fuerza gravitatoria respecto al sol.
             planeta_afectado.update_velocidad(SUN_MASS, [0, 0, 0])
             planeta_afectado.update_posicion(dt)
-            # Vemos caso colision
 
-            if not planeta_afectado.eliminado:
+            # Colision con el sol, correspondera a un choque elastico.
+            if ((planeta_afectado.posicion[0]**(2))+(planeta_afectado.posicion[1]**(2))+(planeta_afectado.posicion[2]**(2)))**(1/2) <= SUN_RADIUS:
+                # Obtenemos la normal con respecto a la colision.
+                normal = [planeta_afectado.posicion[0]/SUN_RADIUS, planeta_afectado.posicion[1]/SUN_RADIUS, planeta_afectado.posicion[2]/SUN_RADIUS]
+                # Se calcula la velocidad reflejada
+                planeta_afectado.velocidad = [planeta_afectado.velocidad[0] - 2*(np.dot(planeta_afectado.velocidad, normal))*normal[0],
+                                              planeta_afectado.velocidad[1] - 2*(np.dot(planeta_afectado.velocidad, normal))*normal[1],
+                                              planeta_afectado.velocidad[2] - 2*(np.dot(planeta_afectado.velocidad, normal))*normal[2]]
+                # Se actualiza la posicion para que no se quede pegado al sol
+                planeta_afectado.posicion = [normal[0]*SUN_RADIUS, normal[1]*SUN_RADIUS, normal[2]*SUN_RADIUS]
+
+            # Vemos caso colision
+            k = 0
+            while k < n:
+                planeta_colisionado = planets_atrocities[k]
+                if k == i:
+                    k += 1
+                else:
+                    r = ((planeta_afectado.posicion[0] - planeta_colisionado.posicion[0]) ** 2 + (
+                            planeta_afectado.posicion[1] - planeta_colisionado.posicion[1]) ** 2 + (
+                                 planeta_afectado.posicion[2] - planeta_colisionado.posicion[2]) ** 2) ** (1 / 2)
+                    if not r > (planeta_afectado.radio_escalar + planeta_colisionado.radio_escalar):
+                        # Colision
+                        # masas deben sumarse, radios tambien, posicion se saca el promedio y las velocidades se suman
+                        planeta_afectado.masa += planeta_colisionado.masa
+                        planeta_afectado.radio = [(planeta_afectado.radio[0] + planeta_colisionado.radio[0]),
+                                                  (planeta_afectado.radio[1] + planeta_colisionado.radio[1]),
+                                                  (planeta_afectado.radio[2] + planeta_colisionado.radio[2])]
+                        planeta_afectado.posicion = [
+                            (planeta_afectado.posicion[0] + planeta_colisionado.posicion[0]) / 2,
+                            (planeta_afectado.posicion[1] + planeta_colisionado.posicion[1]) / 2,
+                            (planeta_afectado.posicion[2] + planeta_colisionado.posicion[2]) / 2]
+                        planeta_afectado.velocidad = [
+                            (planeta_afectado.velocidad[0] + planeta_colisionado.velocidad[0]),
+                            (planeta_afectado.velocidad[1] + planeta_colisionado.velocidad[1]),
+                            (planeta_afectado.velocidad[2] + planeta_colisionado.velocidad[2])]
+                        # Eliminamos el planeta colisionado
+                        planeta_colisionado.eliminado = True
+                        #planeta_colisionado = planeta_afectado
+                        k += 1
+                    else:
+                        k += 1
+
+            if planeta_afectado.eliminado == True:
+                world.remove_node(f"planet{i}")
+
+            elif not planeta_afectado.eliminado == True:
                 world[f"planet{i}"]["position"] = planeta_afectado.posicion
 
             # Colision de planetas
