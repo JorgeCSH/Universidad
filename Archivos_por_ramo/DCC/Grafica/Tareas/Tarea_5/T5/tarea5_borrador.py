@@ -228,9 +228,9 @@ if __name__ == "__main__":
             last_neg_z += [planet_coordz]
 
         # Velocidad inicial, vectorial
-        v_x = np.random.uniform(-0.05, 0.05)
-        v_y = np.random.uniform(-0.05, 0.05)
-        v_z = np.random.uniform(-0.05, 0.05)
+        v_x = np.random.uniform(-0.25, 0.5)
+        v_y = np.random.uniform(-0.25, 0.5)
+        v_z = np.random.uniform(-0.25, 0.5)
 
         # Juntamos todas las componentes en listas (que se interpretaran como vectores...probablemente sea mejor usar un arreglo)
         # radio inicial
@@ -248,7 +248,7 @@ if __name__ == "__main__":
 
         # Nodo con cada planeta
         world.add_node(
-            name = f"planet{i}",
+            name = f"planet{planets_list[i].id}",
             mesh = planet_mesh,
             pipeline = pipeline,
             scale = PLANET_RADIUS,
@@ -357,13 +357,14 @@ if __name__ == "__main__":
                             (planeta_afectado.velocidad[2] + planeta_colisionado.velocidad[2])]
                         # La clase planetas tiene un atributo para indicar si fue o no eliminado.
                         planeta_colisionado.eliminado = True
-                        world.remove_node(f"planet{k}")
+                        # Se elimina el planeta del nodo.
+                        world.remove_node(f"planet{planeta_colisionado.id}")
                         k += 1
                     else:
                         k += 1
 
             if planeta_afectado.eliminado == False:
-                world[f"planet{i}"]["position"] = planeta_afectado.posicion
+                world[f"planet{planeta_afectado.id}"]["position"] = planeta_afectado.posicion
 
         world.update()
         cam.update()
