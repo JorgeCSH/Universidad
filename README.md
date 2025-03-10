@@ -3,6 +3,9 @@
 La principal idea es contener todo lo relacionado con la U, desde códigos, tareas, apuntes, etc. Básicamente, es un repositorio universidad.
 Cuidado con el virtual environmet, está siendo usado, no borrar porfavor[^1].
 
+## Indicacion (10/03/2025)
+Actualmente me encuentro realizando todo lo que tenga que ver con la universidad en repositorios externos. 
+
 ## Contenidos
 * Archivos por ramo: directorio que contiene todo lo que vaya haciendo por cada ramo que vaya cursando, está dividido en Archivos por ramo -> departamentos -> ramo.
 * Templates: en caso de ser recurrente algún formato, acá están los templates. Entre los templates destaca LaTeX, para templetes en latex y notebooks, para los jupyter notebooks.
@@ -20,3 +23,4 @@ Importante: [REDACTED] el que me copie.
 [^1]: Recuerdo para mí mismo jeje.
 [^2]:  A menos que sea algún proyecto como un informe que está usando el template y la licencia respectiva tenga tal autorización.
 [^3]: Acá intentaré dar los créditos respectivos y el enlace a los documentos originales.
+
